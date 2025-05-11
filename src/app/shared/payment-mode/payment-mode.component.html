@@ -1,0 +1,97 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <h3>Payment Mode</h3>
+    <span>Total Payable {{amount}}</span>
+    <form class="pt-4" [formGroup]="paymentModeForm">
+        <div class="row mb-3">
+            <div class="col-12 mb-3">
+                <nz-form-control nzErrorTip="Please input Customer Name!">
+                    <label>Cash</label>
+                    <input type="number" nz-input formControlName="cash" nzSize="large" />
+                </nz-form-control>
+            </div>
+            <div class="col-12 mb-3">
+                <nz-form-control nzErrorTip="Please input Phone Number!">
+                    <label>Online Transfer</label>
+                    <input type="number" nz-input formControlName="onlineTransfer" nzSize="large" />
+                </nz-form-control>
+            </div>
+            @if(showBankList){
+            <div class="col-6 mb-3">
+                <nz-form-control>
+                    <label>Select Bank</label>
+                    <nz-select nzShowSearch formControlName="bankAccId" class="custom-select" nzSize="large">
+                        <nz-option *ngFor="let bank of banklist" [nzValue]="bank.id"
+                            [nzLabel]="bank.accountName"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </div>
+            <div class="col-6 mb-3">
+                <nz-form-control>
+                    <label>Reference Number</label>
+                    <input type="text" nz-input formControlName="refNumber" nzSize="large" />
+                </nz-form-control>
+            </div>
+            }
+            <div class="col-12 mb-3">
+                <nz-form-control>
+                    <label>Cheque</label>
+                    <input type="number" nz-input formControlName="cheque" nzSize="large" />
+                </nz-form-control>
+            </div>
+            @if(chequeBankList){
+            <div class="col-4 mb-3">
+                @if(tranType === "CREDIT"){
+                <nz-form-control>
+                    <label>Select Bank</label>
+                    <nz-select nzShowSearch formControlName="chequebankAccId" class="custom-select" nzSize="large">
+                        <nz-option *ngFor="let bank of banklist" [nzValue]="bank.id"
+                            [nzLabel]="bank.accountName"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+                }
+                @else{
+                <nz-form-control>
+                    <label>Select Bank</label>
+                    <nz-select nzShowSearch formControlName="chequeBankName" class="custom-select" nzSize="large">
+                        <nz-option nzValue="Commercial Bank" nzLabel="Commercial Bank"></nz-option>
+                        <nz-option nzValue="Sampath Bank" nzLabel="Sampath Bank"></nz-option>
+                        <nz-option nzValue="NSB Bank" nzLabel="NSB Bank"></nz-option>
+                        <nz-option nzValue="Bank of Ceylon" nzLabel="Bank of Ceylon"></nz-option>
+                        <nz-option nzValue="DFCC Bank" nzLabel="DFCC Bank"></nz-option>
+                        <nz-option nzValue="Hatton National Bank" nzLabel="Hatton National Bank"></nz-option>
+                        <nz-option nzValue="Nations Trust Bank" nzLabel="Nations Trust Bank"></nz-option>
+                        <nz-option nzValue="People's Bank" nzLabel="People's Bank"></nz-option>
+                        <nz-option nzValue="Seylan Bank" nzLabel="Seylan Bank"></nz-option>
+                        <nz-option nzValue="NDB Bank" nzLabel="NDB Bank"></nz-option>
+                        <nz-option nzValue="Pan Asia" nzLabel="Pan Asia"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+                }
+            </div>
+            <div class="col-4 mb-3">
+                <nz-form-control>
+                    <label>Cheque Number</label>
+                    <input type="number" nz-input formControlName="chequenumber" nzSize="large" />
+                </nz-form-control>
+            </div>
+            <div class="col-md-4 mb-3">
+                <nz-form-control nzErrorTip="Please input Date!">
+                    <label>Release Date</label><br>
+                    <nz-date-picker class="w-100 shadowform" formControlName="releaseDate"
+                        nzSize="large"></nz-date-picker>
+                </nz-form-control>
+            </div>
+            } 
+            <div class="col-12 mb-3" *ngIf="mode === 'ALL'">
+                <nz-form-control>
+                    <label>Credit</label>
+                    <input type="number" nz-input formControlName="credit" nzSize="large" />
+                </nz-form-control>
+            </div>
+        </div>
+        
+        <div class="footer d-flex justify-content-end">
+            <button class="primary px-5" (click)="submit()">Set Payment</button>
+        </div>
+    </form>
+</nz-spin>

@@ -1,0 +1,43 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <h3>{{action}} Cheque</h3>
+    <form class="pt-4" [formGroup]="chequebookForm">
+        <div class="row mb-3">
+            <div class="col-12 mb-3">
+                <nz-form-control>
+                    <label>Bank</label>
+                    <nz-select nzShowSearch formControlName="chartofAccountId" class="custom-select">
+                        <nz-option *ngFor="let bank of banklist" [nzValue]="bank.id"
+                            [nzLabel]="bank.accountName"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </div>
+            <div class="col-12 mb-3">
+                <nz-form-control>
+                    <label>Cheque Book Number</label>
+                    <input type="text" nz-input formControlName="chequeBookNumber" nzSize="large" />
+                </nz-form-control>
+            </div>
+            <div class="col-12 mb-3">
+                <nz-form-control>
+                    <label>Cheque Count</label>
+                    <input type="text" nz-input formControlName="totalCheques" nzSize="large" />
+                </nz-form-control>
+            </div>
+            <div class="col-12 mb-3">
+                <nz-form-control>
+                    <label>First Cheque Number</label>
+                    <input type="text" nz-input formControlName="startNumber" nzSize="large" />
+                </nz-form-control>
+            </div>
+            <div class="col-12 mb-3">
+                <nz-form-control>
+                    <label>Last Cheque Number</label>
+                    <input type="text" nz-input formControlName="endNumber" nzSize="large" />
+                </nz-form-control>
+            </div>
+        </div>
+        <div class="footer d-flex justify-content-end">
+            <button class="primary px-5" (click)="submit()">{{action}}</button>
+        </div>
+    </form>
+</nz-spin>

@@ -1,0 +1,62 @@
+<div class="container-fluid px-4 pt-2 m-0">
+  <div class="header mb-3 d-flex justify-content-between">
+    <h2>Salesman Report</h2>
+    <button class="primary me-3 mb-4" (click)="exportToCSV()">
+      <span class="me-2" nz-icon nzType="export"></span>Export to Excel
+    </button>
+  </div>
+
+  <form class="row mb-3" [formGroup]="salesmanForm">
+    <div class="col-4">
+      <nz-input-group nzPrefixIcon="search" nzSize="large" class="rounded-3 shadowform">
+        <input nz-input placeholder="Search" nz-tooltip="Search" nzTooltipTrigger="focus" [formControl]="searchControl"
+          nzTooltipPlacement="topLeft" />
+      </nz-input-group>
+    </div>
+    <div class="col-2">
+      <nz-form-control nzErrorTip="Please select a user!">
+        <nz-select nzShowSearch formControlName="userId" nzSize="large" class="custom-select shadowform">
+          <nz-option [nzValue]="''" [nzLabel]="'All Users'"></nz-option>
+          <nz-option *ngFor="let user of userdata" [nzValue]="user.id" [nzLabel]="user.name"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </div>
+    <div class="col-4">
+      <nz-range-picker class="w-100" formControlName="date" nzSize="large"></nz-range-picker>
+    </div>
+    <div class="col-2">
+      <button nz-button class="primary w-100" (click)="applyDateFilter()">
+        <span nz-icon nzType="filter"></span>Filter
+      </button>
+    </div>
+  </form>
+
+  <nz-table #basicTable [nzData]="filteredData" [nzShowPagination]="true" [nzPageSize]="10000" class="shadowform">
+    <thead>
+      <tr>
+        <th nzWidth="1%">No</th>
+        <th nzWidth="10%">Date</th>
+        <th nzWidth="10%">Type</th>
+        <th nzWidth="20%">Invoice Number</th>
+        <th nzWidth="20%">Customer Name</th>
+        <th nzWidth="40%" class="text-end">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let data of filteredData">
+        <tr>
+          <td class="text-center" [colSpan]="4"><strong>{{ data.salesmanName }}</strong></td>
+          <td class="text-center" [colSpan]="2"><strong>{{ data.totalValue | currency: ' ' }}</strong></td>
+        </tr>
+        <tr *ngFor="let invoice of data.Invoices">
+          <td>{{ (data.Invoices).indexOf(invoice) + 1 }}</td>
+          <td>{{ invoice.date | date: 'yyyy/MM/dd' }}</td>
+          <td>{{ invoice.voucherName }}</td>
+          <td>{{ invoice.voucherNumber }}</td>
+          <td>{{ invoice.partyName }}</td>
+          <td class="text-end">{{ invoice.amount | currency: ' '}}</td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </nz-table>
+</div>

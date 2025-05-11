@@ -1,0 +1,153 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+  <h3>{{ action }} Customer</h3>
+  <form class="pt-4" [formGroup]="partyForm">
+    <div class="row mb-3">
+      <div class="col-12 mb-3">
+        <nz-form-control nzErrorTip="Please Select Customer Category!">
+          <label>Customer Category</label>
+          <nz-select nzSize="large" nzShowSearch formControlName="partyCategoryId" class="custom-select">
+            <nz-option *ngFor="let category of categoryList" [nzValue]="category.id"
+                       [nzLabel]="category.category"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </div>
+      <div class="col-12 mb-3">
+        <nz-form-control nzErrorTip="Please Select Customer Type!">
+          <label>Customer Type</label>
+          <nz-select nzSize="large" nzShowSearch formControlName="partyTypeId" class="custom-select">
+            <nz-option *ngFor="let type of typeList" [nzValue]="type.id" [nzLabel]="type.type"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </div>
+      <div class="col-12 mb-3">
+        <nz-form-control nzErrorTip="Please input Customer Name!">
+          <label>Customer Name</label>
+          <input type="text" nz-input formControlName="name" nzSize="large"/>
+        </nz-form-control>
+      </div>
+      <div class="col-12 mb-3">
+        <nz-form-control>
+          <label>Phone Number</label>
+          <input type="text" nz-input formControlName="phoneNumber" nzSize="large"/>
+          <div *ngIf="partyForm.controls['phoneNumber'].errors && partyForm.controls['phoneNumber'].touched">
+                        <span class="text-danger" *ngIf="partyForm.controls['phoneNumber'].hasError('required')">Phone
+                            Number is required!</span>
+            <span class="text-danger" *ngIf="partyForm.controls['phoneNumber'].hasError('minlength')">Phone
+                            Number must be at least 9 digits long!</span>
+            <span class="text-danger" *ngIf="partyForm.controls['phoneNumber'].hasError('maxlength')">Phone
+                            Number cannot exceed 10 digits!</span>
+            <span class="text-danger" *ngIf="partyForm.controls['phoneNumber'].hasError('pattern')">Phone
+                            Number can only contain digits!</span>
+          </div>
+        </nz-form-control>
+      </div>
+      <div class="col-6 mb-3">
+        <nz-form-control>
+          <label>BR Number/NIC</label>
+          <input type="text" nz-input formControlName="nic" nzSize="large"/>
+        </nz-form-control>
+      </div>
+      <div class="col-6 mb-3">
+        <nz-form-control>
+          <label>Email</label>
+          <input type="email" nz-input formControlName="email" nzSize="large"/>
+        </nz-form-control>
+      </div>
+      <div class="col-12 mb-3">
+        <nz-form-control nzErrorTip="Please input Address!">
+          <label>Address 1</label>
+          <textarea type="text" nz-input formControlName="address1" nzSize="large"></textarea>
+        </nz-form-control>
+      </div>
+      <div class="col-12 mb-3">
+        <nz-form-control>
+          <label>City</label>
+          <input type="text" nz-input formControlName="city" nzSize="large"/>
+        </nz-form-control>
+      </div>
+      <div class="col-12 mb-3">
+        <nz-form-control nzErrorTip="Please input Address!">
+          <label>Address 2</label>
+          <textarea type="text" nz-input formControlName="address2" nzSize="large"></textarea>
+        </nz-form-control>
+      </div>
+      <div class="col-6 mb-3">
+        <nz-form-control>
+          <label>Credit Value</label>
+          <input type="number" nz-input formControlName="creditValue" nzSize="large"/>
+        </nz-form-control>
+      </div>
+      <div class="col-6 mb-3">
+        <nz-form-control>
+          <label>Credit Period</label>
+          <input type="number" nz-input formControlName="creditPeriod" nzSize="large"/>
+        </nz-form-control>
+      </div>
+
+      <div class="container px-4">
+        <div class="row">
+          <label class="px-0 pb-2 fs-5">Shop Image</label>
+          <div class="col-12 border border-gray rounded py-2">
+            <input type="file" (change)="onFileChange($event, 'shopImage')"/>
+            <div *ngIf="shopImageUrl">
+              <img nz-image width="200px" height="200px" [nzSrc]="shopImageUrl"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <label class="px-0 pb-2 fs-5">BR Image</label>
+          <div class="col-12 border border-gray rounded py-2">
+            <input type="file" (change)="onFileChange($event, 'brImage')"/>
+            <div *ngIf="brImageUrl">
+              <img nz-image width="200px" height="200px" [nzSrc]="brImageUrl"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <label class="px-0 pb-2 fs-5">NIC Image</label>
+          <div class="col-12 border border-gray rounded py-2">
+            <input type="file" (change)="onFileChange($event, 'nicImage')"/>
+            <div *ngIf="nicImageUrl">
+              <img nz-image width="200px" height="200px" [nzSrc]="nicImageUrl"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <label class="px-0 pb-2 fs-5">NIC Back Image</label>
+          <div class="col-12 border border-gray rounded py-2">
+
+            <input type="file" (change)="onFileChange($event, 'nicBackImage')"/>
+            <div *ngIf="nicBackImageUrl">
+              <img nz-image width="200px" height="200px" [nzSrc]="nicBackImageUrl"/>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <google-map
+      height="400px"
+      width="100%"
+      [options]="options"
+      #map>
+      <map-marker
+        *ngFor="let position of markerPositions"
+        [position]="position"
+        [options]="markerOptions">
+      </map-marker>
+    </google-map>
+
+    <!-- <iframe
+        src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d141170.16518528614!2d80.07181469574469!3d6.898559714519846!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2slk!4v1727848935707!5m2!1sen!2slk"
+        width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade" class="w-100"></iframe> -->
+
+    <div class="footer d-flex justify-content-end">
+      <button class="primary px-5" (click)="submit()">{{ action }}</button>
+    </div>
+  </form>
+</nz-spin>

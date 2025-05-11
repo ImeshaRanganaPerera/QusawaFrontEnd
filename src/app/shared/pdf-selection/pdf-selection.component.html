@@ -1,0 +1,28 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <h3>Print Out Mode</h3>
+    <form class="pt-4">
+        <div class="row">
+            @if(type === 'INVOICE'){
+            <div class="col-6">
+                <button class="primary mt-3 px-5 w-100" (click)="printout()">Print Out Layout 1</button>
+            </div>
+            <div class="col-6">
+                <button class="primary mt-3 px-5 w-100" (click)="printout2()">Print Out Layout 2</button>
+            </div>
+            <div class="col-12">
+                <button class="primary mt-3 px-5 w-100" (click)="whatsapp()">Whats App</button>
+            </div>
+        }@else{
+
+            <div class="col-6">
+                <button class="primary mt-3 px-5 w-100" (click)="printout()">Print</button>
+            </div>
+
+            <div class="col-6">
+                <button class="primary mt-3 px-5 w-100" (click)="whatsapp()">Whats App</button>
+            </div>
+
+        } 
+        </div>
+    </form>
+</nz-spin>

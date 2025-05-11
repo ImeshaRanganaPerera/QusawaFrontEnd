@@ -1,0 +1,41 @@
+<form [formGroup]="filterForm" (ngSubmit)="onSubmit()">
+  <div class="form-group">
+    <label for="date">Date</label>
+    <!-- <input type="date" id="date" formControlName="date" class="form-control"> -->
+    <nz-date-picker [nzDisabledDate]="disabledDate" class="w-100 shadowform" id="date" formControlName="date" nzSize="large"></nz-date-picker>
+  </div>
+
+  <div class="form-group">
+    <label>Centers</label>
+    <div class="btn-group shadowform" role="group">
+      <button type="button" class="btn btn-primary" (click)="filterForm.patchValue({centerMode: 'all'})" [class.active]="filterForm.get('centerMode')?.value === 'all'">All Centers</button>
+      <button type="button" class="btn btn-primary" (click)="filterForm.patchValue({centerMode: 'one'})" [class.active]="filterForm.get('centerMode')?.value === 'one'">One Center</button>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Items</label>
+    <div class="btn-group shadowform" role="group">
+      <button type="button" class="btn btn-primary" (click)="filterForm.patchValue({itemMode: 'all'})" [class.active]="filterForm.get('itemMode')?.value === 'all'">All Items</button>
+      <button type="button" class="btn btn-primary" (click)="filterForm.patchValue({itemMode: 'one'})" [class.active]="filterForm.get('itemMode')?.value === 'one'">One Item</button>
+    </div>
+  </div>
+
+  <div class="form-group" *ngIf="filterForm.get('centerMode')?.value === 'one'">
+    <label for="centerId">Select Center</label>
+    <select id="centerId" formControlName="centerId" class="form-control">
+      <option *ngFor="let center of centers" [value]="center.id">{{center.centerName}}</option>
+    </select>
+  </div>
+
+  <div class="form-group" *ngIf="filterForm.get('itemMode')?.value === 'one'">
+    <label for="productId">Select Product</label>
+    <select id="productId" formControlName="productId" class="form-control">
+      <option *ngFor="let product of products" [value]="product.id">{{product.printName}}</option>
+    </select>
+  </div>
+  <div class="row">
+    <button type="submit" class="btn btn-success col align-self-center" [disabled]="!filterForm.valid">Generate Report</button>
+  </div>
+  
+</form>

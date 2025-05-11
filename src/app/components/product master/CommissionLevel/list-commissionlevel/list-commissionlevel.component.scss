@@ -1,0 +1,27 @@
+.anticon.anticon-search{
+    color: var(--lightFontColor);
+}
+
+button.anticon {
+    color: var(--input-DG-color);
+}
+
+button.anticon:hover {
+    color: var(--use-secondary-color);
+}
+
+.ant-input-affix-wrapper,
+.ant-input {
+    border: none;
+    // background: #f4f4f5;
+}
+
+.ant-btn-primary{
+    background-color:var(--primary-color) ;
+    border-color:var(--light-Db-FontColor) ;
+}
+
+.ant-btn-primary:hover{
+    background-color:var( --use-secondary-color) ;
+    border-color:var(--secondary-color) ;
+}

@@ -1,0 +1,67 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div class="container-fluid px-3 pt-2 m-0">
+        <div class="header mb-3 d-flex justify-content-between">
+            <h2>Cheque Books</h2>
+        </div>
+        <div>
+            <div class="d-flex mb-2 align-items-center">
+                <div class="w-50 py-2">
+                    <button class="primary" (click)="manageProduct('Create')"><span class="me-2" nz-icon
+                            nzType="plus"></span>
+                        Create Cheque</button>
+                </div>
+                <div class="flex-grow-1">
+                    <nz-input-group nzPrefixIcon="search" nzSize="large" class="rounded-3">
+                        <input nz-input placeholder="Search" nz-tooltip="Search" [formControl]="searchControl"
+                            nzTooltipTrigger="focus" nzTooltipPlacement="topLeft" />
+                    </nz-input-group>
+                </div>
+            </div>
+            <div>
+                <div class="card text-bg-light border-light  p-3">
+                    <div>
+                        <nz-table #basicTable [nzData]="filteredData" [nzPageSize]="pageSize" (nzPageIndexChange)="onPageChange($event)">
+                            <thead>
+                                <tr>
+                                    <th style="width: 1%;">No</th>
+                                    <th style="width: 20%;">Cheque Number</th>
+                                    <th style="width: 20%;">Cheque Start Number</th>
+                                    <th style="width: 20%;">Cheque End Number</th>
+                                    <th style="width: 20%;">Cheque Size</th>
+                                    <th style="width: 20%;">Remaining Cheque</th>
+                                    <th style="width: 10%;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let data of basicTable.data; let i = index">
+                                    <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+                                    <td>{{ data.chequeBookNumber }}</td>
+                                    <td>{{ data.startNumber }}</td>
+                                    <td>{{ data.endNumber }}</td>
+                                    <td>{{ data.totalCheques }}</td>
+                                    <td>{{ data.remainingCheques }}</td>
+                                    @if(data.totalCheques === data.remainingCheques){
+                                    <td class="d-flex justify-content-center">
+                                        <button nz-button nz-tooltip="Edit" nzType="primary" nzShape="circle"
+                                            nzTooltipPlacement="bottom" class="me-3" (click)="handleEdit(data)">
+                                            <span nz-icon nzType="edit"></span>
+                                        </button>
+                                    </td>
+                                    }
+                                    @else {
+                                    <td class="d-flex justify-content-center">
+                                        <button nz-button disabled="'true'" nz-tooltip="Edit" nzShape="circle"
+                                            nzTooltipPlacement="bottom" class="me-3" (click)="handleEdit(data)">
+                                            <span nz-icon nzType="edit"></span>
+                                        </button>
+                                    </td>
+                                    }
+                                </tr>
+                            </tbody>
+                        </nz-table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nz-spin>

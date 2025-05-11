@@ -1,0 +1,41 @@
+.form-container {
+  max-width: 600px;
+  margin: 0 auto 40px;
+}
+
+.report-card {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.submit-button {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.report-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+nz-table {
+  margin-top: 20px;
+  width: 100%;
+}
+
+h4.total-report {
+  margin-top: 20px;
+  font-weight: bold;
+  text-align: right;
+}
+
+.error {
+  color: red;
+  margin-top: 5px;
+  font-size: 12px;
+
+}

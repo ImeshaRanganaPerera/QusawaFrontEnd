@@ -1,0 +1,53 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div class="container-fluid px-4 pt-2 m-0">
+        <div class="header mb-3 d-flex justify-content-between">
+            <h2>Trial Balance Report</h2>
+            <div>
+                <button class="primary me-3" (click)="exportAsCSV()">
+                    <span class="me-2" nz-icon nzType="export"></span>Export to Excel
+                </button>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-6">
+                <nz-input-group nzPrefixIcon="search" nzSize="large" class="rounded-3 shadowform">
+                    <input nz-input placeholder="Search" nz-tooltip="Search" nzTooltipTrigger="focus"
+                        [formControl]="searchControl" nzTooltipPlacement="topLeft" />
+                </nz-input-group>
+            </div>
+            <div class="col-4">
+                <nz-date-picker nzSize="large" class="w-100" [(ngModel)]="date"></nz-date-picker>
+            </div>
+            <div class="col-2">
+                <button nz-button nzType="primary" class="w-100" nzSize="large" (click)="applyDateFilter()">
+                    <span nz-icon nzType="filter"></span>Filter
+                </button>
+            </div>
+        </div>
+
+        <nz-table #basicTable [nzData]="filteredData" class="shadowform" [nzShowPagination]="true" [nzPageSize]="1000">
+            <thead>
+                <tr>
+                    <th nzWidth="1%">No</th>
+                    <th>Account Name</th>
+                    <th>Debit</th>
+                    <th>credit</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data">
+                    <td>{{ basicTable.data.indexOf(data) + 1 }}</td>
+                    <td>{{ data.accountName }}</td>
+                    <td>{{ data.debit | currency: ' ' }}</td>
+                    <td>{{ data.credit | currency: ' ' }}</td>
+                </tr>
+                <tr *ngIf="basicTable.data.length > 0">
+                    <td class="text-center" [colSpan]="2"><strong>Total</strong></td>
+                    <td><strong>{{totalDebit | currency: ' ' }}</strong></td>
+                    <td><strong>{{totalCredit | currency: ' ' }}</strong></td>
+                </tr>
+            </tbody>
+        </nz-table>
+
+    </div>
+</nz-spin>

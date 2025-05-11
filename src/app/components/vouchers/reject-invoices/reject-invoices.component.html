@@ -1,0 +1,103 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div class="container-fluid px-4 pt-2 m-0">
+        <div class="header mb-3 d-flex justify-content-between">
+            <h2>Reject invoices</h2>
+            <div>
+                <button class="primary me-3" (click)="reportSelection()">
+                    <span class="me-2" nz-icon nzType="export"></span>Export
+                </button>
+            </div>
+        </div>
+        <div class="row mb-3">
+            @if(type !=='Stock Transfer'){
+            <div class="col-2">
+                <h5>Total <br> {{totalAmount | currency : ' '}}</h5>
+            </div>
+            }
+            <div ngClass="{{ type === 'Sales Order' ? 'col-2' : type === 'Stock Transfer'? 'col-6' : 'col-4' }}">
+                <nz-input-group nzPrefixIcon="search" nzSize="large" class="rounded-3 shadowform">
+                    <input nz-input placeholder="Search" nz-tooltip="Search" nzTooltipTrigger="focus"
+                        [formControl]="searchControl" nzTooltipPlacement="topLeft" />
+                </nz-input-group>
+            </div>
+            <div class="col-4">
+                <nz-range-picker nzSize="large" class="w-100" [(ngModel)]="date"
+                    (ngModelChange)="onChange($event)"></nz-range-picker>
+            </div>
+            <div class="col-2">
+                <button nz-button nzType="primary" class="w-100" nzSize="large" (click)="applyDateFilter()">
+                    <span nz-icon nzType="filter"></span>Filter
+                </button>
+            </div>
+        </div>
+
+        <nz-table #basicTable [nzData]="filteredData" class="shadowform" [nzPageSize]="pageSize"
+            (nzPageIndexChange)="onPageChange($event)">
+            <thead>
+                <tr>
+                    <th nzWidth="1%"></th>
+                    <th nzWidth="1%">No</th>
+                    <th nzWidth="10%">Date</th>
+                    <th nzWidth="10%">Invoice No</th>
+                    <th nzWidth="20%">Name of Customer</th>
+                    <th nzWidth="20%">Amount</th>
+                    <th>Sales Person</th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for(data of basicTable.data; track data; let i = $index){
+                <tr>
+                    <td [(nzExpand)]="data.expand" (click)="onExpandRow(data)"></td>
+                    <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+                    <td>{{ data.date | date:'yyyy-MM-dd'}}</td>
+                    <td>{{ data.voucherNumber }}</td>
+                    <td>{{ data.party?.name }}</td>
+                    <td>{{ data.amount | currency: ' ' }}</td>
+                    <td>{{ data.user?.name }}</td>
+                    <td class="d-flex justify-content-center">
+                        <button nz-button nz-tooltip="Download" nzType="primary" nzShape="circle"
+                            nzTooltipPlacement="bottom" class="me-3">
+                            <span nz-icon nzType="download" (click)="pdfDownload(data)"></span>
+                        </button>
+                    </td>
+                </tr>
+                <tr [nzExpand]="data.expand">
+                    @if(voucherProduct.length > 0){
+                    <nz-table #innerTable [nzData]="voucherProduct" nzSize="middle" [nzShowPagination]="false">
+                        <thead>
+                            <tr>
+                                <th nzWidth="1%">No</th>
+                                <th>Product Name</th>
+                                @if(role !== 'SALESMEN'){
+                                <th>Cost</th>
+                                }
+                                <th>Quantity</th>
+                                <th>MRP</th>
+                                <th>Discount</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+            <tbody>
+                @for (data of innerTable.data; track data; let i = $index) {
+                <tr>
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ data.product.printName }}</td>
+                    @if(role !== 'SALESMEN'){
+                    <td>{{ data.cost | currency: ' ' }}</td>
+                    }
+                    <td>{{ data.quantity }}</td>
+                    <td>{{ data.MRP | currency: ' ' }}</td>
+                    <td>{{ data.discount }}</td>
+                    <td>{{ getAmount(data) | currency:' ' }}</td>
+                </tr>
+                }
+            </tbody>
+        </nz-table>
+        }
+        </tr>
+        }
+        </tbody>
+        </nz-table>
+    </div>
+</nz-spin>

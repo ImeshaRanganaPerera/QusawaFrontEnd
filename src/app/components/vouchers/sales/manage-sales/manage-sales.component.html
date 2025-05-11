@@ -1,0 +1,196 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div class="container-fluid m-0 p-0">
+        <nz-page-header class="site-page-header bg-white" (nzBack)="onBack()" nzBackIcon
+            nzTitle="Dashboard"></nz-page-header>
+        <div class="content">
+            <div class="card m-3 p-3 shadowef">
+                <form [formGroup]="saleForm">
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="row">
+                                <div class="col-12">
+                                    @if(voucherType === 'SALES'){
+                                    <h2>Invoice</h2>
+                                    }
+                                    @else {
+                                    <h2>{{voucherType}}</h2>
+                                    }
+                                    <h3 class="invoiceNum">{{invoiceNumber}}</h3>
+                                    @if(voucherType !== 'SALES-RETURN'){
+                                    <nz-form-control class="mt-3" nzErrorTip="Discount Level is required!">
+                                        <label>Discount level</label>
+                                        <nz-select nzShowSearch formControlName="discountLevelId"
+                                            class="custom-select shadowform">
+                                            <nz-option *ngFor="let level of discountLevel" [nzValue]="level.id"
+                                                [nzLabel]="level.level"></nz-option>
+                                        </nz-select>
+                                    </nz-form-control>
+                                    }
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-8">
+                            <div class="row">
+                                @if(role === 'ADMIN'){
+                                <div class="col-md-4 col-sm-12 mb-4">
+                                    <nz-form-control nzErrorTip="Please input Date!">
+                                        <label>Date</label><br>
+                                        <nz-date-picker [nzDisabledDate]="disabledDate" class="w-100 shadowform"
+                                            formControlName="date" nzSize="large"></nz-date-picker>
+                                    </nz-form-control>
+                                </div>
+                                }
+                                <div class="col-md-4 text-start">
+                                    <nz-form-control nzErrorTip="Center is required!">
+                                        <label>Center</label>
+                                        <nz-select nzShowSearch formControlName="centerId"
+                                            class="custom-select shadowform">
+                                            <nz-option *ngFor="let center of centerData" [nzValue]="center.center?.id"
+                                                [nzLabel]="center.center?.centerName || '' "></nz-option>
+                                        </nz-select>
+                                    </nz-form-control>
+                                    <div class="custom-select-text">
+                                        <div *ngIf="selectedCenter">
+                                            <!-- <p><strong>Mode:</strong> {{ selectedCenter.mode }}</p> -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4 text-start">
+                                    <nz-form-control nzErrorTip="Customer is required!">
+                                        <label>Customer Details</label>
+                                        <nz-select nzShowSearch formControlName="partyId"
+                                            class="custom-select shadowform">
+                                            <nz-option *ngFor="let party of partyData" [nzValue]="party.id"
+                                                [nzLabel]="party.name"></nz-option>
+                                        </nz-select>
+                                    </nz-form-control>
+                                    <div *ngIf="selectedCustomer">
+                                        <p><strong>Name:</strong> {{ selectedCustomer.name }}</p>
+                                        <p><strong>Phone:</strong> {{ selectedCustomer.phoneNumber }}</p>
+                                        <p><strong>Address:</strong> {{ selectedCustomer.address1 }}</p>
+                                        <!-- Add other details as needed -->
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12 mb-4">
+                                    <nz-form-control nzErrorTip="Please input Date!">
+                                        <label>Ref Number</label>
+                                        <input type="text" nz-input formControlName="refNumber"  [(ngModel)]="refNumberso" nzSize="default"
+                                            class="shadowform" />
+                                    </nz-form-control>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <nz-divider></nz-divider>
+                <!-- <nz-divider nzText="Left Text" nzOrientation="left"></nz-divider> -->
+                <!-- <label>Customer Details</label> -->
+                <!-- <div class="col-4">
+                <h3>Sale Invoice</h3>
+                <small>#{{invoiceNumber}}</small>
+            </div> -->
+                <div class="row align-items-center ">
+                    <div class="col-md-5 col-sm-6 mb-4">
+                        <nz-form-control nzErrorTip="Please input Customer Name!">
+                            <label>Product</label>
+                            <nz-input-group> <!-- nzSearch [nzAddOnAfter]="suffixIconButton" -->
+                                <input placeholder="Enter product name" nz-input [(ngModel)]="inputValue"
+                                    (input)="onInput($event)" [nzAutocomplete]="auto" class="shadowform" />
+                                <nz-autocomplete #auto>
+                                    <nz-auto-option *ngFor="let product of filteredProducts"
+                                        [nzValue]="product.printName">
+                                        <div class="row">
+                                            <div class="col-4">
+                                                {{product.printName}}
+                                            </div>
+                                            <div class="col-4 text-center">
+                                                {{product.itemCode}}
+                                            </div>
+                                            <div class="col-4 text-center">
+                                                QTY {{product.quantity}}
+                                            </div>
+                                        </div>
+                                    </nz-auto-option>
+                                </nz-autocomplete>
+                            </nz-input-group>
+                        </nz-form-control>
+                    </div>
+                    <div class="col-md-2 col-sm-2 mb-4 pro-a" nzAlign="baseline">
+                        <label>Quantity</label>
+                        <input nzSize="large" class="w-100 shadowform" placeholder="Enter Product Quantity"
+                            [(ngModel)]="formdata.qty" nz-input />
+                        <!-- <small>Available: {{quantity}}</small> -->
+                    </div>
+                    <div class="col-md-2 col-sm-2 mb-4 pro-a1 " nzAlign="baseline">
+                        <button nz-button nzType="primary" class="process rounded-3 shadowform " nzSize="large"
+                            (click)="onAdd()">
+                            <span nz-icon nzType="plus"></span>
+                            Add to List
+                        </button>
+                    </div>
+                    @if(voucherType === 'INVOICE' || voucherType === 'SALES-ORDER'){
+                    <div class="col-md-1 col-sm-2 mb-4 row">
+                        <label for="">Special Request</label>
+                        <nz-switch (click)="clickSwitch()"></nz-switch>
+                    </div>
+                    }
+                    <div class="col-md-2 col-sm-2 mb-4 row  ">
+                        <h3 class="text-end fs-6">Total Amount</h3>
+                        <p class="text-end fs-4">{{totalAmount | currency:'Rs '}}</p>
+                    </div>
+                </div>
+                <nz-table #basicTable [nzShowPagination]="false" [nzPageSize]="100" [nzData]="dataSource"
+                    class="shadowform">
+                    <thead>
+                        <tr>
+                            <th style="width: 1%;">No</th>
+                            <th style="width: 20%;">Product Name</th>
+                            <th style="width: 10%;">Qty</th>
+                            <th style="width: 10%;">Unit Price</th>
+                            <th style="width: 10%;">Discount</th>
+                            <th style="width: 15%;">Total</th>
+                            <th style="width: 5%;"></th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let row of basicTable.data; let i=index">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ row.printName }}</td>
+                            <td>
+                                <input type="number" nz-input [(ngModel)]="row.quantity"
+                                    (ngModelChange)="onFieldChange(row, 'quantity', $event)"
+                                    [max]="getProductMaxQuantity(row.productId)"
+                                    [disabled]="getProductMaxQuantity(row.productId) === 0" />
+                                <small>Available: {{ getProductMaxQuantity(row.productId) }}</small>
+                            </td>
+                            <td>
+                                <input type="number" nz-input [(ngModel)]="row.MRP"
+                                    (ngModelChange)="onFieldChange(row, 'MRP', $event)" disabled />
+                            </td>
+                            <td>
+                                <input type="text" nz-input [(ngModel)]="row.discount"
+                                    (ngModelChange)="onFieldChange(row, 'discount', $event)" [disabled]="ischecked" />
+                            </td>
+                            <td>{{ row.amount | currency:'Rs ' }}</td>
+                            <td>
+                                <button nz-button nzType="primary" nzShape="circle" nz-tooltip="Delete" nzDanger
+                                    class="me-3" (click)="ondelete(row)"><span nz-icon nzType="delete"></span></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </nz-table>
+                <div class="process mt-5">
+                    <button class="primary w-100" nz-popconfirm
+                        nzPopconfirmTitle="Are you sure Save this {{voucherType | titlecase}}?"
+                        (nzOnConfirm)="checkout()" (nzOnCancel)="cancel()"><span
+                            class="me-2 shadowform "></span>Save</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</nz-spin>

@@ -1,0 +1,110 @@
+<nz-spin [nzSpinning]="isSpinning" nzSize="large">
+  <h3>{{action}} Product</h3>
+  <form class="pt-4" [formGroup]="productForm">
+    <div class="row mb-3">
+      <!-- Item Code -->
+      <div class="col-6 mb-3">
+        <nz-form-control nzErrorTip="Please input the item code!">
+          <label>Item Code</label>
+          <input type="text" nz-input formControlName="itemCode" nzSize="large" class="shadowform" />
+        </nz-form-control>
+      </div>
+
+      <!-- Barcode -->
+      <div class="col-6 mb-3">
+        <nz-form-control>
+          <label>Barcode</label>
+          <input type="text" nz-input formControlName="barcode" nzSize="large" class="shadowform" />
+        </nz-form-control>
+      </div>
+
+      <!-- Type -->
+      <div class="col-12 mb-3">
+        <nz-form-control nzErrorTip="Please select a type!">
+          <label>Type</label>
+          <nz-select nzShowSearch formControlName="typeId" class="custom-select shadowform">
+            <nz-option *ngFor="let type of typeList" [nzValue]="type.id" [nzLabel]="type.typeName"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </div>
+
+      <!-- Brand -->
+      <!-- <div class="col-6 mb-3">
+        <nz-form-control nzErrorTip="Please select a brand!">
+          <label>Brand</label>
+          <nz-select nzShowSearch formControlName="brandId" class="custom-select shadowform">
+            <nz-option *ngFor="let brand of brandlist" [nzValue]="brand.id" [nzLabel]="brand.brandName"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </div> -->
+
+      <!-- Product Name -->
+      <div class="col-12 mb-3">
+        <nz-form-control nzErrorTip="Please enter the product name!">
+          <label>Product Name</label>
+          <input type="text" nz-input formControlName="productName" nzSize="large" class="shadowform" />
+        </nz-form-control>
+      </div>
+
+      <!-- Print Name -->
+      <div class="col-12 mb-3">
+        <nz-form-control>
+          <label>Print Name</label>
+          <input type="text" nz-input formControlName="printName" nzSize="large" class="shadowform" />
+        </nz-form-control>
+      </div>
+
+      <!-- Critical Level -->
+      <div class="col-12 mb-3">
+        <nz-form-control>
+          <label>Critical Level</label>
+          <input type="number" nz-input formControlName="criticalLevel" nzSize="large" class="shadowform" />
+        </nz-form-control>
+      </div>
+
+      <!-- OEM Numbers -->
+      <div class="col-12 mb-3">
+        <nz-form-control>
+          <label>OEM Numbers</label>
+          <textarea rows="4" nz-input formControlName="OEMnumber" class="shadowform"></textarea>
+        </nz-form-control>
+      </div>
+
+      <!-- Dynamic Discount Levels -->
+      <span>Discount Level</span>
+      <nz-divider></nz-divider>
+      <div class="col-6 mb-3" *ngFor="let level of discountLevelList">
+        <nz-form-control>
+          <div class="row">
+            <div class="col-4">
+              <label>{{ level.level }}</label>
+            </div>
+            <div class="col-8">
+              <input type="text" nz-input [formControlName]="level.id" nzSize="large" class="shadowform" />
+            </div>
+          </div>
+        </nz-form-control>
+      </div>
+
+      <!-- <span>Commission Level</span>
+      <nz-divider></nz-divider>
+      <div class="col-6 mb-3" *ngFor="let com of commissionLevelList">
+        <nz-form-control>
+          <div class="row">
+            <div class="col-4">
+              <label>{{ com.commissionlevel }}</label>
+            </div>
+            <div class="col-8">
+              <input type="text" nz-input [formControlName]="com.id" nzSize="large" class="shadowform" />
+            </div>
+          </div>
+        </nz-form-control>
+      </div> -->
+
+      <!-- Submit Button -->
+      <div class="footer d-flex justify-content-end">
+        <button class="primary px-5" (click)="submit()">{{action}}</button>
+      </div>
+    </div>
+  </form>
+</nz-spin>

@@ -1,0 +1,178 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div class="container-fluid px-4 pt-2 m-0">
+        <div class="header mb-3 d-flex justify-content-between">
+            <h4>All Center Wise Stock Report as at Date</h4>
+        </div>
+        <form [formGroup]="stockReportForm">
+            <div class="row mb-3">
+                <div class="col-4">
+                    <div class="flex-grow-1 me-3">
+                        <nz-input-group nzPrefixIcon="search" nzSize="large" class="rounded-3 shadowform">
+                            <input nz-input placeholder="Search" nz-tooltip="Search" nzTooltipTrigger="focus"
+                                [formControl]="searchControl" nzTooltipPlacement="topLeft" />
+                        </nz-input-group>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <nz-form-control nzErrorTip="center is required!">
+                        <nz-select nzShowSearch formControlName="centerId" nzPlaceHolder="Select Center"
+                            class="custom-select shadowform" nzSize="large">
+                            <nz-option [nzValue]="''" [nzLabel]='"All Centers"'></nz-option>
+                            <nz-option *ngFor="let center of centerList" [nzValue]="center.id"
+                                [nzLabel]="center.centerName"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </div>
+                <div class='col-2'>
+                    <nz-form-control nzErrorTip=" Product is required!">
+                        <nz-select nzShowSearch formControlName="productId" nzPlaceHolder="Select Product"
+                            class="custom-select shadowform" nzSize="large">
+                            <nz-option [nzValue]="''" [nzLabel]="'All Product'"></nz-option>
+                            <nz-option *ngFor="let product of productList" [nzValue]="product.id"
+                                [nzLabel]="product.printName"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </div>
+
+                <div class="col-2">
+                    <nz-date-picker [nzDisabledDate]="disabledDate" class="w-100 shadowform" id="date"
+                        formControlName="date" nzSize="large"></nz-date-picker>
+                </div>
+                <div class="col-2 text-end">
+                    <button class="primary w-100" (click)="applyFilters()">
+                        <span nz-icon nzType="filter"></span> Filter
+                    </button>
+                </div>
+            </div>
+        </form>
+        @if(isStockMovement === false){
+        <nz-table #basicTable [nzData]="filteredData" [nzShowPagination]="true" [nzPageSize]="10000" class="shadowform">
+            <thead>
+                <tr>
+                    <th nzWidth="1%">No</th>
+                    <th nzWidth="20%">Product</th>
+                    @if(role !== 'SALESMEN'){
+                    <th nzWidth="20%">Cost</th>
+                    }
+                    <th nzWidth="20%">MRP</th>
+                    <th nzWidth="20%">Stock in Hand</th>
+                    <th nzWidth="10%">Stock Movement</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let center of filteredData">
+                    <tr>
+                        <td [colSpan]="6"><strong>{{ center.centerName }}</strong></td>
+                    </tr>
+                    <tr *ngFor="let product of center.products; let i = index">
+                        <td>{{i + 1}}</td>
+                        <td>{{ product.productName }}</td>
+                        @if(role !== 'SALESMEN'){
+                        <td>{{ product.cost | currency: ' ' }}</td>
+                        }
+                        <td>{{ product.MRP | currency: ' ' }}</td>
+                        <td>{{ product.quantity }}</td>
+                        <td class="text-center">
+                            <button nz-button nz-tooltip="Stock Movement" nzType="primary" nzShape="circle"
+                                nzTooltipPlacement="bottom" class="me-3" (click)="stockMovement(product)">
+                                <span nz-icon nzType="swap"></span>
+                            </button>
+                        </td>
+                    </tr>
+                </ng-container>
+                <ng-container *ngIf="productTotals">
+                    <tr>
+                        <td [colSpan]="6"><strong>Product Totals</strong></td>
+                    </tr>
+                    <tr *ngFor="let product of productTotals | keyvalue; let i = index">
+                        <td>{{i + 1}}</td>
+                        <td [colSpan]="3">{{ product.key }}</td>
+                        <td>{{ product.value }}</td>
+                        <td></td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </nz-table>
+        
+        }
+        @else{
+        <nz-page-header class="site-page-header bg-white mb-3" (nzBack)="onBack()" nzBackIcon>
+            <nz-page-header-title>Stock Summary</nz-page-header-title>
+            <nz-page-header-extra>
+                <nz-space>
+                    <!-- <nz-statistic nzTitle="Status" nzValue ="Pending"></nz-statistic> -->
+                    <div class="me-3">
+                        <strong>Center Name </strong><br>{{centerName}}
+                    </div>
+                    <div class="me-3">
+                        <strong>Product Name </strong><br>{{productName}}
+                    </div>
+                    <div>
+                        <strong>Total Quantity </strong><br>{{totalQuantity}}
+                    </div>
+                </nz-space>
+            </nz-page-header-extra>
+        </nz-page-header>
+
+        <nz-table #basicTable [nzData]="stockMovementData" [nzShowPagination]="true" [nzPageSize]="10000"
+            class="shadowform">
+            <thead>
+                <tr>
+                    <th nzWidth="1%">No</th>
+                    <th nzWidth="10%">Date</th>
+                    <th nzWidth="10%">Invoice Name</th>
+                    <th nzWidth="10%">Invoice Number</th>
+                    <th nzWidth="20%">Customer/Supplier name</th>
+                    <th nzWidth="10%">Quantity In</th>
+                    <th nzWidth="10%">Quantity Out</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let data of stockMovementData">
+                    <tr>
+                        <td>{{(stockMovementData.indexOf(data) + 1)}}</td>
+                        <td>{{data.date | date:'dd-MM-yyyy'}}</td>
+                        <td>{{ data.voucherName }}</td>
+                        <td>{{ data.voucherNumber }}</td>
+                        <td>{{ data.partyName }}</td>
+                        <td>{{ data.qtyIn }}</td>
+                        <td>{{ data.qtyOut }}</td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </nz-table>
+        }
+
+    </div>
+</nz-spin>
+
+<!-- <form [formGroup]="stockReportForm">
+
+    <div class="col-6">
+        <nz-form-control nzErrorTip="center is required!">
+            <nz-select nzShowSearch formControlName="centerId" nzPlaceHolder="Select Center"
+                class="custom-select shadowform" nzSize="large">
+                <nz-option [nzValue]="''" [nzLabel]='role === "SALESMEN" ? "Your center" : "All Centers"'></nz-option>
+                <nz-option *ngFor="let center of centerList" [nzValue]="center.id"
+                    [nzLabel]="center.centerName"></nz-option>
+            </nz-select>
+        </nz-form-control>
+    </div>
+    <div class='col-6'>
+        <nz-form-control nzErrorTip=" Product is required!">
+            <nz-select nzShowSearch formControlName="productId" nzPlaceHolder="Select Product"
+                class="custom-select shadowform" nzSize="large">
+                <nz-option [nzValue]="''" [nzLabel]="'All Product'"></nz-option>
+                <nz-option *ngFor="let product of productList" [nzValue]="product.id"
+                    [nzLabel]="product.printName"></nz-option>
+            </nz-select>
+        </nz-form-control>
+    </div>
+    <div class='col-6'>
+        <nz-form-control nzErrorTip="Please input Customer Name!">
+            <label>Inventory</label>
+            <input type="text" nz-input formControlName="quantity" nzSize="large"/>
+        </nz-form-control>
+    </div>
+    <button (click)="updateInventory()">Save</button>
+</form> -->

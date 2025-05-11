@@ -1,0 +1,28 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <h3>{{action}} Product Prices</h3>
+    <form class="pt-4" [formGroup]="priceForm">
+        <div class="row mb-3">
+            <div class="col-4 mb-3">
+                <nz-form-control nzErrorTip="Please input Cost!">
+                    <label>Cost</label>
+                    <input type="number" nz-input formControlName="cost" nzSize="large" />
+                </nz-form-control>
+            </div>
+            <div class="col-4 mb-3">
+                <nz-form-control nzErrorTip="Please input Min Price!">
+                    <label>Min Price</label>
+                    <input type="number" nz-input formControlName="minPrice" nzSize="large" />
+                </nz-form-control>
+            </div>
+            <div class="col-4 mb-3">
+                <nz-form-control nzErrorTip="Please input MRP!">
+                    <label>MRP</label>
+                    <input type="number" nz-input formControlName="MRP" nzSize="large" />
+                </nz-form-control>
+            </div>
+        </div>
+        <div class="footer d-flex justify-content-end">
+            <button class="primary px-5" (click)="submit()">{{action}}</button>
+        </div>
+    </form>
+</nz-spin>

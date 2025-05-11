@@ -1,0 +1,71 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div class="container-fluid px-4 pt-2 m-0">
+        <div class="header mb-3 d-flex justify-content-between">
+            <h2>Cheque In Hand Report</h2>
+            <div>
+                <!-- <button class="primary me-3" (click)="reportSelection()">
+                    <span class="me-2" nz-icon nzType="export"></span>Export
+                </button> -->
+            </div>
+        </div>
+        <div class="d-flex mb-2 align-items-center">
+            <div class="col-2">
+                <h5>Total <br> {{totalAmount | currency : ' '}}</h5>
+            </div>
+            <div class="flex-grow-1 me-3">
+                <nz-input-group nzPrefixIcon="search" nzSize="large" class="rounded-3 shadowform">
+                    <input nz-input placeholder="Search" nz-tooltip="Search" nzTooltipTrigger="focus"
+                        [formControl]="searchControl" nzTooltipPlacement="topLeft" />
+                </nz-input-group>
+            </div>
+            <nz-range-picker [(ngModel)]="date" (ngModelChange)="onChange($event)" nzSize="large"></nz-range-picker>
+            <button nz-button class="primary ms-2" (click)="applyDateFilter()">
+                <span nz-icon nzType="filter"></span>Filter
+            </button>
+        </div>
+
+
+        <nz-table #basicTable [nzData]="filteredData" class="shadowform" [nzPageSize]="pageSize"
+            (nzPageIndexChange)="onPageChange($event)">
+            <thead>
+                <tr>
+                    <th nzWidth="1%">No</th>
+                    <th nzWidth="10%">Release Date</th>
+                    <th nzWidth="15%">Cheque Bank Name</th>
+                    <th nzWidth="15%">Cheque Number</th>
+                    <th nzWidth="10%">Amount</th>
+                    <th nzWidth="15%">Deposit Date</th>
+                    <th nzWidth="20%">Deposit To</th>
+                    <th nzWidth="10%">Conform</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for(data of basicTable.data; track data; let i = $index){
+                <tr>
+                    <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+                    <td>{{ data.releaseDate | date:'yyyy-MM-dd'}}</td>
+                    <td>{{ data.chequeBankName}}</td>
+                    <td>{{ data.chequeNumber}}</td>
+                    <td>{{ data.amount | currency:' '}}</td>
+                    <td>
+                        <nz-date-picker class="w-100" [(ngModel)]="data.depositDate"></nz-date-picker>
+                    </td>
+                    <td>
+                        <nz-select class="w-100" [(ngModel)]="data.bankId" nzAllowClear nzShowSearch
+                            nzPlaceHolder="Select Account">
+                            <nz-option *ngFor="let bank of banklist" [nzValue]="bank.id"
+                                [nzLabel]="bank.accountName"></nz-option>
+                        </nz-select>
+                    </td>
+                    <td>
+                        <button nz-button nz-tooltip="Conform" nzType="primary" nzShape="circle"
+                            (click)="updateConform(data)" nzTooltipPlacement="bottom" class="me-3">
+                            <span nz-icon nzType="check"></span>
+                        </button>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </nz-table>
+    </div>
+</nz-spin>

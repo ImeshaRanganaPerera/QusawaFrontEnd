@@ -1,0 +1,17 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div class="mb-5">
+        <h3>Ref Vouchers</h3>
+        <form class="pt-4" [formGroup]="refVoucherForm">
+            <nz-form-control>
+                <label>Refernce Vouchers</label>
+                <nz-select nzShowSearch formControlName="voucherNumberid" class="custom-select" nzSize="large">
+                    <nz-option *ngFor="let ref of dataSource" [nzValue]="ref.id" [nzLabel]="ref.voucherNumber"></nz-option>
+                </nz-select>
+                
+            </nz-form-control>
+            <div class="footer d-flex justify-content-end">
+                <button class="primary mt-3 px-5 w-100" (click)="submit()">Select Voucher</button>
+            </div>
+        </form>
+    </div>
+</nz-spin>

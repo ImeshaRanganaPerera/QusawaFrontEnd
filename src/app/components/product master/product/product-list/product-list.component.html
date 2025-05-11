@@ -1,0 +1,64 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div class="container-fluid px-4 pt-2 m-0">
+        <div class="header mb-3 d-flex justify-content-between">
+            <h2>Products</h2>
+        </div>
+        <div class="d-flex mb-2 align-items-center">
+            <div class="w-50 py-2">
+                <button class="primary" (click)="manageProduct('Create')"><span class="me-2 shadowform" nz-icon
+                        nzType="plus"></span>Create
+                    Product</button>
+            </div>
+            <div class="flex-grow-1">
+                <nz-input-group nzPrefixIcon="search" nzSize="large" class="rounded-3 shadowform">
+                    <input nz-input placeholder="Search" nz-tooltip="Search" [formControl]="searchControl"
+                        nzTooltipTrigger="focus" nzTooltipPlacement="topLeft" />
+                </nz-input-group>
+            </div>
+        </div>
+        <nz-table #basicTable [nzData]="filteredData" [nzShowPagination]="true" class="shadowform" [nzPageSize]="pageSize" (nzPageIndexChange)="onPageChange($event)">
+            <thead>
+                <tr>
+                    <!-- <th style="width: 20%;">Product Image</th> -->
+                    <th style="width: 1%;">No</th>
+                    <th style="width: 20%;">Product Code</th>
+                    <th style="width: 20%;">Product Name</th>
+                    <th style="width: 20%;">Barcode</th>
+                    <th style="width: 20%;">Status</th>
+                    <th style="width: 10%;" class="text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data; let i = index">
+                    <!-- <td>{{ data.image }}</td> -->
+                    <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+                    <td>{{ data.itemCode }}</td>
+                    <td>{{ data.printName }}</td>
+                    <td>{{ data.barcode }}</td>
+                    <td>
+                        <div class="d-flex justify-content-between">
+                            @if(data.status === true){
+                            <nz-badge [nzStatus]="'success'" [nzText]="'Active'"></nz-badge>
+                            }
+                            @else {
+                            <nz-badge [nzStatus]="'error'" [nzText]="'InActive'"></nz-badge>
+                            }
+                            <nz-switch [(ngModel)]="data.status" (click)="updatestatus(data)"
+                                [nzLoading]="loading"></nz-switch>
+                        </div>
+                    </td>
+                    <td class="d-flex justify-content-center">
+                        <button nz-button nz-tooltip="Price Change" nzType="primary" nzShape="circle"
+                            nzTooltipPlacement="bottom" class="me-3" (click)="changePrice('Update',data)">
+                            <span nz-icon nzType="dollar"></span>
+                        </button>
+                        <button nz-button nz-tooltip="Edit" nzType="primary" nzShape="circle"
+                            nzTooltipPlacement="bottom" class="me-3" (click)="handleEdit(data)">
+                            <span nz-icon nzType="edit"></span>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
+</nz-spin>

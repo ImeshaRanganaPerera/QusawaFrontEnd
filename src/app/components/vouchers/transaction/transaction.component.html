@@ -1,0 +1,282 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+  <div class="container-fluid px-4 pt-2 m-0">
+    <div class="header mb-3 d-flex justify-content-between">
+      <h2>{{type}}</h2>
+      <div>
+        @if(type !== 'Journal Entry'){
+        <button class="primary me-3" (click)="reportSelection()">
+          <span class="me-2" nz-icon nzType="export"></span>Export
+        </button>
+        @if(category === 'Sales'){
+        <button class="primary me-3" (click)="exportsummaryToCSV()">
+          <span class="me-2" nz-icon nzType="export"></span>Export Summary as Excel
+        </button>
+        <button class="primary me-3" (click)="exportDetailsToCSV()">
+          <span class="me-2" nz-icon nzType="export"></span>Export Detail as Excel
+        </button>
+        }
+        }
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      @if(type !=='Stock Transfer'){
+      <div class="col-2">
+        <h5>Total <br> {{totalAmount | currency : ' '}}</h5>
+      </div>
+      }
+      <div ngClass="{{ type === 'Sales Order' ? 'col-2' : type === 'Stock Transfer'? 'col-6' : 'col-4' }}">
+        <nz-input-group nzPrefixIcon="search" nzSize="large" class="rounded-3 shadowform">
+          <input nz-input placeholder="Search" nz-tooltip="Search" nzTooltipTrigger="focus"
+            [formControl]="searchControl" nzTooltipPlacement="topLeft" />
+        </nz-input-group>
+      </div>
+      @if(type === 'Sales Order'){
+      <div class="col-2">
+        <nz-form-control nzErrorTip="center is required!">
+          <nz-select nzShowSearch [(ngModel)]="status" nzPlaceHolder="Select Status" class="custom-select shadowform"
+            nzSize="large">
+            <nz-option [nzValue]="''" [nzLabel]="'All'"></nz-option>
+            <nz-option [nzValue]="'PENDING'" [nzLabel]="'PENDING'"></nz-option>
+            <nz-option [nzValue]="'COMPLETED'" [nzLabel]="'COMPLETED'"></nz-option>
+            <nz-option [nzValue]="'CANCELLED'" [nzLabel]="'CANCELLED'"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </div>
+      }
+      <div class="col-4">
+        <nz-range-picker nzSize="large" class="w-100" [(ngModel)]="date"
+          (ngModelChange)="onChange($event)"></nz-range-picker>
+      </div>
+      <div class="col-2">
+        <button nz-button nzType="primary" class="w-100" nzSize="large" (click)="applyDateFilter()">
+          <span nz-icon nzType="filter"></span>Filter
+        </button>
+      </div>
+    </div>
+
+    <nz-table #basicTable [nzData]="filteredData" class="shadowform" [nzPageSize]="pageSize"
+      (nzPageIndexChange)="onPageChange($event)">
+      <thead>
+        <tr>
+          @if(type !== 'Advance Payment'){
+          <th nzWidth="1%"></th>
+          }
+          <th nzWidth="1%">No</th>
+          <th nzWidth="10%">Date</th>
+          <th nzWidth="10%">Invoice No</th>
+          @if(type === 'GRN' || type === 'Advance Payment' || type === 'Payment'){
+          <th nzWidth="20%">Name of Supplier</th>
+          }
+          @else if(type === 'Stock Transfer'){
+          <th nzWidth="30%">From Center</th>
+          <th nzWidth="30%">To Center</th>
+          }@else {
+          @if(type !== 'Journal Entry'){
+          @if(type !== 'Make Deposit'){
+          <th nzWidth="20%">Name of Customer</th>
+          }
+          }
+          }
+          @if (type !== 'Stock Transfer') {
+          <th nzWidth="20%">Amount</th>
+          }
+          @if( category === 'Sales'){
+          <th>Ref Number</th>
+          <th>Sales Person</th>
+          <th>Discount Level</th>
+          <th>Memo</th>
+          @if( type === 'Sales Order'){
+          <th>Status</th>
+          }
+          }
+          @if(type !== 'Journal Entry'){
+          @if(type !== 'Make Deposit'){
+          <th class="text-center">Action</th>
+          }
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for(data of basicTable.data; track data; let i = $index){
+        <tr>
+          @if(type !== 'Advance Payment'){
+          <td [(nzExpand)]="data.expand" (click)="onExpandRow(data)"></td>
+          }
+          <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+          <td>{{ data.date | date:'yyyy-MM-dd'}}</td>
+          <td>{{ data.voucherNumber }}</td>
+          @if(type === 'Stock Transfer'){
+          <td>{{ data.VoucherCenter[0].centerStatus === 'OUT'? data.VoucherCenter[0].center.centerName :
+            data.VoucherCenter[1].center.centerName }}</td>
+          <td>{{ data.VoucherCenter[0].centerStatus === 'IN'? data.VoucherCenter[0].center.centerName :
+            data.VoucherCenter[1].center.centerName }}</td>
+          }@else{
+          @if(type !== 'Journal Entry'){
+          @if(type !== 'Make Deposit'){
+          @if(type === 'Advance Payment'){
+          <td>{{ data.chartofacc?.accountName }}</td>
+          }
+          @else {
+          <td>{{ data.party?.name }}</td>
+          }
+          }
+          }
+          @if (type !== 'Stock Transfer') {
+          <td>{{ data.amount | currency: ' ' }}</td>
+          }
+          @if( category === 'Sales'){
+          <td>{{ data.refNumber }}</td>
+          <td>{{ data.user?.name }}</td>
+          <td>{{ data.discountLevel?.level }}</td>
+          <td>{{ data.note }}</td>
+
+          @if( type === 'Sales Order'){
+          @if(data.status === 'PENDING' || data.status === null){
+          <td>
+            <nz-badge [nzStatus]="'warning'" [nzText]="'PENDING'"></nz-badge>
+          </td>
+          }
+          @else if(data.status === 'COMPLETED'){
+          <td>
+            <nz-badge [nzStatus]="'success'" [nzText]="'COMPLETED'"></nz-badge>
+          </td>
+          }
+          @else if(data.status === 'CANCELLED'){
+          <td>
+            <nz-badge [nzStatus]="'error'" [nzText]="'CANCELLED'"></nz-badge>
+          </td>
+          }
+          }
+          }
+          }
+          @if(type !== 'Journal Entry'){
+          @if(type !== 'Make Deposit'){
+          <td class="d-flex justify-content-center">
+            @if(type === 'Sales Order'){
+            @if(role === 'ADMIN'){
+            @if(data.status === 'PENDING' || data.status === null){
+            <button nz-popconfirm nzPopconfirmTitle="Are you sure to Cancel this Sales Order?"
+              (nzOnConfirm)="voucherCancel(data)" (nzOnCancel)="cancel()" nz-button nz-tooltip="Cancel" nzShape="circle"
+              nzDanger nzTooltipPlacement="bottom" class="me-3">
+              <span nz-icon nzType="close"></span>
+            </button>
+            }
+            @else {
+            <button nz-button nz-tooltip="Cancel" nzShape="circle" nzDanger nzTooltipPlacement="bottom" class="me-3"
+              [disabled]="'true'">
+              <span nz-icon nzType="close" (click)="voucherCancel(data)"></span>
+            </button>
+            }
+            }
+            }
+            @if( type === 'Invoice'){
+              <button nz-button nz-tooltip="Old PDF" nzType="primary" nzShape="circle" nzTooltipPlacement="bottom"
+                 class="me-3" style="background-color: var(--use-secondary-color);">
+                 <span nz-icon nzType="download" (click)="pdfDownload(data)"></span>
+              </button>
+              <button nz-button nz-tooltip="New PDF" nzType="primary" nzShape="circle" nzTooltipPlacement="bottom"
+              class="me-3">
+              <span nz-icon nzType="download" (click)="pdfDownload2(data)"></span>
+           </button>
+           }@else{
+             <button nz-button nz-tooltip="Download" nzType="primary" nzShape="circle" nzTooltipPlacement="bottom"
+               class="me-3" style="background-color: var(--use-secondary-color);" >
+               <span nz-icon nzType="download" (click)="pdfDownload(data)"></span>
+             </button>
+ 
+           }
+          </td>
+          }
+          }
+        </tr>
+        <tr [nzExpand]="data.expand">
+          @if(referVoucher.length > 0){
+          <nz-table #innerTable [nzData]="referVoucher" nzSize="middle" [nzShowPagination]="false">
+            <thead>
+              <tr>
+                <th>Date</th>
+                @if(type === 'GRN' || type === 'Advance Payment' || type === 'Payment'){
+                <th>Supplier Name</th>
+                }
+                @else {
+                <th>Customer Name</th>
+                }
+                <th>Invoice Number</th>
+                <th>Invoice Amount</th>
+                <th>Settled Amount</th>
+                <th>Due Amount</th>
+              </tr>
+            </thead>
+      <tbody>
+        @for (data of innerTable.data; track data) {
+        <tr>
+          <td>{{ data.invoiceDate | date:'yyyy-MM-dd' }}</td>
+          <td>{{ data.voucher.party.name }}</td>
+          <td>{{ data.refVoucherNumber }}</td>
+          <td>{{ data.invoiceAmoun | currency: ' ' }}</td>
+          <td>{{ data.settledAmount | currency: ' ' }}</td>
+          <td>{{ data.invoiceAmount - data.settledAmount | currency:' ' }}</td>
+        </tr>
+        }
+      </tbody>
+    </nz-table>
+    }
+    @if(voucherProduct.length > 0){
+    <nz-table #innerTable [nzData]="voucherProduct" nzSize="middle" [nzShowPagination]="false">
+      <thead>
+        <tr>
+          <th nzWidth="1%">No</th>
+          <th>Product Name</th>
+          @if(role !== 'SALESMEN'){
+          <th>Cost</th>
+          }
+          <th>Quantity</th>
+          <th>MRP</th>
+          <th>Discount</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (data of innerTable.data; track data; let i = $index) {
+        <tr>
+          <td>{{ i + 1 }}</td>
+          <td>{{ data.product.printName }}</td>
+          @if(role !== 'SALESMEN'){
+          <td>{{ data.cost | currency: ' ' }}</td>
+          }
+          <td>{{ data.quantity }}</td>
+          <td>{{ data.MRP | currency: ' ' }}</td>
+          <td>{{ data.discount }}</td>
+          <td>{{ getAmount(data) | currency:' ' }}</td>
+        </tr>
+        }
+      </tbody>
+    </nz-table>
+    }
+    @if(journalLines.length > 0){
+    <nz-table #innerTable [nzData]="journalLines" nzSize="middle" [nzShowPagination]="false" [nzPageSize]="10000">
+      <thead>
+        <tr>
+          <th>Account Name</th>
+          <th>Credit Amount</th>
+          <th>Debit Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (data of innerTable.data; track data) {
+        <tr>
+          <td>{{ data.account.accountName }}</td>
+          <td>{{ data.creditAmount | currency:' ' }}</td>
+          <td>{{ data.debitAmount | currency:' ' }}</td>
+        </tr>
+        }
+      </tbody>
+    </nz-table>
+    }
+    </tr>
+    }
+    </tbody>
+    </nz-table>
+  </div>
+</nz-spin>

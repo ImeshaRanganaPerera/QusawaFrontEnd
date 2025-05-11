@@ -1,0 +1,44 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div class="container-fluid px-4 pt-2 m-0">
+        <div class="header mb-3 d-flex justify-content-between">
+            <h2>Commission Levels</h2>
+        </div>
+        <div class="d-flex mb-2 align-items-center">
+            <div class="w-50 py-2">
+                <button class="primary" (click)="manageCommissionLevel('Create')"><span class="me-2" nz-icon nzType="plus"></span>Create
+                    Commission Level</button>
+            </div>
+            <div class="flex-grow-1">
+                <nz-input-group nzPrefixIcon="search" nzSize="large" class="rounded-3 shadowform">
+                    <input nz-input placeholder="Search" nz-tooltip="Search" [formControl]="searchControl"
+                        nzTooltipTrigger="focus" nzTooltipPlacement="topLeft"  />
+                </nz-input-group>
+            </div>
+        </div>
+        <nz-table #basicTable [nzData]="filteredData" class="shadowform" [nzShowPagination]="false" [nzPageSize]="100" >
+            <thead>
+                <tr>
+                    <th nzWidth="1%">No</th>
+                    <th>Commission</th>
+                    <th>Days Range</th>
+                    <th>Commission Rate</th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data">
+                    <td>{{ basicTable.data.indexOf(data) + 1 }}</td>
+                    <td>{{ data.commissionlevel }}</td>
+                    <td>{{ data.days }}</td>
+                    <td>{{ data.commissionRate }}</td>
+                    <td class="d-flex justify-content-center">
+                        <button nz-button nz-tooltip="Edit" nzType="primary" nzShape="circle"
+                            nzTooltipPlacement="bottom" class="me-3 " (click)="handleEdit(data)">
+                            <span nz-icon nzType="edit"></span>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
+</nz-spin>

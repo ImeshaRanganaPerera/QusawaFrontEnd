@@ -1,0 +1,38 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div class="container-fluid px-4 pt-2 m-0">
+        <div class="header mb-3 d-flex justify-content-between">
+            <h2>Brands</h2>
+        </div>
+        <div class="d-flex mb-2 align-items-center">
+            <div class="w-50 py-2">
+                <button class="primary" (click)="manageBrand('Create')"><span class="me-2" nz-icon nzType="plus"></span>Create
+                    Brand</button>
+            </div>
+            <div class="flex-grow-1">
+                <nz-input-group nzPrefixIcon="search" nzSize="large" class="rounded-3 shadowform">
+                    <input nz-input placeholder="Search" nz-tooltip="Search" [formControl]="searchControl"
+                        nzTooltipTrigger="focus" nzTooltipPlacement="topLeft"  />
+                </nz-input-group>
+            </div>
+        </div>
+        <nz-table #basicTable [nzData]="filteredData" class="shadowform" [nzShowPagination]="false" >
+            <thead>
+                <tr>
+                    <th>Type Name</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data">
+                    <td>{{ data.brandName }}</td>
+                    <td class="d-flex justify-content-center">
+                        <button nz-button nz-tooltip="Edit" nzType="primary" nzShape="circle"
+                            nzTooltipPlacement="bottom" class="me-3 " (click)="handleEdit(data)">
+                            <span nz-icon nzType="edit"></span>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
+</nz-spin>

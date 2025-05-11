@@ -1,0 +1,143 @@
+<div class="container-fluid m-0 p-0">
+    <div class="content col-12">
+        <div class="card p-3">
+            <form [formGroup]="voucherForm">
+                <div class="row">
+                    <div class=" row col-4">
+                        <h3>{{name}}</h3>
+                        <small>#{{invoiceNumber}}</small>
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="col-md-3 col-sm-12 mb-4">
+                            <nz-form-control nzErrorTip="Please input Date!">
+                                <label>Date</label><br>
+                                <nz-date-picker [nzDisabledDate]="disabledDate" class="w-100" formControlName="date"
+                                    nzSize="large"></nz-date-picker>
+                            </nz-form-control>
+                        </div>
+                        @if(params === 'UtilityBillPayment'){
+                        <div class="col-md-4 col-sm-12 mb-4">
+                            <nz-form-control nzErrorTip="Please Select Center!">
+                                <label>Liability Account</label>
+                                <nz-select nzShowSearch formControlName="chartofaccId" class="custom-select">
+                                    <nz-option *ngFor="let liability of liabilityList" [nzValue]="liability.id"
+                                        [nzLabel]="liability.accountName"></nz-option>
+                                </nz-select>
+                            </nz-form-control>
+                        </div>
+                        }
+                        @else {
+                        <div class="text-start col-md-4 col-sm-4 mb-4  ">
+                            <nz-form-control nzErrorTip="{{partyname | titlecase}} should not be empty">
+                                <label>{{partyname | titlecase}} Name</label>
+                                <nz-select nzShowSearch formControlName="partyId" class="custom-select">
+                                    <nz-option *ngFor="let party of partyData" [nzValue]="party.id"
+                                        [nzLabel]="party.name"></nz-option>
+                                </nz-select>
+                            </nz-form-control>
+                        </div>
+                        }
+                        <div class=" text-start col-md-7 col-sm-4 mb-4  ">
+                            <nz-form-control>
+                                <label>Memo</label>
+                                <input type="text" nz-input formControlName="note" nzSize="default" />
+                            </nz-form-control>
+                        </div>
+                    </div>
+                    @if(params !== 'DirectPayment'){
+                    <div class="card rounded-3 p-3 col-12 mb-3">
+                        <nz-table #basicdata [nzShowPagination]="false" [nzData]="voucherData" [nzPageSize]="1000"
+                            class="mb-4">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Invoice Date</th>
+                                    <th>{{partyname | titlecase}} invoice no</th>
+                                    <th>Invoice Amount</th>
+                                    @if(vouchermode === 'PAYMENT'){
+                                    <th>GRN Value Amount</th>
+                                    }
+                                    <th>Return Amount</th>
+                                    <th>Settlement Amount</th>
+                                    <th>Due Amount</th>
+                                    <th class="text-center">Select</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (data of basicdata.data; track data) {
+                                <tr>
+                                    <td>{{ (basicdata.data.indexOf(data) + 1)}}</td>
+                                    <td>{{ data.date | date: 'YYYY/MM/dd'}}</td>
+                                    <td>{{ data.voucherNumber }}</td>
+                                    <td>{{ data.amount | currency: ' ' }}</td>
+                                    @if(vouchermode === 'PAYMENT'){
+                                    <td>{{ data.value | currency: ' ' }}</td>
+                                    }
+                                    <td>{{ data.returnValue? data.returnValue : 0 | currency: ' ' }}</td>
+                                    <td>{{ data.paidValue | currency: ' ' }}</td>
+                                    @if(vouchermode === 'PAYMENT'){
+                                    <td> {{ calculateDueAmount(data.value, data.paidValue, data.returnValue) | currency:
+                                        ' ' }}</td>
+                                    }
+                                    @else {
+                                    <td> {{ calculateDueAmount(data.amount, data.paidValue, data.returnValue) |
+                                        currency: ' ' }}</td>
+                                    }
+                                    <td [nzChecked]="setOfCheckedId.has(data.id)"
+                                        (nzCheckedChange)="onItemChecked(data.id, $event)"></td>
+                                </tr>
+                                }
+                            </tbody>
+                        </nz-table>
+
+                    </div>
+                    }
+
+                    <div class="row">
+                        <div class="col-10">
+                            <div class="row">
+                                @if(params !== 'DirectPayment'){
+                                <div class="col-2">
+                                    <nz-form-control nzPrefix="RS">
+                                        <label>Total Amount</label>
+                                        <input type="number" nz-input formControlName="totalAmount" nzSize="default" />
+                                    </nz-form-control>
+                                </div>
+                                @if(isRef === true){
+                                <div class="col-2">
+                                    <nz-form-control>
+                                        <label>Advance</label>
+                                        <input type="number" nz-input formControlName="advanceAmount" nzSize="default"
+                                            class="text-success" />
+                                    </nz-form-control>
+                                </div>
+                                }
+                                <div class="col-2">
+                                    <nz-form-control>
+                                        <label>Due Balance</label>
+                                        <input type="number" nz-input formControlName="dueBalance" nzSize="default"
+                                            class="text-danger" />
+                                    </nz-form-control>
+                                </div>
+                                }
+                                <div class="col-2">
+                                    <nz-form-control>
+                                        <label>Paid Amount</label>
+                                        <input type="number" nz-input formControlName="paidAmount" nzSize="default" />
+                                    </nz-form-control>
+                                </div>
+                                <div class="col-4 align-content-end text-truncate">
+                                    <button class="primary px-5" nz-popconfirm
+                                        nzPopconfirmTitle="Are you sure Save this {{vouchermode | titlecase}}?"
+                                        (nzOnConfirm)="checkout()" (nzOnCancel)="cancel()">Save {{vouchermode |
+                                        titlecase}}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

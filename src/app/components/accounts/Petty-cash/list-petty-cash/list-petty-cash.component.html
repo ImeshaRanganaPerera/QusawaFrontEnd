@@ -1,0 +1,120 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div class="container-fluid px-3 pt-2 m-0">
+        <div class="header mb-3 d-flex justify-content-between">
+            <h2>Petty Cash</h2>
+        </div>
+        <div>
+            <div class="d-flex mb-2 align-items-center">
+                <div class="w-50 py-2">
+                    <button class="primary" (click)="checkout('Create')"><span class="me-2" nz-icon
+                            nzType="plus"></span>
+                        {{mode}}</button>
+                </div>
+                <div class="flex-grow-1">
+                    <nz-input-group nzPrefixIcon="search" nzSize="large" class="rounded-3">
+                        <input nz-input placeholder="Search" nz-tooltip="Search" [formControl]="searchControl"
+                            nzTooltipTrigger="focus" nzTooltipPlacement="topLeft" />
+                    </nz-input-group>
+                </div>
+            </div>
+            <div>
+                <div class="card text-bg-light border-light  p-3">
+                    <div class="text-start row justify-content-start ">
+                        <div class="col-2">
+                            <h3 class="text-start fs-6">Total Amount</h3>
+                            <p class="text-start fs-4">{{balance | currency:'Rs '}}</p>
+                        </div>
+                        <!-- <div class="col-1">
+                            <h3 class="text-start fs-6">Spent</h3>
+                            <p class="text-start fs-4">3000</p>
+                        </div>
+                        <div class="col-2">
+                            <h3 class="text-start fs-6">Outstanding</h3>
+                            <p class="text-start fs-4">500</p>
+                        </div> -->
+                    </div>
+                    <nz-tabset>
+                        <nz-tab nzTitle="Petty Cash" (nzClick)="onTabClick('Petty Cash')">
+                            <div>
+                                <nz-table #basicTable [nzData]="filteredData" [nzPageSize]="pageSize" (nzPageIndexChange)="onPageChange($event)">
+                                    <thead>
+                                        <tr>
+                                            <th nzWidth="1%">No</th>
+                                            <th style="width: 60%;">Description</th>
+                                            <th style="width: 60%;">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let data of basicTable.data; let i = index">
+                                            <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+                                            <td>{{ data.account.accountName }}</td>
+                                            <td>{{ data.debitAmount | currency:'Rs '}}</td>
+
+                                            <!-- <td class="d-flex justify-content-center">
+                                                <button nz-button nz-tooltip="Edit" nzType="primary" nzShape="circle"
+                                                    nzTooltipPlacement="bottom" class="me-3" (click)="handleEdit(data)">
+                                                    <span nz-icon nzType="edit"></span>
+                                                </button>
+                                            </td> -->
+                                        </tr>
+                                    </tbody>
+                                </nz-table>
+                            </div>
+                        </nz-tab>
+                        <nz-tab nzTitle="Petty Cash IOU" (nzClick)="onTabClick('Petty Cash IOU')">
+                            <div>
+                                <nz-table #iou [nzData]="filteredData2" [nzPageSize]="pageSize" (nzPageIndexChange)="onPageChange($event)">
+                                    <thead>
+                                        <tr>
+                                            <th nzWidth="1%">No</th>
+                                            <th style="width: 20%;">Name</th>
+                                            <th style="width: 10%;">Amount</th>
+                                            <th style="width: 10%;">Spent</th>
+                                            <th style="width: 10%;">Outstanding</th>
+                                            <th style="width: 10%;">Status</th>
+                                            <th style="width: 10%;" class="text-center">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let data of iou.data ; let i = index">
+                                            <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+                                            <td>{{ data.user.username }}</td>
+                                            <td>{{ data.amount }}</td>
+                                            <td>{{ data.spent || 0 }}</td>
+                                            @if(data.isReturn === true){
+                                            <td>0</td>
+                                            }
+                                            @else {
+                                            <td>{{ data.amount - data.spent }}</td>
+                                            }
+                                            @if(data.isReturn === true){
+                                            <td> <nz-badge [nzStatus]="'success'" [nzText]="'Return'"></nz-badge></td>
+                                            }
+                                            @else {
+                                            <td> <nz-badge [nzStatus]="'warning'" [nzText]="'Pending'"></nz-badge></td>
+                                            }
+                                            <td class="d-flex justify-content-center">
+                                                @if(data.isReturn === true){
+                                                    <button nz-button disabled="'true'" nz-tooltip="Edit" nzShape="circle"
+                                                    nzTooltipPlacement="bottom" class="me-3" (click)="handleEdit(data)">
+                                                    <span nz-icon nzType="edit"></span>
+                                                </button>
+                                                }
+                                                @else {
+                                                <button nz-button nz-tooltip="Edit" nzType="primary" nzShape="circle"
+                                                    nzTooltipPlacement="bottom" class="me-3" (click)="handleEdit(data)">
+                                                    <span nz-icon nzType="edit"></span>
+                                                </button>
+                                                }
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </nz-table>
+                            </div>
+                        </nz-tab>
+                    </nz-tabset>
+                </div>
+            </div>
+        </div>
+    </div>
+</nz-spin>

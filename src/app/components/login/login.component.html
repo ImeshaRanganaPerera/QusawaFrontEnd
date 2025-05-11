@@ -1,0 +1,170 @@
+<!-- <div class="container-fluid">
+  <div class="logo-header bg-transparent" >
+    <img src="img/logo.png" class="header-logo " width="350px" height="300px">
+  </div>
+  <div>
+    <div class="main-container" >
+      <div class="content-row">
+        <div class="image-col mb-3 d-none d-lg-block"> 
+          <img src="img/login.png" alt="Login Image " class="login-image">
+        </div>
+        <div class="form-card">
+          <div class="header text-center mb-3">
+            <img src="img/logo.png" class="img-fluid" width="150px" height="200px"  >
+            <h5 class="mb-4" >Hi, Welcome Back !</h5>
+            <small>Welcome back! Please enter your details</small>
+          </div>
+          <form nz-form [formGroup]="loginForm">
+            <nz-form-item>
+              <nz-form-control nzErrorTip="Please input your username!">
+                <label>Username</label>
+                <input type="text" nz-input formControlName="username" nzSize="large">
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-control nzErrorTip="Please input your Password!">
+                <label>Password</label>
+                <input type="password" nz-input formControlName="password" nzSize="large">
+              </nz-form-control>
+            </nz-form-item>
+            <button nz-button class="w-100" nzSize="large" nzType="primary"  (click)="submitForm()">Log in</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  <div class="companylogo">
+    <div class="image-group">
+      <img src="img/companyLogo.png" width="70px" >
+      <span>Cybernetic Software Solution</span>
+    </div>
+  </div>
+</div> -->
+
+<div class="container-fluid">
+  <div class="background">
+    
+    <div class="login-card">
+      <div>
+        <img src="img/logo2.png" class="header-logo " >
+      </div>
+      <h2>Hi, Welcome Back !</h2>
+      <form nz-form [formGroup]="loginForm" class="main-container">
+          <nz-form-item>
+            <nz-form-control nzErrorTip="Please input your username!" class="input-container">
+              <label>Username</label>
+              <input type="text" nz-input formControlName="username" nzSize="large" class="shadowform">
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-control nzErrorTip="Please input your Password!" class="input-container">
+              <label>Password</label>
+              <input type="password" nz-input formControlName="password" nzSize="large" class="shadowform">
+            </nz-form-control>
+          </nz-form-item>
+
+        
+          <a href="#" class="forgot-password">Forgot Password?</a>
+          <button nz-button class="w-100 shadowform" nzSize="large" nzType="primary"  (click)="submitForm()">Sign in</button>
+      </form>
+      <p>Don't have an account yet? <a href="#">Register </a></p>
+    </div>
+  </div>
+</div>
+
+  <!--<div class="container" id="container">
+  <div class="form-container register-container">
+    <form>
+      <h1>Regístrate aquí</h1>
+      <div class="form-control">
+        <input type="text" id="username" placeholder="Nombre" />
+        <small id="username-error"></small>
+        <span></span>
+      </div>
+      <div class="form-control">
+        <input type="email" id="email" placeholder="Correo electrónico" />
+        <small id="email-error"></small>
+        <span></span>
+      </div>
+      <div class="form-control">
+        <input type="password" id="password" placeholder="Contraseña" />
+        <small id="password-error"></small>
+        <span></span>
+      </div>
+      <button type="submit" value="submit">Registrar</button>
+      <span>o usa tu cuenta</span>
+      <div class="social-container">
+        <a href="#" class="social"
+          ><i class="fa-brands fa-facebook-f"></i
+        ></a>
+        <a href="#" class="social"><i class="fa-brands fa-google"></i></a>
+        <a href="#" class="social"><i class="fa-brands fa-tiktok"></i></a>
+      </div>
+    </form>
+  </div>
+
+ <div class="form-container login-container">
+    <form class="form-lg">
+      <h1>Sign in here</h1>
+      <div>
+        <form nz-form [formGroup]="loginForm">
+          <nz-form-item>
+            <nz-form-control nzErrorTip="Please input your username!" class="form-control2">
+              <label>Username</label>
+              <input type="text" nz-input formControlName="username" nzSize="large" class="email-2">
+              <small class="email-error-2"></small>
+              <span></span>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-control nzErrorTip="Please input your Password!" class="form-control2">
+              <label>Password</label>
+              <input type="password" nz-input formControlName="password" nzSize="large" class="password-2">
+              <small class="password-error-2"></small>
+              <span></span>
+            </nz-form-control>
+          </nz-form-item>
+          <div class="content">
+          <div class="pass-link">
+            <a href="#">Forgot your password?</a>
+          </div>
+          </div>
+          <button nz-button class="w-100 shadowform" nzSize="large" nzType="primary"  (click)="submitForm()">Login</button>
+        </form>
+      </div>
+    </form>
+  </div>
+
+  <div class="overlay-container">
+    <div class="overlay">
+      <div class="overlay-panel overlay-left">
+        <h1 class="title">
+          Hola <br />
+          amigos
+        </h1>
+        <p>Si tienes una cuenta, inicia sesión aquí y diviértete</p>
+        <button class="ghost" id="login">
+          Iniciar sesión
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+      </div>
+
+      <div class="overlay-panel overlay-right">
+        <h1 class="title">
+          Start your journey now
+        </h1>
+        <p>
+          If you don't have an account yet, join us and start your journey
+        </p>
+        <button class="ghost" id="register">
+          Register
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+
+

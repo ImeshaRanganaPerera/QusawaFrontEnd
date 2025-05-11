@@ -1,0 +1,84 @@
+<div class="dashboard-container">
+  <div class="row">
+    <div class="col-lg-12 col-sm-12">
+      <div class="row">
+        <!-- Product Sales Target section -->
+        <div class="col-9 mb-3">
+          <div class="card h-100 p-3">
+            <h5 class="mb-3">Product Sales Target</h5>
+            <div class="row">
+              <div class="col-4 mb-3 text-center" *ngFor="let data of detailList">
+                <nz-progress
+                  [nzPercent]="((data.monthlyGroupedData.totalInvoice - data.monthlyGroupedData.totalReturn) / data.target)*100 | number: '1.2-2'"
+                  nzType="circle" [nzWidth]="150"
+                  [nzStrokeColor]="((data.monthlyGroupedData.totalInvoice - data.monthlyGroupedData.totalReturn) / data.target) * 100 < 0 ? '#f5f5f5' : { '0%': '#108ee9', '100%': '#87d068' }">></nz-progress>
+                <div class="info row">
+                  <strong>{{ data.username }}</strong>
+                  <span>Daily Figures</span>
+                  <nz-divider class="m-0 mb-2"></nz-divider>
+                  <span>Sales: {{ (data.dailyGroupedData.totalInvoice - data.dailyGroupedData.totalReturn) | number:
+                    '1.2-2' }}</span>
+                  <span>Visits: {{ data.dailyGroupedData.visitingCount }}</span>
+                  <span>Invoice: {{ data.dailyGroupedData.totalInvoiceCount }}</span>
+                  <span>Payments</span>
+                  <span>Cash: {{data.dailyGroupedData.payments.Cash}}</span>
+                  <span>Online Transfer: {{data.dailyGroupedData.payments.OnlineTransfer}}</span>
+                  <span>Cheque: {{data.dailyGroupedData.payments.Cheque}}</span>
+                  <span>Credit: {{data.dailyGroupedData.payments.Credit}}</span>
+
+                  <nz-divider class="m-0 mb-2"></nz-divider>
+                  <strong>Cumulative Figures</strong>
+                  <span>Sales: {{ (data.monthlyGroupedData.totalInvoice - data.monthlyGroupedData.totalReturn) | number:
+                    '1.2-2' }}</span>
+                  <span>Visits: {{ data.monthlyGroupedData.visitingCount }}</span>
+                  <span>Invoice: {{ data.monthlyGroupedData.totalInvoiceCount }}</span>
+                  <span>Payments</span>
+                  <span>Cash: {{data.monthlyGroupedData.payments.Cash}}</span>
+                  <span>Online Transfer: {{data.monthlyGroupedData.payments.OnlineTransfer}}</span>
+                  <span>Cheque: {{data.monthlyGroupedData.payments.Cheque}}</span>
+                  <span>Credit: {{data.monthlyGroupedData.payments.Credit}}</span>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Total Sales section -->
+        <div class="col-3 mb-3">
+          <div class="card h-100 p-3">
+            <h5 class="mb-3">Total Sales Target</h5>
+            <div class="text-center">
+              <!-- Display total sales percentage using nz-progress -->
+              <nz-progress
+                [nzPercent]="((totalInvoiceValue - totalDailyReturnSales)/totalTarget) * 100| number: '1.2-2'"
+                nzType="circle" [nzWidth]="150" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"></nz-progress>
+              <div class="info row">
+                <strong>Total</strong>
+                <span>Daily Figures</span>
+                <nz-divider class="m-0 mb-2"></nz-divider>
+                <span>Sales: {{ (totalDailySales - totalDailyReturnSales) | number: '1.2-2' }}</span>
+                <span>Visits: {{ totalDailyVisits }}</span>
+                <span>Invoice: {{ totalDailyInvoices }}</span>
+                <span>Payments</span>
+                <span>Cash: {{dailyCash}}</span>
+                <span>Online Transfer: {{dailyOnlinetranfer}}</span>
+                <span>Cheque: {{dailyCheque}}</span>
+                <span>Credit: {{dailyCredit}}</span>
+                <nz-divider class="m-0 mb-2"></nz-divider>
+                <span><strong>Cumulative Figures</strong></span>
+                <span>Sales: {{ (totalCumulativeSales - totalCumulativeReturnSales) | number: '1.2-2' }}</span>
+                <span>Visits: {{ totalCumulativeVisits }}</span>
+                <span>Invoice: {{ totalCumulativeInvoices }}</span>
+                <span>Payments</span>
+                <span>Cash: {{monthlyCash}}</span>
+                <span>Online Transfer: {{monthlyOnlinetranfer}}</span>
+                <span>Cheque: {{monthlyCheque}}</span>
+                <span>Credit: {{monthlyCredit}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

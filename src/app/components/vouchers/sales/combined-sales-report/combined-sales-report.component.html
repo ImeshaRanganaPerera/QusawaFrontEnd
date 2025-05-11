@@ -1,0 +1,79 @@
+<div class="combined-sales-report">
+  <h2> Sales Report</h2>
+
+  <form [formGroup]="dateForm" (ngSubmit)="filterData()" class="filter-form">
+    <div>
+      <label for="selectedDate">Select Date:</label>
+      <input type="date" id="selectedDate" formControlName="selectedDate">
+    </div>
+    <button type="submit">Generate Report</button>
+  </form>
+
+  <table class="sales-report">
+    <thead>
+      <tr>
+        <th>Invoice Number</th>
+        <th>Invoice Date</th>
+        <th>Total Quantity</th>
+        <th>Total Amount</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let sale of filteredSalesData">
+        <tr [class.highlighted]="isHighlighted(sale.invoiceNumber)">
+          <td>{{ sale.invoiceNumber }}</td>
+          <td>{{ sale.invoiceDate | date:'shortDate' }}</td>
+          <td>{{ getTotalQuantity(sale.items) }}</td>
+          <td>{{ sale.totalAmount | currency }}</td>
+          <td>
+            <button (click)="toggleExpand(sale.invoiceNumber)">
+              {{ isExpanded(sale.invoiceNumber) ? 'Collapse' : 'Expand' }}
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="isExpanded(sale.invoiceNumber)" class="expanded-details">
+          <td colspan="5">
+            <div class="payment-info">
+              <strong>Payment Mode:</strong> {{ sale.paymentMode }}
+            </div>
+            <table class="item-details">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Quantity</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of sale.items">
+                  <td>{{ item.product }}</td>
+                  <td>{{ item.quantity }}</td>
+                  <td>{{ item.amount | currency }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+
+  <div class="payment-totals">
+    <h3>Payment Totals</h3>
+    <ul>
+      <li *ngFor="let total of getPaymentTotals() | keyvalue">
+        {{ total.key }}: {{ total.value | currency }}
+      </li>
+    </ul>
+  </div>
+
+  <div class="note-section">
+    <label for="description">Add a Note:</label>
+    <textarea id="description" formControlName="description" rows="4" placeholder="Enter your description here..."></textarea>
+  </div>
+  
+  <div class="download-button-container">
+    <button (click)="downloadReport()">Download Report</button>
+  </div>
+</div>

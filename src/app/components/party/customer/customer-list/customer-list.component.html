@@ -1,0 +1,145 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div class="container-fluid px-4 pt-2 m-0">
+        <div class="header mb-3 d-flex justify-content-between">
+            <h2>Customer List</h2>
+        </div>
+        <div>
+            <div class="row mb-2 align-items-center">
+                <div class="col-4 d-flex">
+                    <div class="w-50 py-2">
+                        <button class="primary" (click)="manageCustomer('Create')"><span class="me-2" nz-icon
+                                nzType="plus"></span>Create Customer</button>
+                    </div>
+                    @if(blocked == false){
+                    <div class="w-50 py-2">
+                        <button class="primary" (click)="exportToCSV()"><span class="me-2" nz-icon
+                                nzType="download"></span>Export As Excel</button>
+                    </div>
+                    }
+                </div>
+                @if(blocked == false){
+                <div class="col-2">
+                    <nz-form-control nzErrorTip="Please Select Customer Category!">
+                        <nz-select nzSize="large" nzShowSearch class="custom-select" [nzPlaceHolder]="'Select City'"
+                            [(ngModel)]="selectedCity" (ngModelChange)="onchange()">
+                            <nz-option [nzValue]="''" [nzLabel]="'All City'"></nz-option>
+                            <nz-option *ngFor="let city of cityList" [nzValue]="city" [nzLabel]="city"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </div>
+
+                <div class="col-2">
+                    <nz-form-control nzErrorTip="Please Select Customer Category!">
+                        <nz-select nzSize="large" nzShowSearch class="custom-select" [nzPlaceHolder]="'Select Category'"
+                            [(ngModel)]="selectedCategory" (ngModelChange)="onchange()">
+                            <nz-option [nzValue]="''" [nzLabel]="'All Category'"></nz-option>
+                            <nz-option *ngFor="let category of categoryList" [nzValue]="category.category"
+                                [nzLabel]="category.category"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </div>
+                }
+                <div ngClass="{{blocked? 'col-8' : 'col-4' }}">
+                    <nz-input-group nzPrefixIcon="search" nzSize="large" class="rounded-3">
+                        <input nz-input placeholder="Search" nz-tooltip="Search" [formControl]="searchControl"
+                            nzTooltipTrigger="focus" nzTooltipPlacement="topLeft" />
+                    </nz-input-group>
+                </div>
+
+
+
+            </div>
+            <nz-tabset>
+                <nz-tab nzTitle="Approved Customer ({{ dataSource1Count }})" (nzClick)="onTabClick('true')">
+                    <nz-table #basicTable1 [nzData]="filteredData1" [nzPageSize]="pageSize"
+                        (nzPageIndexChange)="onPageChange($event)">
+                        <thead>
+                            <tr>
+                                <th nzWidth="1%">No</th>
+                                <th>Customer Name</th>
+                                <th>Category</th>
+                                <th>Phone number</th>
+                                <th>BR/NIC</th>
+                                <th>Address</th>
+                                <th>City</th>
+                                <!-- <th>Email</th> -->
+                                <th>Created By</th>
+                                <!-- <th>Category</th> -->
+                                <th>Action</th>
+                              
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of basicTable1.data; let i = index">
+                                <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+                                <td>{{ data.name }}</td>
+                                <td>{{ data.partyCategory.category }}</td>
+                                <td>{{ data.phoneNumber }}</td>
+                                <td>{{ data.nic }}</td>
+                                <td>{{ data.address1 }}</td>
+                                <td>{{ data.city }}</td>
+                                <!-- <td>{{ data.email }}</td> -->
+                                <td>{{ data.userName }}</td>
+                            
+                                <!-- <td>{{ data.partyCategory.category }}</td> -->
+                                <td class="d-flex justify-content-center">
+                                    <button nz-button nz-tooltip="Edit" nzType="primary" nzShape="circle"
+                                        nzTooltipPlacement="bottom" class="me-3" (click)="handleEdit(data)">
+                                        <span nz-icon nzType="edit"></span>
+                                    </button>
+                                </td>
+                            
+                            </tr>
+                            <td class="d-flex justify-content-center">
+                                <!-- <div class="col-md-1 col-sm-2 mb-4 row"> -->
+                                    <label for="">Spe</label>
+                                    <nz-switch (click)="clickSwitch()"></nz-switch>
+                                <!-- </div> -->
+                            </td>
+                        </tbody>
+                    </nz-table>
+                </nz-tab>
+                @if(blocked == false){
+                <nz-tab nzTitle="Pending Customer ({{ dataSource2Count }})" (nzClick)="onTabClick('false')">
+                    <nz-table #basicTable [nzData]="filteredData2" [nzPageSize]="pageSize"
+                        (nzPageIndexChange)="onPageChange($event)">
+                        <thead>
+                            <tr>
+                                <th nzWidth="1%">No</th>
+                                <th>Customer Name</th>
+                                <th>Category</th>
+                                <th>Phone number</th>
+                                <th>NIC</th>
+                                <th>Address</th>
+                                <th>City</th>
+                                <!-- <th>Email</th> -->
+                                <th>Created By</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of basicTable.data; let i = index">
+                                <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+                                <td>{{ data.name }}</td>
+                                <td>{{ data.partyCategory.category }}</td>
+                                <td>{{ data.phoneNumber }}</td>
+                                <td>{{ data.nic }}</td>
+                                <td>{{ data.address1 }}</td>
+                                <td>{{ data.city }}</td>
+                                <!-- <td>{{ data.email }}</td> -->
+                                <td>{{ data.userName }}</td>
+                                <td class="d-flex justify-content-center">
+                                    <button nz-button nz-tooltip="Edit" nzType="primary" nzShape="circle"
+                                        nzTooltipPlacement="bottom" class="me-3" (click)="handleEdit(data)">
+                                        <span nz-icon nzType="edit"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </nz-tab>
+                }
+            </nz-tabset>
+        </div>
+    </div>
+</nz-spin>

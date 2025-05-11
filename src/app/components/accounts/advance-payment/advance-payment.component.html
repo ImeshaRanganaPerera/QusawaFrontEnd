@@ -1,0 +1,64 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div class="container-fluid px-4 pt-2 m-0">
+        <div class="header mb-3 d-flex justify-content-between">
+            <h2>Advance Payment</h2>
+        </div>
+        <div class="card p-4">
+            <form [formGroup]="advancePayForm">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 mb-4">
+                        <div class="row">
+                            <div class="col-md-3 col-sm-12 mb-4">
+                                <nz-form-control nzErrorTip="Please input Date!">
+                                    <label>Date</label><br>
+                                    <nz-date-picker [nzDisabledDate]="disabledDate" class="w-100" formControlName="date"
+                                        nzSize="large"></nz-date-picker>
+                                </nz-form-control>
+                            </div>
+                            <div class="col-md-3 col-sm-12 mb-4">
+                                <nz-form-control>
+                                    <label>Advance Payment Number</label>
+                                    <input type="text" nz-input formControlName="voucherNumber" nzSize="default" />
+                                </nz-form-control>
+                            </div>
+                            <div class="col-md-3 col-sm-12 mb-4">
+                                <nz-form-control nzErrorTip="Please Select Liability Account!">
+                                    <label>Liability Account</label>
+                                    <nz-select nzShowSearch formControlName="chartofaccId" class="custom-select">
+                                        <nz-option *ngFor="let liability of liabilityList" [nzValue]="liability.id"
+                                            [nzLabel]="liability.accountName"></nz-option>
+                                    </nz-select>
+                                </nz-form-control>
+                            </div>
+                            <div class="col-md-4 col-sm-12 mb-4">
+                                <nz-form-control>
+                                    <label>Ref Number</label>
+                                    <input type="text" nz-input formControlName="refNumber" nzSize="default"
+                                        class="shadowform" />
+                                </nz-form-control>
+                            </div>
+                            <div class=" text-start col-md-8 col-sm-12 mb-4  ">
+                                <nz-form-control>
+                                    <label>Memo</label>
+                                    <input type="text" nz-input formControlName="note" nzSize="default"
+                                        class="shadowform" />
+                                </nz-form-control>
+                            </div>
+                            <div class="col-md-7 col-sm-12 mb-4">
+                                <nz-form-control>
+                                    <label>Amount</label>
+                                    <input type="text" formControlName="amount" nz-input nzSize="default" />
+                                </nz-form-control>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <nz-divider class="m-0 mb-3"></nz-divider>
+            <div class="process mt-5">
+                <button class="primary w-100" (click)="checkout()"> <i nz-icon nzType="save" class="me-3"></i>Save Advance
+                    Payment</button>
+            </div>
+        </div>
+    </div>
+</nz-spin>

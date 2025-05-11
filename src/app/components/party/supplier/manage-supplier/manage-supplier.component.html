@@ -1,0 +1,70 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <h3>{{action}} Supplier</h3>
+    <form class="pt-4" [formGroup]="partyForm">
+        <div class="row mb-3">
+            <div class="col-12 mb-3">
+                <nz-form-control nzErrorTip="Please input Supplier Name!">
+                    <label>Supplier Name</label>
+                    <input type="text" nz-input formControlName="name" nzSize="large" />
+                </nz-form-control>
+            </div>
+
+            <div class="col-12 mb-3">
+                <nz-form-control>
+                    <label>Phone Number</label>
+                    <input type="text" nz-input formControlName="phoneNumber" nzSize="large" />
+                    <div *ngIf="partyForm.controls['phoneNumber'].errors && partyForm.controls['phoneNumber'].touched">
+                        <span class="text-danger" *ngIf="partyForm.controls['phoneNumber'].hasError('required')">Phone
+                            Number is required!</span>
+                        <span class="text-danger" *ngIf="partyForm.controls['phoneNumber'].hasError('minlength')">Phone
+                            Number must be at least 9 digits long!</span>
+                        <span class="text-danger" *ngIf="partyForm.controls['phoneNumber'].hasError('maxlength')">Phone
+                            Number cannot exceed 10 digits!</span>
+                        <span class="text-danger" *ngIf="partyForm.controls['phoneNumber'].hasError('pattern')">Phone
+                            Number can only contain digits!</span>
+                    </div>
+                </nz-form-control>
+            </div>
+            <div class="col-6 mb-3">
+                <nz-form-control>
+                    <label>NIC</label>
+                    <input type="text" nz-input formControlName="nic" nzSize="large" />
+                </nz-form-control>
+            </div>
+            <div class="col-6 mb-3">
+                <nz-form-control>
+                    <label>Email</label>
+                    <input type="email" nz-input formControlName="email" nzSize="large" />
+                </nz-form-control>
+            </div>
+            <div class="col-12 mb-3">
+                <nz-form-control nzErrorTip="Please input Address!">
+                    <label>Address 1</label>
+                    <textarea type="text" nz-input formControlName="address1" nzSize="large"></textarea>
+                </nz-form-control>
+            </div>
+            <div class="col-12 mb-3">
+                <nz-form-control nzErrorTip="Please input Address!">
+                    <label>Address 2</label>
+                    <textarea type="text" nz-input formControlName="address2" nzSize="large"></textarea>
+                </nz-form-control>
+            </div>
+            <div class="col-6 mb-3">
+                <nz-form-control>
+                    <label>Credit Value</label>
+                    <input type="number" nz-input formControlName="creditValue" nzSize="large" />
+                </nz-form-control>
+            </div>
+            <div class="col-6 mb-3">
+                <nz-form-control>
+                    <label>Credit Period</label>
+                    <input type="number" nz-input formControlName="creditPeriod" nzSize="large" />
+                </nz-form-control>
+            </div>
+
+        </div>
+        <div class="footer d-flex justify-content-end">
+            <button class="primary px-5" (click)="submit()">{{action}}</button>
+        </div>
+    </form>
+</nz-spin>

@@ -1,0 +1,123 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div class="container-fluid px-4 pt-2 m-0">
+        <div class="header mb-3 d-flex justify-content-between">
+            <h2>Pending Transactions</h2>
+        </div>
+        <div class="d-flex mb-2 align-items-center">
+            <div class="flex-grow-1 me-3">
+                <nz-input-group nzPrefixIcon="search" nzSize="large" class="rounded-3 shadowform">
+                    <input nz-input placeholder="Search" nz-tooltip="Search" nzTooltipTrigger="focus"
+                        [formControl]="searchControl" nzTooltipPlacement="topLeft" />
+                </nz-input-group>
+            </div>
+        </div>
+
+        <nz-table #basicTable [nzData]="filteredData" class="shadowform" [nzPageSize]="pageSize"
+            (nzPageIndexChange)="onPageChange($event)">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th style="width: 1%;">No</th>
+                    <th nzWidth="10%">Date</th>
+                    <th nzWidth="10%">Type</th>
+                    <th nzWidth="10%">Invoice No</th>
+                    <th nzWidth="20%">Customer Name</th>
+                    <th nzWidth="15%">Salesman Name</th>
+                    <th nzWidth="20%">Reason</th>
+                    <th nzWidth="20%">Amount</th>
+                    <th nzWidth="10%" class="text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let data of basicTable.data;let i = index;">
+                    <tr>
+                        <td [(nzExpand)]="data.expand" (click)="onExpandRow(data)"></td>
+                        <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+                        <td>{{ data.date | date: 'yyyy-MM-dd' }}</td>
+                        <td>{{ data.voucherGroup?.voucherName || '-' }}</td>
+                        <td>{{ data.voucherNumber }}</td>
+                        <td>{{ data.party.name }}</td>
+                        <td>{{ data.user.name }}</td>
+                        <td>
+                            <input nz-input [(ngModel)]="data.note" class="form-control" />
+                        </td>
+                        <td>{{ data.amount | currency: ' ' }}</td>
+                        <td class="d-flex justify-content-center">
+                            <button nz-popconfirm nzPopconfirmTitle="Are you sure to reject this transaction"
+                                (nzOnConfirm)="voucherCancel(data)" (nzOnCancel)="cancel()" nz-button
+                                nz-tooltip="Reject" nzShape="circle" nzDanger nzTooltipPlacement="bottom" class="me-3">
+                                <span nz-icon nzType="close"></span>
+                            </button>
+
+                            <button nz-button nz-tooltip="Approve" nzType="primary" nzShape="circle" nz-popconfirm
+                                nzPopconfirmTitle="Are you sure Approve this transaction"
+                                (nzOnConfirm)="updateConform(data)" (nzOnCancel)="cancel()">
+                                <span nz-icon nzType="check"></span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr [nzExpand]="data.expand">
+                        <nz-table #innerTable [nzData]="voucherProduct" nzSize="middle" [nzShowPagination]="false">
+                            <thead>
+                                <tr>
+                                    <th nzWidth="1%">No</th>
+                                    <th nzWidth="30%">Product Name</th>
+                                    <th nzWidth="10%">Quantity</th>
+                                    <th nzWidth="10%">Cost</th>
+                                    <th nzWidth="10%">MRP</th>
+                                    <th nzWidth="10%">Discount</th>
+                                    <th nzWidth="10%">Cost (%)</th>
+                                    <th nzWidth="10%">MRP (%)</th>
+                                    <th nzWidth="10%">Amount</th>
+                                </tr>
+                            </thead>
+            <tbody>
+                <ng-container *ngFor="let vp of voucherProduct; let i = index;">
+                    <tr>
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ vp.product.printName }}</td>
+                        <!-- Editable Quantity Input -->
+                        <td>
+                            {{vp.quantity }}
+                            <!-- <input nz-input [(ngModel)]="vp.quantity" type="number" class="form-control"
+                                (input)="onValueChange(vp)" disabled /> -->
+                        </td>
+                        <td>
+                            {{vp.product.cost | currency: ' '}}
+                            <!-- <input nz-input [(ngModel)]="vp.quantity" type="number" class="form-control"
+                                (input)="onValueChange(vp)" disabled /> -->
+                        </td>
+                        <!-- Editable MRP Input -->
+                        <td>
+                            {{vp.MRP | currency: ' '}}
+                            <!-- <input nz-input [(ngModel)]="vp.MRP" type="number" class="form-control"
+                                (input)="onValueChange(vp)" disabled /> -->
+                        </td>
+                        <!-- Editable Discount Input -->
+                        <td>
+                            @if(data.voucherGroup?.voucherName.startsWith('INVOICE')){
+                            <input nz-input [(ngModel)]="vp.discount" class="form-control"
+                                (input)="onValueChange(vp)" />
+                            }
+                            @else {
+                            {{vp.discount | currency: ' '}}
+                            }
+                        </td>
+                        <td>
+                            {{getrate(vp,'COST') + '%'}}
+                        </td>
+                        <td>
+                            {{getrate(vp,'MRP') + '%'}}
+                        </td>
+                        <!-- Calculated Amount -->
+                        <td>{{ vp.amount | currency: ' ' }}</td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </nz-table>
+        </tr>
+        </ng-container>
+        </tbody>
+        </nz-table>
+    </div>
+</nz-spin>

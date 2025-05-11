@@ -1,0 +1,91 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div class="container-fluid px-4 pt-2 m-0">
+        <div class="header mb-3 d-flex justify-content-between">
+            <h2>Approved Transactions</h2>
+        </div>
+        <div class="d-flex mb-2 align-items-center">
+            <div class="flex-grow-1 me-3">
+                <nz-input-group nzPrefixIcon="search" nzSize="large" class="rounded-3 shadowform">
+                    <input nz-input placeholder="Search" nz-tooltip="Search" nzTooltipTrigger="focus"
+                        [formControl]="searchControl" nzTooltipPlacement="topLeft" />
+                </nz-input-group>
+            </div>
+        </div>
+
+        <nz-table #basicTable [nzData]="filteredData" class="shadowform" [nzPageSize]="100">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th nzWidth="1%">No</th>
+                    <th nzWidth="10%">Date</th>
+                    <th nzWidth="20%">Invoice No</th>
+                    <th nzWidth="20%">Customer Name</th>
+                    <th nzWidth="20%">Salesman Name</th>
+                    <th nzWidth="20%">Amount</th>
+                    <th nzWidth="10%" class="text-center">Add Payment</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let data of basicTable.data; let i = index">
+                    <tr>
+                        <td [(nzExpand)]="data.expand" (click)="onExpandRow(data)"></td>
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ data.date | date: 'yyyy-MM-dd' }}</td>
+                        <td>{{ data.voucherNumber }}</td>
+                        <td>{{ data.party.name }}</td>
+                        <td>{{ data.user.name }}</td>
+                        <td>{{ data.amount | currency: ' ' }}</td>
+                        <td class="d-flex justify-content-center">
+                            <button nz-button nz-tooltip="Add Payment" nzType="primary" nzShape="circle" nz-popconfirm
+                                nzPopconfirmTitle="Are you sure to add Payments to this transaction"
+                                (nzOnConfirm)="updateConform(data)" (nzOnCancel)="cancel()">
+                                <span nz-icon nzType="money-collect"></span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr [nzExpand]="data.expand">
+                        <nz-table #innerTable [nzData]="voucherProduct" nzSize="middle" [nzShowPagination]="false">
+                            <thead>
+                                <tr>
+                                    <th nzWidth="30%">Product Name</th>
+                                    <th nzWidth="20%">Quantity</th>
+                                    <th nzWidth="20%">MRP</th>
+                                    <th nzWidth="20%">Discount</th>
+                                    <th nzWidth="10%">Amount</th>
+                                </tr>
+                            </thead>
+            <tbody>
+                <ng-container *ngFor="let vp of voucherProduct;">
+                    <tr>
+                        <td>{{ vp.product.printName }}</td>
+                        <!-- Editable Quantity Input -->
+                        <td>
+                            {{vp.quantity}}
+                            <!-- <input nz-input [(ngModel)]="vp.quantity" type="number" class="form-control"
+                                (input)="onValueChange(vp)" disabled /> -->
+                        </td>
+                        <!-- Editable MRP Input -->
+                        <td>
+                            {{vp.MRP | currency: ' ' }}
+                            <!-- <input nz-input [(ngModel)]="vp.MRP" type="number" class="form-control"
+                                (input)="onValueChange(vp)" disabled /> -->
+                        </td>
+                        <!-- Editable Discount Input -->
+                        <td>
+                            {{vp.discount}}
+                            <!-- <input nz-input [(ngModel)]="vp.discount" class="form-control"
+                                (input)="onValueChange(vp)" disabled/> -->
+                        </td>
+                        <!-- Calculated Amount -->
+                        <td>{{ vp.amount | currency: ' ' }}</td>
+                    </tr>
+                </ng-container>
+            </tbody>
+
+        </nz-table>
+        </tr>
+        </ng-container>
+        </tbody>
+        </nz-table>
+    </div>
+</nz-spin>

@@ -1,0 +1,125 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div class="container-fluid px-4 pt-2 m-0">
+        <div class="header mb-3 d-flex justify-content-between">
+            <h2>Balance Sheet Report</h2>
+            <button class="primary me-3" (click)="exportToCSV()">
+                <span class="me-2" nz-icon nzType="export"></span>Export
+            </button>
+        </div>
+        <div class="row mb-2 align-items-center">
+            <div class="col-6">
+                <nz-input-group nzPrefixIcon="search" nzSize="large" class="rounded-3 shadowform">
+                    <input nz-input placeholder="Search" nz-tooltip="Search" [formControl]="searchControl"
+                        nzTooltipTrigger="focus" nzTooltipPlacement="topLeft" />
+                </nz-input-group>
+            </div>
+            <div class="col-4">
+                <nz-date-picker nzSize="large" class="w-100" [(ngModel)]="date"></nz-date-picker>
+            </div>
+            <div class="col-2">
+                <button nz-button nzType="primary" class="w-100" nzSize="large" (click)="applyDateFilter()">
+                    <span nz-icon nzType="filter"></span>Filter
+                </button>
+            </div>
+        </div>
+        <nz-table #basicTable [nzData]="filteredData" [nzPageSize]="pageSize"
+            (nzPageIndexChange)="onPageChange($event)">
+            <thead>
+                <tr>
+                    <th nzWidth="5%"></th>
+                    <th nzWidth="5%"></th>
+                    <th>Account Name</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <ng-container *ngFor="let type of filteredData;">
+                    <tr>
+                        <td [colSpan]="4" *ngIf="type.assets">Assets</td>
+                        <td [colSpan]="4" *ngIf="type.equity">Equity</td>
+                        <td [colSpan]="4" *ngIf="type.liabilities">Liabilities</td>
+                    </tr>
+                    <ng-container *ngFor="let asset of type.assets;">
+                        <tr>
+                            <td></td>
+                            <td [colSpan]="3">{{ asset.accountGroupName }}</td>
+                        </tr>
+                        @if(asset.accountGroupName !== 'Receivable'){
+                        <tr *ngFor="let data of asset.values;">
+                            <td></td>
+                            <td></td>
+                            <td>{{ data.accountName }}</td>
+                            <td>{{ (data.totalDebitAmount - data.totalCreditAmount) | number: '1.2-2' }}</td>
+                        </tr>
+                        }
+                        <tr>
+                            <td></td>
+                            <td [colSpan]="2"><strong>Total {{ asset.accountGroupName }}</strong></td>
+                            <td><strong>{{ (asset.sumDebitTotal - asset.sumCreditTotal) | number: '1.2-2' }}</strong>
+                            </td>
+                        </tr>
+                    </ng-container>
+                    <tr>
+                        <td [colSpan]="3" *ngIf="type.assets"><strong>Total Assets</strong></td>
+                        <td *ngIf="type.assets"><strong>{{(totalassets.sumDebitTotal -
+                                totalassets.sumCreditTotal) | number:'1.2-2'}}</strong></td>
+                    </tr>
+
+                    <ng-container *ngFor="let equ of type.equity;">
+                        <tr>
+                            <td></td>
+                            <td [colSpan]="3">{{ equ.accountGroupName }}</td>
+                        </tr>
+                        <tr *ngFor="let data of equ.values;">
+                            <td></td>
+                            <td></td>
+                            <td>{{ data.accountName }}</td>
+                            <td>{{ (data.totalCreditAmount - data.totalDebitAmount) | number: '1.2-2' }}</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td [colSpan]="2"><strong>Total {{ equ.accountGroupName }}</strong></td>
+                            <td><strong>{{ (equ.sumCreditTotal - equ.sumDebitTotal) | number: '1.2-2' }}</strong></td>
+                        </tr>
+                    </ng-container>
+                    <tr>
+                        <td [colSpan]="3" *ngIf="type.equity"><strong>Total Equity</strong></td>
+                        <td *ngIf="type.equity"><strong>{{(totalEquity.sumCreditTotal - totalEquity.sumDebitTotal) |
+                                number:'1.2-2'}}</strong></td>
+                    </tr>
+
+                    <ng-container *ngFor="let liab of type.liabilities;">
+                        <tr>
+                            <td></td>
+                            <td [colSpan]="3">{{ liab.accountGroupName }}</td>
+                        </tr>
+                        @if(liab.accountGroupName !== 'Payable'){
+                        <tr *ngFor="let data of liab.values;">
+                            <td></td>
+                            <td></td>
+                            <td>{{ data.accountName }}</td>
+                            <td>{{ (data.totalCreditAmount - data.totalDebitAmount) | number: '1.2-2' }}</td>
+                        </tr>
+                        }
+                        <tr>
+                            <td></td>
+                            <td [colSpan]="2"><strong>Total {{ liab.accountGroupName }}</strong></td>
+                            <td><strong>{{ (liab.sumCreditTotal - liab.sumDebitTotal) | number: '1.2-2' }}</strong></td>
+                        </tr>
+                    </ng-container>
+
+                    <tr>
+                        <td [colSpan]="3" *ngIf="type.liabilities"><strong>Total Liabilities</strong></td>
+                        <td *ngIf="type.liabilities"><strong>{{(totalLiabilities.sumCreditTotal -
+                                totalLiabilities.sumDebitTotal) | number:'1.2-2'}}</strong></td>
+                    </tr>
+                </ng-container>
+                <tr *ngIf="netProfit > 0">
+                    <td [colSpan]="3"><strong>Net Profit</strong></td>
+                    <td><strong>{{netProfit | number: '1.2-2'}}</strong></td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
+</nz-spin>

@@ -1,0 +1,33 @@
+<nz-spin [nzSpinning]="isLoading" [nzSize]="'large'">
+  <h1>User Profile</h1>
+  <nz-divider></nz-divider>
+  <nz-descriptions nzTitle="User Information" [nzColumn]="2">
+    <nz-descriptions-item nzTitle="Name">{{userDetails?.name}}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Phone Number">{{userDetails?.phoneNumber}}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="NIC Number">{{userDetails?.nic}}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Address">{{userDetails?.address}}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Date of Birth">{{userDetails?.dateofbirth | date}}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Role">{{userDetails?.role | titlecase}}</nz-descriptions-item>
+  </nz-descriptions>
+
+  <nz-divider></nz-divider>
+
+  <h3>Change Password</h3>
+
+  <form nz-form [formGroup]="passwordForm">
+    <div class="col-12 mb-3">
+      <nz-form-control nzErrorTip="Please input Customer Name!">
+        <label>Old Password</label>
+        <input type="password" nz-input formControlName="oldPassword" nzSize="large" />
+      </nz-form-control>
+    </div>
+    <div class="col-12 mb-3">
+      <nz-form-control nzErrorTip="Please input Customer Name!">
+        <label>New Password</label>
+        <input type="password" nz-input formControlName="newPassword" nzSize="large" />
+      </nz-form-control>
+    </div>
+  </form>
+  <button nz-button (click)="close()" class="me-3">Cancel</button>
+  <button nz-button nzType="primary" type="submit" (click)="changePassword()">Change Password</button>
+</nz-spin>

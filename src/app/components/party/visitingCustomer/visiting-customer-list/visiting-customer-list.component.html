@@ -1,0 +1,68 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div class="container-fluid px-4 pt-2 m-0">
+        <div class="header mb-3 d-flex justify-content-between">
+            <h2>Visit Records</h2>
+            <!-- <div class="d-flex align-items-center justify-content-between" style="border: 1px solid #ccc; padding: 5px;"> -->
+                <p>New Count {{newCount}}</p>
+                <p>Exsisting Count {{exsistingCount}}</p>
+            <!-- </div> -->
+        </div>
+        <div class="row mb-3">
+            <div [ngClass]="role === 'SALESMEN'? 'col-6' : 'col-4'">
+                <nz-input-group nzPrefixIcon="search" nzSize="large" class="rounded-3">
+                    <input nz-input placeholder="Search" nz-tooltip="Search" [formControl]="searchControl"
+                        nzTooltipTrigger="focus" nzTooltipPlacement="topLeft" />
+                </nz-input-group>
+            </div>
+            @if(role !== 'SALESMEN'){
+            <div class="col-2">
+                <nz-form-control nzErrorTip="center is required!">
+                    <nz-select nzShowSearch [(ngModel)]="userId" nzPlaceHolder="Select User"
+                        class="custom-select shadowform" nzSize="large">
+                        <nz-option [nzValue]="''" [nzLabel]='"All Users"'></nz-option>
+                        <nz-option *ngFor="let user of userList" [nzValue]="user.id" [nzLabel]="user.name"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </div>
+            }
+            <div class="col-4">
+                <nz-range-picker nzSize="large" class="w-100" [(ngModel)]="date"
+                    (ngModelChange)="onChange($event)"></nz-range-picker>
+            </div>
+            <div class="col-2">
+                <button nz-button nzType="primary" class="w-100" nzSize="large" (click)="applyDateFilter()">
+                    <span nz-icon nzType="filter"></span>Filter
+                </button>
+            </div>
+        </div>
+        <nz-table #basicTable [nzData]="filteredData" [nzShowPagination]="true" [nzPageSize]="pageSize"
+            (nzPageIndexChange)="onPageChange($event)">
+            <thead>
+                <tr>
+                    <th style="width: 1%;">No</th>
+                    <th style="width: 10%;">Visited Date</th>
+                    <th style="width: 10%;">Time</th>
+                    <th style="width: 20%;">Customer name</th>
+                    <th style="width: 10%;">City</th>
+                    <th style="width: 35%;">Note</th>
+                    <th style="width: 5%;">Type</th>
+                    <th style="width: 10%;">Visited by</th>
+                    <th style="width: 10%;">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data; let i = index">
+                    <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+                    <td>{{ data.createdAt | date: 'YYYY/MM/dd' }}</td>
+                    <td>{{ data.createdAt | date: 'HH:mm' }}</td>
+                    <td>{{ data.party.name }}</td>
+                    <td>{{ data.party.city }}</td>
+                    <td>{{ data.note }}</td>
+                    <td>{{ data.type || "-" }}</td>
+                    <td>{{ data.user.name }}</td>
+                    <td>{{ data.status }}</td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
+</nz-spin>

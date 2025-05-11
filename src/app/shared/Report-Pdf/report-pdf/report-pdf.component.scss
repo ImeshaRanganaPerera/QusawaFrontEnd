@@ -1,0 +1,262 @@
+// @page {
+//     size: A4;
+//     margin: 0;
+//   }
+  
+//   body {
+//     font-family: Arial, sans-serif;
+//     margin: 0;
+//     padding: 0;
+//     background-color: #f0f0f0;
+//   }
+  
+//   .page-container {
+//     width: 210mm;
+//     min-height: 297mm;
+//     margin: 0px auto;
+//     background-color: white;
+//     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+//   }
+  
+//   .voucher {
+//     padding: 10mm;
+//     box-sizing: border-box;
+//   }
+  
+//   .header-container {
+//     display: flex;
+//     justify-content: center;
+//     align-items: stretch;
+//   }
+//   .header {
+//     display: flex;
+//     align-items: flex-start;
+//   }
+  
+//   .logo {
+//     max-width: 200px;
+//     height: auto;
+//     margin-right: 17px;
+//     margin-top: 0px;
+//   }
+  
+//   .company-details {
+//     text-align: left;
+//     margin: 3px;
+//   }
+  
+//   .company-details p {
+//     margin: 0px 0;
+//   }
+  
+//   h1 {
+//     color: #333;
+//     margin: 20px 0;
+//     font-size: 24px;
+//     font-weight: bolder;
+//     text-align: center;
+//     margin-bottom: 40px;
+//   }
+  
+//   h4 {
+//     margin-top: 23px;
+//   }
+  
+//   .info-grid {
+//     margin-top: 23px;
+//     display: flex;
+//     flex-direction: row; 
+//     justify-content: space-between; 
+//     gap: 4px;
+//     margin-bottom: 25px;
+//   }
+  
+  
+//   .info-item {
+//     display: flex;
+//     align-items: center;
+//     flex: 1; 
+//   }
+  
+//   label {
+//     font-weight: bold;
+//     color: #555;
+//     margin-right: 10px;
+//     flex: 0 0 150px; /* Adjusted to align text and output */
+//   }
+  
+//   .output-line {
+//     padding: 0px 0;
+//     color: #333;
+//     font-size: 14px;
+//     flex-grow: 1; /* Ensures the output line grows to fill space */
+//   }
+  
+//   table {
+//     width: 100%;
+//     border-collapse: collapse;
+//     margin-bottom: 20px;
+//     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+//   }
+  
+//   th, td {
+//     border: 1px solid #ddd;
+//     padding: 12px;
+//     text-align: left;
+//   }
+  
+//   th {
+//     background-color: #f2f2f2;
+//     font-weight: bold;
+//   }
+  
+//   .signature {
+//     display: flex;
+//     justify-content: space-between;
+//     margin-top: 15px;
+//   }
+  
+//   .signature div {
+//     text-align: center;
+//     flex-basis: 30%;
+//   }
+  
+//   .signature-line {
+//     width: 140px;
+//     border-top: 1px solid #191818;
+//     margin-top: 50px;
+//   }
+  
+//   .footer {
+//     text-align: center;
+//     margin-top: 30px;
+//     padding: 15px;
+//     background-color: #f8f9fa;
+//   }
+  
+//   .download-btn {
+//     display: block;
+//     margin: 20px auto;
+//     padding: 10px 20px;
+//     background-color: #ffa726;
+//     color: #fff;
+//     border: none;
+//     cursor: pointer;
+//     font-size: 16px;
+//     border-radius: 5px;
+//   }
+  
+//   .download-btn:hover {
+//     background-color: #e68a00;
+//   }
+  
+//   @media print {
+//     body {
+//         background-color: white;
+//     }
+//     .page-container {
+//         box-shadow: none;
+//         margin: 0;
+//     }
+//     .download-btn {
+//         display: none;
+//     }
+//   }
+  
+//   .pdf-container {
+//     width: 100%;
+//     max-width: 800px; /* Adjust as needed */
+//     margin: 0 auto;
+//     padding: 20px;
+//   }
+  
+//   #pdf-content {
+//     background: white;
+//     padding: 20px;
+//     margin-bottom: 20px;
+//   }
+
+.pdf-container {
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 20mm;
+  margin: 10mm auto;
+  border: 1px solid #D3D3D3;
+  border-radius: 5px;
+  background: white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.header-container {
+  margin-bottom: 20px;
+}
+
+h1 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 12px;
+  color: #777;
+}
+
+.download-btn {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.download-btn:hover {
+  background-color: #2980b9;
+}
+
+.page-number {
+  text-align: right;
+  margin-top: 10px;
+  font-size: 12px;
+  color: #777;
+}
+
+@media print {
+  .page {
+    margin: 0;
+    border: initial;
+    border-radius: initial;
+    width: initial;
+    min-height: initial;
+    box-shadow: initial;
+    background: initial;
+    page-break-after: always;
+  }
+}

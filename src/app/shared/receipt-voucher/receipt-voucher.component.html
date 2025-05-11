@@ -1,0 +1,185 @@
+<button class="download-btn" (click)="downloadInvoice()">Generate PDF</button>
+<div class="invoice-box" id="invoice">
+    <div class="header-container">
+        <div class="row">
+            <div class="col-3">
+                <img src="img/logo.png" alt="Logo" class="img-fluid" />
+            </div>
+            <div class="col-9">
+                <h1 class="fs-4 fw-bold">HITECH LANKA (PVT) LTD</h1>
+                <span>No 932A, Kotte Road, Ethul Kotte | Com.Reg. No PV-00283449</span><br>
+                <span>Hot Line: 0727 205 205</span><br>
+                <span>Email: {{email}} | Website: www.hitechlanka.lk</span>
+            </div>
+        </div>
+    </div>
+    <nz-divider class="m-0 mb-3 mt-3"></nz-divider>
+
+    <h1 class="mb-3">{{type}}</h1>
+
+    @if(voucherData){
+    <div class="row">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-6 mb-4">
+                    @if(type==='Payment' || type === 'Advance Payment'){
+                    <label class="fw-bold">Payment No:</label>
+                    }
+                    @if(type==='DirectPayment'){
+                    <label class="fw-bold">Direct Payment:</label>
+                    }
+                    @if(type === 'Receipt') {
+                    <label class="fw-bold">Receipt No:</label>
+                    }
+                </div>
+                <div class="col-6 mb-4">
+                    <div>{{voucherData.voucherNumber}}</div>
+                </div>
+                <div class="col-6 mb-4">
+                    <label class="fw-bold">Sum Of Rupee:</label>
+                </div>
+                <div class="col-6 mb-4">
+                    <div>{{ voucherData.amount | currency:' ' }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-6">
+                    @if(type === 'Payment' || type === 'Advance Payment'){
+                    <label class="fw-bold mb-4">Payment To:</label>
+                    }
+                    @if(type === 'DirectPayment'){
+                    <label class="fw-bold mb-4">Payment To:</label>
+                    }
+                    @if(type === 'Receipt') {
+                    <label class="fw-bold mb-4">Received from:</label>
+                    }
+                </div>
+                <div class="col-6 mb-4">
+                    @if(type === 'Advance Payment'){
+                    <div>{{voucherData.chartofacc.accountName}}</div>
+                    }
+                    @else {
+                    <div>{{voucherData.party.name}}</div>
+                    }
+                </div>
+                <div class="col-6 mb-4">
+                    <label class="fw-bold">Date:</label>
+                </div>
+                <div class="col-6 mb-4">
+                    <div>{{voucherData.date | date}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 mb-4">
+            @for(payment of voucherData.PaymentVoucher; track payment){
+            @if(payment.paymentType === 'Cheque'){
+            <div class="row">
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-6">
+                            <label class="fw-bold">Cheque No:</label>
+                        </div>
+                        <div class="col-6">
+                            <div>{{ chequeNumber }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-6">
+                            <label class="fw-bold">Cheque Date:</label>
+                        </div>
+                        <div class="col-6">
+                            <div>{{ chequeReleaseDate | date: 'YYYY/MM/dd' }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            }
+            }
+
+        </div>
+    </div>
+
+    <div class="items mb-5">
+        @if(type !== 'Advance Payment'){
+        <table>
+            <thead>
+                <tr>
+                    <th>Invoice No</th>
+                    <th>Invoice Date</th>
+                    <th>Invoice Amount</th>
+                    @if(type === 'Payment'){
+                    <th>GRN Amount</th>
+                    }
+                    <th>Settled Amount</th>
+                    <th>Due Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for(data of voucherData?.referVouchers; track data){
+                <tr>
+                    <td>{{ data.refVoucherNumber}} </td>
+                    <td>{{ data.invoiceDate | date: 'YYYY/MM/dd' }}</td>
+                    <td>{{ data.invoiceAmount | currency:' ' }}</td>
+                    @if(type === 'Payment'){
+                    <td>{{ data.value? data.value : 0 | currency:' ' }}</td>
+                    }
+                    <td>{{ data.settledAmount | currency:' ' }}</td>
+                    <td>{{ type === 'Payment'? data.value - data.settledAmount : data.invoiceAmount - data.settledAmount
+                        | currency:' '}}</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+        }
+
+    </div>
+    }
+
+    <div class="row">
+        <div class="col-6">
+            @if(voucherData?.PaymentVoucher.length > 0){
+            <p class="fs-5 fw-bold">Payments</p>
+            @for(payment of voucherData?.PaymentVoucher; track payment){
+            <div class="row">
+                <div class="col-6">
+                    <span>{{payment.paymentType}}</span>
+                </div>
+                <div class="col-6">
+                    <span>{{payment.amount | currency:'LKR '}}</span>
+                </div>
+            </div>
+            }
+            }
+        </div>
+    </div>
+
+    <nz-divider class="mb-5 mt-3"></nz-divider>
+
+    <div class="row d-flex justify-content-between">
+        <div class="col-3 text-center">
+            <div class="signature-line"></div>
+            <label>Prepared by</label>
+        </div>
+        <div class="col-3 text-center">
+            <div class="signature-line"></div>
+            <label>Checked by</label>
+        </div>
+        <div class="col-3 text-center">
+            <div class="signature-line"></div>
+            <label>Approved by</label>
+        </div>
+        <div class="col-3 text-center">
+            <div class="signature-line"></div>
+            <label>Received by</label>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p><strong>Thank you for your business!</strong></p>
+        <p>Implemented By Cybernetic</p>
+    </div>
+</div>

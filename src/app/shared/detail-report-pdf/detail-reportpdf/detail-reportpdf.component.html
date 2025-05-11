@@ -1,0 +1,99 @@
+<button class="download-btn" (click)="downloadPdf()">Download PDF</button>
+<div class="pdf-container" id="pdfContent" #pdfContent>
+  <div *ngFor="let page of pages; let pageIndex = index" class="pdf-page">
+    <!-- Header -->
+    <div class="header-container">
+      <div class="row">
+        <div class="col-3">
+          <img src="img/logo.png" alt="Logo" class="img-fluid logo" />
+        </div>
+        <div class="col-9">
+          <h1 class="company-name">HITECH LANKA (PVT) LTD</h1>
+          <div class="company-details">
+            <span>No 932A, Kotte Road, Ethul Kotte | Com.Reg. No PV-00283449</span><br>
+            <span>Hot Line: 0727 205 205</span><br>
+            <span>Email: {{email}} | Website: www.hitechlanka.lk</span>
+          </div>
+        </div>
+      </div>
+      <div class="date-range">
+        <p><strong>Filtered by Date Range:</strong></p>
+        <p *ngIf="startDate && endDate">{{startDate}} - {{endDate}}</p>
+        <p *ngIf="!startDate || !endDate">No date range filter applied</p>
+      </div>
+      <h2 class="report-title">{{getReportTitle()}}</h2>
+    </div>
+
+    <!-- Table Container -->
+    <table class="report-table">
+      <thead>
+        <tr class="table-header">
+          <th class="date-col">Invoice Date</th>
+          <th class="customer-col">Name of Customer</th>
+          <th class="product-col">Product</th>
+          <th class="qty-col">Quantity</th>
+          <th class="mrp-col">MRP</th>
+          <th class="discount-col">Discount</th>
+          <th class="amount-col">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let item of page; let i = index">
+          <!-- Invoice Header -->
+          <tr class="invoice-header">
+            <td colspan="3">
+              <strong>Invoice No {{ item.voucherNumber }}</strong>
+            </td>
+            <td colspan="4">
+              <strong>Ref No {{ item.refNumber }}</strong>
+            </td>
+          </tr>
+          <!-- Customer Info -->
+          <tr class="customer-info">
+            <td>{{ item.date | date:'yyyy-MM-dd' }}</td>
+            <td colspan="6">
+              <ng-container *ngIf="type === 'Stock Transfer'">
+                <ng-container *ngFor="let center of item.VoucherCenter; let j = index">
+                  {{ center.center.centerName }}
+                </ng-container>
+              </ng-container>
+              <ng-container *ngIf="type !== 'Stock Transfer'">
+                {{ item.party?.name }}
+              </ng-container>
+            </td>
+          </tr>
+          <!-- Product Rows -->
+          <ng-container *ngFor="let proitem of item.voucherProduct; let k = index">
+            <tr class="product-row">
+              <td></td>
+              <td>{{ k + 1 }}</td>
+              <td class="product-name">{{ proitem.product.printName }}</td>
+              <td class="text-right">{{ proitem.quantity }}</td>
+              <td class="text-right">{{ proitem.MRP | currency: ' ' }}</td>
+              <td class="text-right">{{ proitem.discount }}</td>
+              <td class="text-right">{{ proitem.amount | currency: ' ' }}</td>
+            </tr>
+          </ng-container>
+          <!-- Invoice Total -->
+          <tr class="invoice-total">
+            <td colspan="6" class="text-right">Invoice Amount</td>
+            <td class="text-right"><strong>{{ item.amount }}</strong></td>
+          </tr>
+          <!-- Spacing Row -->
+          <tr class="spacing-row"><td colspan="7"></td></tr>
+        </ng-container>
+      </tbody>
+    </table>
+
+    <!-- Page Total (only on last page) -->
+    <div *ngIf="pageIndex === pages.length - 1" class="grand-total">
+      <strong>Grand Total: {{ grandTotal }}</strong>
+    </div>
+
+    <!-- Page Footer -->
+    <div class="page-footer">
+      <span>Implemented By Cybernetic</span>
+      <span>Page {{ pageIndex + 1 }} of {{ pages.length }}</span>
+    </div>
+  </div>
+</div>

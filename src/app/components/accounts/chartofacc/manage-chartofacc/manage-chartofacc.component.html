@@ -1,0 +1,54 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <h3>{{action}} {{name}}</h3>
+    <form class="pt-4" [formGroup]="accForm">
+        <div class="row mb-3">
+            @if(param === "Category"){
+            <div class="col-12 mb-3">
+                <nz-form-control nzErrorTip="Account Type should not be empty">
+                    <label>Account Type</label>
+                    <nz-select nzShowSearch formControlName="accCategoryId" class="custom-select">
+                        <nz-option *ngFor="let accCategory of accCategoryList" [nzValue]="accCategory.id"
+                            [nzLabel]="accCategory.accCategory"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </div>
+            }
+            @if(param === "Account"){
+            <div class="col-12 mb-3">
+                <nz-form-control nzErrorTip="Account Sub Category should not be empty">
+                    <label>Account Sub Category</label>
+                    <nz-select nzShowSearch formControlName="accsubCategoryId" class="custom-select">
+                        <nz-option *ngFor="let accSubCategory of accSubCategoryList" [nzValue]="accSubCategory.id"
+                            [nzLabel]="accSubCategory.accountSubName"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </div>
+            <div class="col-12 mb-3">
+                <nz-form-control nzErrorTip="Account Group should not be empty">
+                    <label>Account Group</label>
+                    <nz-select nzShowSearch formControlName="accGroupId" class="custom-select">
+                        <nz-option *ngFor="let accGrp of accGroupList" [nzValue]="accGrp.id"
+                            [nzLabel]="accGrp.accountGroupName"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </div>
+            <div class="col-12 mb-3">
+                <nz-form-control nzErrorTip="Openeing balance should not be empty">
+                    <label>Opening Balance</label>
+                    <input type="number" nz-input formControlName="Opening_Balance" nzSize="large" />
+                </nz-form-control>
+            </div>
+            }
+            <div class="col-12 mb-3">
+                <nz-form-control nzErrorTip="{{name}} name should not be empty">
+                    <label>{{name}} Name</label>
+                    <input type="text" nz-input formControlName="name" nzSize="large" />
+                </nz-form-control>
+            </div>
+            
+        </div>
+        <div class="footer d-flex justify-content-end">
+            <button class="primary px-5" (click)="submit()">{{action}}</button>
+        </div>
+    </form>
+</nz-spin>

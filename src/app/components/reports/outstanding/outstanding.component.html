@@ -1,0 +1,174 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div class="container-fluid px-4 pt-2 m-0">
+        <div class="header mb-3 d-flex justify-content-between">
+            <h2>{{type}}</h2>
+            <div>
+                <button class="primary me-3" (click)="reportSelection()">
+                    <span class="me-2" nz-icon nzType="export"></span>Export
+                </button>
+
+                <button class="primary me-3" (click)="exportsummaryToCSV()">
+                    <span class="me-2" nz-icon nzType="export"></span>Export Summary as Excel
+                  </button>
+            </div>
+        </div>
+        <form [formGroup]="outstandingForm">
+            <div class="row mb-3">
+                <div class="col-3">
+                    <h5>Total Outstanding: <br> {{totalOutstanding | currency : ' '}}</h5>
+                </div>
+                <div class="col-3">
+                    <div class="flex-grow-1 me-3">
+                        <nz-input-group nzPrefixIcon="search" nzSize="large" class="rounded-3 shadowform">
+                            <input nz-input placeholder="Search" nz-tooltip="Search" nzTooltipTrigger="focus"
+                                [formControl]="searchControl" nzTooltipPlacement="topLeft" />
+                        </nz-input-group>
+                    </div>
+                </div>
+                @if(isBlocked !== true && type === 'Customer Outstanding'){
+                <div class="col-2">
+                    <nz-form-control nzErrorTip="User is required!">
+                        <!-- <label>Customer Details</label> -->
+                        <nz-select nzShowSearch formControlName="userId" class="custom-select shadowform"
+                            nzPlaceHolder="Select User">
+                            <nz-option [nzValue]="''" [nzLabel]="'All Users'"></nz-option>
+                            <nz-option *ngFor="let user of userList" [nzValue]="user.id"
+                                [nzLabel]="user.name"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </div>
+                }
+
+                <div class="col-2">
+                    <nz-form-control nzErrorTip="Customer is required!">
+                        <!-- <label>Customer Details</label> -->
+                        <nz-select nzShowSearch formControlName="partyId" class="custom-select shadowform">
+                            <nz-option [nzValue]="''"
+                                [nzLabel]='type === "Customer Outstanding"? "All Customers" : "All Suppliers"'></nz-option>
+                            <nz-option *ngFor="let party of partyList" [nzValue]="party.id"
+                                [nzLabel]="party.name"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </div>
+                <div class="col-2 text-end">
+                    <button class="primary w-100" (click)="applyDateFilter()">
+                        <span nz-icon nzType="filter"></span> Filter</button>
+                </div>
+                <!-- <nz-range-picker [(ngModel)]="date" (ngModelChange)="onChange($event)"></nz-range-picker> -->
+
+            </div>
+
+        </form>
+
+        <nz-table #basicTable [nzData]="filteredData" class="shadowform" [nzPageSize]="pageSize"
+            (nzPageIndexChange)="onPageChange($event)">
+            <thead>
+                <tr>
+                    <th nzWidth="1%"></th>
+                    <th nzWidth="1%">No</th>
+                    <th nzWidth="10%">Invoice Date</th>
+                    <th nzWidth="10%" class="text-truncate">Invoice No</th>
+                    @if(type === 'Customer Outstanding'){
+                    <th nzWidth="25%">Name of Customer</th>
+                    <th nzWidth="10%">Days</th>
+                    <th nzWidth="10%">Due Days</th>
+                    }@else {
+                    <th nzWidth="30%">Name of Supplier</th>
+                    }
+                    <th nzWidth="11%">Return Amount</th>
+                    <th nzWidth="11%">Paid Amount</th>
+                    <!-- <th nzWidth="11%">Payable Amount</th> -->
+                    <th nzWidth="11%">Invoice Amount</th>
+                    @if(type !== 'Customer Outstanding'){
+                    <th nzWidth="11%">Supplier Amount</th>
+                    }
+                    <th nzWidth="11%">Outstanding</th>
+                    @if(type === 'Customer Outstanding'){
+                    <th nzWidth="16%">Salesman</th>
+                    }
+                    @else{
+                    <th nzWidth="16%">Created By</th>
+                    }
+                    <!-- <th>Action</th> -->
+                </tr>
+            </thead>
+            <tbody>
+                @for(data of basicTable.data; track data; let i = $index){
+                <tr>
+                    <td [(nzExpand)]="data.expand" (click)="onExpandRow(data)"></td>
+                    <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+                    <td>{{ data.date | date:'yyyy-MM-dd'}}</td>
+                    <td>{{ data.voucherNumber }}</td>
+                    @if(type === 'Stock Transfer'){
+                    @for(center of data.VoucherCenter; track center){
+                    <td>{{ center.center.centerName }}</td>
+                    }
+                    }@else{
+                    <td>{{ data.party?.name }}</td>
+                    @if(type === 'Customer Outstanding'){
+                    <td>{{ data.dueDays ? data.dueDays : 0 }}</td>
+                    <td class="text-danger">{{ calculateDueDays(data.date,data.dueDays) }}</td>
+                    }
+                    <td>{{ (data.returnValue? data.returnValue : 0) | currency:' ' }}</td>
+                    <td>{{ (data.paidValue? data.paidValue : 0) | currency:' ' }}</td>
+                    <td>{{ data.amount | currency:' ' }}</td>
+                    @if(type !== 'Customer Outstanding'){
+                    <td>{{ data.value | currency:' ' }}</td>
+                    }
+                    <td>{{ calculateOutstanding(data.amount, data.paidValue, data.returnValue, data.value) | currency:'
+                        ' }}</td>
+                    <td>{{ data.user?.name }}</td>
+                    }
+                    <!-- <td class="d-flex justify-content-center">
+                        <button nz-button nz-tooltip="Download" nzType="primary" nzShape="circle"
+                            nzTooltipPlacement="bottom" class="me-3">
+                            <span nz-icon nzType="download" (click)="pdfDownload(data)"></span>
+                        </button>
+                    </td> -->
+                </tr>
+                <tr [nzExpand]="data.expand">
+                    <nz-table #innerTable [nzData]="voucherProduct" nzSize="middle" [nzShowPagination]="false">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                @if(voucherType === "INVOICE"){
+                                <th>Unit Price</th>
+                                }
+                                @else {
+                                <th>Cost</th>
+                                }
+                                <th>Quantity</th>
+                                <th>MRP</th>
+                                <th>Discount</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+            <tbody>
+                @for (data of innerTable.data; track data) {
+                <tr>
+                    <td>{{ data.product.printName }}</td>
+                    @if(voucherType === "INVOICE"){
+                    <td>{{ data.MRP }}</td>
+                    }
+                    @else {
+                    <td>{{ data.cost | currency:' ' }}</td>
+                    }
+
+                    <td>{{ data.quantity }}</td>
+                    @if(voucherType === "INVOICE"){
+                    <td>{{ getDiscountRate(data.discount, data.MRP) | currency:' ' }}</td>
+                    }@else {
+                    <td>{{ getDiscountRate(data.discount, data.cost) | currency:' ' }}</td>
+                    }
+                    <td>{{ data.discount }}</td>
+                    <td>{{ getAmount(data) | currency:' ' }}</td>
+                </tr>
+                }
+            </tbody>
+        </nz-table>
+        </tr>
+        }
+        </tbody>
+        </nz-table>
+    </div>
+</nz-spin>

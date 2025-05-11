@@ -1,0 +1,25 @@
+
+
+  <nz-spin [nzSpinning]="isSpinning" nzSize="large">
+    <div class="container-fluid px-4 pt-2 m-0">
+      <div class="header mb-3 d-flex justify-content-between">
+        <h2>Select Report Type</h2>
+      </div>
+      <nz-segmented 
+        [nzOptions]="options" 
+        [(ngModel)]="mode" 
+        (ngModelChange)="handleModelChange($event)" 
+        nzBlock="true" 
+        nzSize="large">
+      </nz-segmented>
+      <div class="mt-4">
+        <p>Selected report type: <strong>{{ mode }}</strong></p>
+      </div>
+      <div>
+        <button nz-button nzType="primary" class="w-100 mt-4" (click)="onButtonClick()">
+          <span nz-icon nzType="file-pdf" nzTheme="outline"></span>
+          Generate {{ mode }} Report
+        </button>
+      </div>
+    </div>
+  </nz-spin>

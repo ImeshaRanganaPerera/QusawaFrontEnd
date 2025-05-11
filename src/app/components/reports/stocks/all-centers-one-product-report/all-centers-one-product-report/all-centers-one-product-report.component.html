@@ -1,0 +1,42 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div class="container-fluid px-4 pt-2 m-0">
+      <div class="header mb-3 d-flex justify-content-between">
+        <!-- <h2>All Centers Stock Report for {{productName}}</h2> -->
+        <p>Date: {{reportDate | date:'mediumDate'}}</p>
+      </div>
+      <div>
+        <button class="primary me-3" (click)="reportSelection()">
+          <span class="me-2" nz-icon nzType="export"></span>Export
+        </button>
+      </div>
+    </div>
+    <div class="d-flex mb-2 align-items-center">
+      <div class="flex-grow-1 me-3">
+        <nz-input-group nzPrefixIcon="search" nzSize="large" class="rounded-3 shadowform">
+          <input nz-input placeholder="Search" nz-tooltip="Search" nzTooltipTrigger="focus"
+            [formControl]="searchControl" nzTooltipPlacement="topLeft" />
+        </nz-input-group>
+      </div>
+      <nz-range-picker [(ngModel)]="date" (ngModelChange)="onChange($event)"></nz-range-picker>
+      <button nz-button nzType="primary" class="ms-2" (click)="applyDateFilter()">
+        <span nz-icon nzType="filter"></span>Filter
+      </button>
+    </div>
+    <div class="container-fluid">
+      
+      <nz-table #basicTable [nzData]="stockData" [nzShowPagination]="true" class="shadowform">
+        <thead>
+          <tr>
+            <th>Center Name</th>
+            <th>Product Quantity</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of basicTable.data">
+            <td>{{data.centerName}}</td>
+            <td>{{data.quantity}}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </nz-spin>

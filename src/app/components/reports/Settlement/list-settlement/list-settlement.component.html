@@ -1,0 +1,132 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div class="container-fluid px-4 pt-2 m-0">
+        <div class="header mb-3 d-flex justify-content-between">
+            <div class="header mb-3 d-flex justify-content-between">
+                <h2>Settlement Report</h2>
+
+            </div>
+            <!-- <h2>{{type}}</h2> -->
+            <div>
+                <button class="primary me-3" (click)="reportSelection()">
+                    <span class="me-2" nz-icon nzType="export"></span>Export
+                </button>
+            </div>
+        </div>
+        <div class="d-flex mb-2 align-items-center">
+            <div class="flex-grow-1 me-3">
+                <nz-input-group nzPrefixIcon="search" nzSize="large" class="rounded-3 shadowform">
+                    <input nz-input placeholder="Search" nz-tooltip="Search" nzTooltipTrigger="focus"
+                        [formControl]="searchControl" nzTooltipPlacement="topLeft" />
+                </nz-input-group>
+            </div>
+            <nz-range-picker [(ngModel)]="date" (ngModelChange)="onChange($event)"></nz-range-picker>
+            <button nz-button nzType="primary" class="ms-2" (click)="applyDateFilter()">
+                <span nz-icon nzType="filter"></span>Filter
+            </button>
+        </div>
+        <nz-table #basicTable [nzData]="filteredData" class="shadowform" [nzPageSize]="pageSize"
+            (nzPageIndexChange)="onPageChange($event)">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>No</th>
+                    <th>Date</th>
+                    <th>Voucher Number</th>
+                    <th>Cash</th>
+                    <th>Online Transfer</th>
+                    <th>Cheque</th>
+                    <th>Credit</th>
+                    <th>Visa</th>
+                    <th>Mastercard</th>
+                    <th>Amex</th>
+                    <th>Total Amount</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for(data of basicTable.data; track data; let i = $index) {
+                <tr>
+                    <td [(nzExpand)]="data.expand"></td>
+                    <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+                    <td>{{ data.date | date:'yyyy-MM-dd' }}</td>
+                    <td>{{ data.voucherNumber }}</td>
+                    <td>{{ data.PaymentVoucher | getPaymentAmount:'Cash' | currency: ' ' }}</td>
+                    <td>{{ data.PaymentVoucher | getPaymentAmount:'Online Transfer'| currency: ' ' }}</td>
+                    <td>{{ data.PaymentVoucher | getPaymentAmount:'Cheque'| currency: ' ' }}</td>
+                    <td>{{ data.PaymentVoucher | getPaymentAmount:'Credit'| currency: ' ' }}</td>
+                    <td>{{ data.PaymentVoucher | getPaymentAmount:'Visa'| currency: ' ' }}</td>
+                    <td>{{ data.PaymentVoucher | getPaymentAmount:'Mastercard'| currency: ' ' }}</td>
+                    <td>{{ data.PaymentVoucher | getPaymentAmount:'Amex'| currency: ' ' }}</td>
+                    <td>{{ data.amount | currency: ' ' }}</td>
+                    <td>
+                        <button nz-button nz-tooltip="Download" nzType="primary" nzShape="circle"
+                            nzTooltipPlacement="bottom" class="me-3" (click)="pdfDownload(data)">
+                            <span nz-icon nzType="download"></span>
+                        </button>
+                    </td>
+                </tr>
+                <tr [nzExpand]="data.expand">
+                    <nz-table #innerTable [nzData]="data.voucherProduct" nzSize="middle" [nzShowPagination]="false"
+                        [nzPageSize]="1000">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Product Name</th>
+                                <th>Cost</th>
+                                <th>Quantity</th>
+                                <th>MRP</th>
+                                <th>Discount</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+            <tbody>
+                @for (product of innerTable.data; track product; let i = $index) {
+                <tr>
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ product.product?.printName }}</td>
+                    <td>{{ product.cost | currency: ' ' }}</td>
+                    <td>{{ product.quantity }}</td>
+                    <td>{{ product.MRP | currency: ' ' }}</td>
+                    <td>{{ product.discount }}</td>
+                    <td>{{ getAmount(product) | currency:' ' }}</td>
+                </tr>
+                }
+            </tbody>
+        </nz-table>
+        </tr>
+        }
+        </tbody>
+        <tfoot nzSummary>
+            <tr>
+                <td colspan="4" class="text-center">
+                    <strong>Total</strong>
+                </td>
+                <td>
+                    <strong nz-typography>{{totalCash | currency: ' ' }}</strong>
+                </td>
+                <td>
+                    <strong nz-typography>{{onlineTransfer | currency: ' '}}</strong>
+                </td>
+                <td>
+                    <strong nz-typography>{{cheque | currency: ' '}}</strong>
+                </td>
+                <td>
+                    <strong nz-typography>{{credit | currency: ' '}}</strong>
+                </td>
+                <td>
+                    <strong nz-typography>{{visa| currency: ' '}}</strong>
+                </td>
+                <td>
+                    <strong nz-typography>{{mastercard| currency: ' '}}</strong>
+                </td>
+                <td>
+                    <strong nz-typography>{{amex| currency: ' '}}</strong>
+                </td>
+                <td>
+                    <strong nz-typography>{{totalAmount| currency: ' '}}</strong>
+                </td>
+            </tr>
+        </tfoot>
+        </nz-table>
+    </div>
+</nz-spin>

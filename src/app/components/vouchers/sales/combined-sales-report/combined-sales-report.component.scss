@@ -1,0 +1,161 @@
+.combined-sales-report {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+}
+
+.filter-form {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+  margin-top: 30px;
+  padding: 15px;
+  border-radius: 8px;
+  max-width: 470px;
+  background-color: #f9f9f9;
+}
+
+.filter-form label {
+  margin-right: 10px;
+}
+
+.filter-form input[type="date"] {
+  padding: 8px;
+  height: 36px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.filter-form button {
+  padding: 8px 16px;
+  background-color: #343f8f;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.filter-form button:hover {
+  background-color: #afbc4f;
+}
+
+.sales-report {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+  margin-bottom: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+}
+
+.sales-report th, .sales-report td {
+  border: 1px solid #ddd;
+  padding: 15px;
+  text-align: left;
+}
+
+.sales-report th {
+  background-color: #f2f2f2;
+}
+
+.expanded-details {
+  background-color: #f9f9f9;
+}
+
+.expanded-details td {
+  padding: 0;
+}
+
+.payment-info {
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+  background-color: #fff;
+}
+
+.item-details {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+}
+
+.item-details th, .item-details td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+
+.item-details th {
+  background-color: #f2f2f2;
+}
+
+.payment-totals {
+  margin-top: 20px;
+  text-align: center;
+  justify-content: center;
+}
+
+.payment-totals ul {
+  list-style-type: none;
+  padding: 0;
+  display: inline-block;
+}
+
+.payment-totals li {
+  margin-bottom: 5px;
+}
+
+/* New styles for highlighting */
+.sales-report tr.highlighted {
+  background-color: #e3f2fd;
+}
+
+.sales-report button {
+  background-color: #343f8f;
+  color: white;
+}
+
+.sales-report button:hover {
+  background-color: #1976D2;
+}
+
+.note-section {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.note-section label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.note-section textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+.download-button-container {
+  display: flex;
+  justify-content: center; /* Centers the button horizontally */
+  margin-top: 20px;
+}
+
+button {
+  padding: 8px 16px;
+  background-color: #343f8f;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+button:hover {
+  background-color: #1976D2;
+}

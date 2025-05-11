@@ -1,0 +1,72 @@
+<nz-layout class="layout">
+    <nz-sider nzWidth="260px" nzCollapsible nzBreakpoint="lg" [nzCollapsedWidth]="0" id="style-3">
+        <div class="logo mb-4">
+            <img src="img/logo.png" class="img-fluid" width="250px" height="250px">
+        </div>
+        <ul nz-menu nzMode="inline" class="mt-5">
+            <ng-container *ngFor="let data of filteredList">
+                <!-- Main Label as Dropdown -->
+                <li nz-submenu [nzTitle]="data.mainlable">
+                    <ul>
+                        <!-- Render Main Menu Items -->
+                        <ng-container *ngFor="let menu of data.menu">
+                            <li *ngIf="!menu.submenu" nz-menu-item [routerLink]="menu.routerLink"
+                                [queryParams]="menu?.queryParams" routerLinkActive="ant-menu-item-selected">
+                                <span nz-icon [nzType]="menu.icon"></span>
+                                <span>{{ menu.label }}</span>
+                            </li>
+
+                            <!-- Render Submenu if Available -->
+                            <li *ngIf="menu.submenu" nz-submenu [nzTitle]="menu.label" [nzIcon]="menu.icon">
+                                <ul>
+                                    <li *ngFor="let sub of menu.submenu" nz-menu-item [routerLink]="sub.routerLink"
+                                        [queryParams]="sub?.queryParams" routerLinkActive="ant-menu-item-selected">
+                                        <span>{{ sub.label }}</span>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ng-container>
+                    </ul>
+                </li>
+            </ng-container>
+        </ul>
+    </nz-sider>
+    <nz-layout>
+        <nz-header class="d-flex justify-content-between">
+            <div class="header-content">
+                <div class="greeting">
+                    <p class="name">{{name}}</p>
+                    <p class="date">{{ currentDate | date:'fullDate' }}</p>
+                </div>
+            </div>
+            <div class="header-end">
+                <!-- <a class="me-4" nz-dropdown nzTrigger="click" [nzDropdownMenu]="notification">
+                    <nz-badge [nzCount]="200"><span nz-icon nzType="bell"></span></nz-badge>
+                </a> -->
+                <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu">
+                    <span nz-icon nzType="setting"></span>
+                </a>
+                <nz-dropdown-menu #menu="nzDropdownMenu">
+                    <ul nz-menu>
+                        <li nz-menu-item (click)="openUserProfile()"><span nz-icon nzType="user" nzTheme="outline"
+                                class="me-4"></span>Profile</li>
+                        <li nz-menu-item (click)="logout()"><span nz-icon nzType="logout" nzTheme="outline"
+                                class="me-4"></span>Log out</li>
+                    </ul>
+                </nz-dropdown-menu>
+                <nz-dropdown-menu #notification="nzDropdownMenu">
+                    <ul nz-menu>
+                        <!-- <li nz-menu-item (click)="openUserProfile()"><span nz-icon nzType="user" nzTheme="outline"
+                                class="me-4"></span>Profile</li>
+                        <li nz-menu-item (click)="logout()"><span nz-icon nzType="logout" nzTheme="outline"
+                                class="me-4"></span>Log out</li> -->
+                    </ul>
+                </nz-dropdown-menu>
+            </div>
+        </nz-header>
+        <nz-content id="style-3-1">
+            <router-outlet></router-outlet>
+        </nz-content>
+        <nz-footer>Cybernetic ©{{currentDate | date:'YYYY'}} Implement By Cybernetic</nz-footer>
+    </nz-layout>
+</nz-layout>

@@ -1,0 +1,311 @@
+@page {
+    size: A4;
+    margin: 0;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+  }
+  
+  .page-container {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 20px auto;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .voucher {
+    padding: 20mm;
+    box-sizing: border-box;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; 
+    margin-bottom: 20px;
+  }
+  
+  .logo {
+    max-width: 240px; 
+    height: auto;
+    margin-right: 15px;
+  }
+  
+  .company-details {
+    text-align: left; 
+    margin: 0;
+  }
+  
+  .company-details p {
+    margin: 2px 0; 
+  }
+  
+  h1 {
+    color: #333;
+    margin: 50px 0;
+    font-size: 24px;
+    font-weight: bolder;
+    text-align: center;
+  }
+  
+  .info-grid {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column; 
+    gap: 10px; 
+    margin-bottom: 40px;
+  }
+  
+  .info-item {
+    display: flex; 
+    align-items: center; 
+  }
+  
+  label {
+    font-weight: bold;
+    color: #555;
+    margin-right: 30px; 
+    flex: 0 0 150px; 
+  }
+  
+  .output-line {@page {
+    size: A4;
+    margin: 0;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+  }
+  
+  .page-container {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0px auto;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .voucher {
+    padding: 10mm;
+    box-sizing: border-box;
+  }
+  
+  .header {
+    display: flex;
+    align-items: flex-start;
+  }
+  
+  .logo {
+    max-width: 200px;
+    height: auto;
+    margin-right: 17px;
+    margin-top: 0px;
+  }
+  
+  .company-details {
+    text-align: left;
+    margin: 3px;
+  }
+  
+  .company-details p {
+    margin: 0px 0;
+  }
+  
+  h1 {
+    color: #333;
+    margin: 20px 0;
+    font-size: 24px;
+    font-weight: bolder;
+    text-align: center;
+  }
+  
+  h4 {
+    margin-top: 23px;
+  }
+  
+  .info-grid {
+    margin-top: 23px;
+    display: flex;
+    flex-direction: row; 
+    justify-content: space-between; 
+    gap: 4px;
+    margin-bottom: 25px;
+  }
+  
+  
+  .info-item {
+    display: flex;
+    align-items: center;
+    flex: 1; 
+  }
+  
+  label {
+    font-weight: bold;
+    color: #555;
+    margin-right: 10px;
+    flex: 0 0 150px; /* Adjusted to align text and output */
+  }
+  
+  .output-line {
+    padding: 0px 0;
+    color: #333;
+    font-size: 14px;
+    flex-grow: 1; /* Ensures the output line grows to fill space */
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+  }
+  
+  th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+  
+  .signature {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+  }
+  
+  .signature div {
+    text-align: center;
+    flex-basis: 30%;
+  }
+  
+  .signature-line {
+    width: 140px;
+    border-top: 1px solid #191818;
+    margin-top: 50px;
+  }
+  
+  .footer {
+    text-align: center;
+    margin-top: 30px;
+    padding: 15px;
+    background-color: #f8f9fa;
+  }
+  
+  .download-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #ffa726;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+  }
+  
+  .download-btn:hover {
+    background-color: #e68a00;
+  }
+  
+  @media print {
+    body {
+        background-color: white;
+    }
+    .page-container {
+        box-shadow: none;
+        margin: 0;
+    }
+    .download-btn {
+        display: none;
+    }
+  }
+  
+    padding: 15px 0;
+    color: #333;
+    font-size: 14px;
+    flex-grow: 1;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 40px; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+  }
+  
+  th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+  
+  .signature {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 50px;
+  }
+  
+  .signature div {
+    text-align: center;
+    flex-basis: 30%;
+  }
+  
+  .signature-line {
+    width: 140px;
+    border-top: 1px solid #191818;
+    margin-top: 50px;
+  }
+  
+  .footer {
+    text-align: center;
+    margin-top: 30px;
+    padding: 15px;
+    background-color: #f8f9fa;
+  }
+  
+  .download-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #ffa726;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+  }
+  
+  .download-btn:hover {
+    background-color: #e68a00;
+  }
+  
+  @media print {
+    body {
+        background-color: white;
+    }
+    .page-container {
+        box-shadow: none;
+        margin: 0;
+    }
+    .download-btn {
+        display: none;
+    }
+  }
+  

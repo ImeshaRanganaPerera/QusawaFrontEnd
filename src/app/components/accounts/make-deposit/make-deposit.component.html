@@ -1,0 +1,113 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div class="container-fluid px-4 pt-1 m-0">
+        <div class="header mb-1 d-flex justify-content-between">
+            <h2>Make Deposit</h2>
+        </div>
+        <div class="card p-4">
+            <form [formGroup]="makeDepositForm">
+                <div class="row">
+                    <div class="col-md-3 col-sm-12 mb-4">
+                        <nz-form-control nzErrorTip="Please input Date!">
+                            <label>Date</label><br />
+                            <nz-date-picker [nzDisabledDate]="disabledDate" class="w-100" formControlName="date"
+                                nzSize="large"></nz-date-picker>
+                        </nz-form-control>
+                    </div>
+                    <div class="col-md-3 col-sm-12 mb-4">
+                        <nz-form-control>
+                            <label>Make Deposit Number</label>
+                            <input type="text" formControlName="voucherNumber" nz-input nzSize="large" />
+                        </nz-form-control>
+                    </div>
+                    <div class="col-md-3 col-sm-12 mb-4  ">
+                        <nz-form-control nzErrorTip="Account should not be empty">
+                            <label>Deposit To</label>
+                            <nz-select nzShowSearch formControlName="chartofAccountId" class="custom-select">
+                                <nz-option *ngFor="let acc of makeDepostAccList" [nzValue]="acc.id"
+                                [nzLabel]="acc.accountName"></nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                    </div>
+                    <div class="col-md-3 col-sm-12 mb-4">
+                        <nz-form-control>
+                            <label>Reference Number</label>
+                            <input type="text" nz-input formControlName="refNumber" nzSize="large" />
+                        </nz-form-control>
+                    </div>
+                    <div class="col-md-12 col-sm-12 mb-4">
+                        <nz-form-control>
+                            <label>Memo</label>
+                            <input type="text" nz-input formControlName="note" nzSize="large" />
+                        </nz-form-control>
+                    </div>
+                </div>
+            </form>
+
+            <nz-divider class="m-0 mb-3"></nz-divider>
+
+            <!-- Editable Table -->
+            <nz-table #editRowTable [nzShowPagination]="false" nzBordered [nzData]="listOfData">
+                <thead>
+                    <tr>
+                        <th nzWidth="50%">Account</th>
+                        <!-- <th nzWidth="20%">Debit</th> -->
+                        <th nzWidth="40%">Amount</th>
+                        <th nzWidth="10%" class="text-center">Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of listOfData; let i = index" class="editable-row">
+                        <td>
+                            <nz-select class="w-100" [(ngModel)]="data.accountId" nzAllowClear nzShowSearch
+                                nzPlaceHolder="Select Account">
+                                <nz-option *ngFor="let acc of chartofaccList" [nzValue]="acc.id"
+                                    [nzLabel]="acc.accountName"></nz-option>
+                            </nz-select>
+                        </td>
+                        <!-- <td>
+                            <input type="number" nz-input [(ngModel)]="data.debit" [disabled]="data.isDebitDisabled"
+                                (ngModelChange)="onAmountChange(data)" />
+                        </td> -->
+                        <td>
+                            <input type="number" nz-input [(ngModel)]="data.amount"
+                                (ngModelChange)="onAmountChange(data)" />
+                        </td>
+                        <td class="text-center">
+                            <a nz-popconfirm nzPopconfirmTitle="Sure to delete?" (nzOnConfirm)="deleteRow(data.id)">
+                                <i nz-icon nzType="delete" nzTheme="twotone" nzTwotoneColor="#ed2121"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+
+            </nz-table>
+
+            <!-- Add Row Button -->
+            <div class="mt-3">
+                <button (click)="addRow()" class="primary">
+                    <i nz-icon nzType="plus"></i> Add Row
+                </button>
+            </div>
+
+            <!-- Total Amount Section -->
+            <div class="row justify-content-end align-items-center mt-3">
+                <div class="col text-end">
+                    <h5>Total Amount</h5>
+                </div>
+                <div class="col-3 mb-2">
+                    <nz-form-control nzErrorTip="Please input the value!">
+                        <input type="text" nz-input nzSize="default" [disabled]="true" [value]="totalAmount" readonly />
+                    </nz-form-control>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="process mt-5">
+                <button class="primary w-100" nz-popconfirm nzPopconfirmTitle="Are you sure Save this Jorunal Entry"
+                    (nzOnConfirm)="submit()" (nzOnCancel)="cancel()">
+                    <i nz-icon nzType="save"></i> Save Jorunal Entry
+                </button>
+            </div>
+        </div>
+    </div>
+</nz-spin>

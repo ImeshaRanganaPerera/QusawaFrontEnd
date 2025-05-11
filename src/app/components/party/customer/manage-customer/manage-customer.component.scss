@@ -1,0 +1,58 @@
+nz-form-control label {
+  font-size: 18px;
+  color: var(--light-Db-FontColor);
+  margin-bottom: 5px;
+}
+
+nz-form-control input {
+  font-size: large;
+  color: rgb(0, 0, 0);
+  background-color: var(--input-color);
+  border-radius: 8px;
+  border-color: var(--input-bordercolor);
+}
+
+nz-form-control textarea {
+  font-size: large;
+  color: rgb(0, 0, 0);
+  background-color: var(--input-color);
+  border-radius: 8px;
+  border-color: var(--input-bordercolor);
+}
+
+.custom-select {
+  font-size: large;
+  color: rgb(0, 0, 0);
+  background-color: var(--input-color);
+  border-radius: 8px;
+  border-color: var(--input-bordercolor);
+}
+
+:host ::ng-deep .upload-list-inline .ant-upload-list-item {
+  float: left;
+  width: 200px;
+  margin-right: 8px;
+}
+
+:host ::ng-deep .upload-list-inline [class*='-upload-list-rtl'] .ant-upload-list-item {
+  float: right;
+}
+
+:host ::ng-deep .upload-list-inline .ant-upload-animate-enter {
+  animation-name: uploadAnimateInlineIn;
+}
+
+:host ::ng-deep .upload-list-inline .ant-upload-animate-leave {
+  animation-name: uploadAnimateInlineOut;
+}
+
+#map {
+  width: 100%;
+  height: 400px; /* Adjust height as necessary */
+  border: 1px solid #ccc; /* Optional border for visibility */
+}
+
+:host ::ng-deep .avatar-uploader > .ant-upload {
+  width: 128px;
+  height: 128px;
+}

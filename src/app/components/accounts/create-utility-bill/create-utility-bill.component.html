@@ -1,0 +1,93 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div class="container-fluid px-4 pt-2 m-0">
+        <div class="header mb-3 d-flex justify-content-between">
+            <h2>Create Utility Bill</h2>
+        </div>
+        <div class="card p-4">
+            <form [formGroup]="utilityFrom">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 mb-4">
+                        <div class="row">
+                            <div class="col-md-3 col-sm-12 mb-4">
+                                <nz-form-control nzErrorTip="Please input Date!">
+                                    <label>Date</label><br>
+                                    <nz-date-picker [nzDisabledDate]="disabledDate" class="w-100" formControlName="date"
+                                        nzSize="large"></nz-date-picker>
+                                </nz-form-control>
+                            </div>
+                            <div class="col-md-3 col-sm-12 mb-4">
+                                <nz-form-control>
+                                    <label>Utility Bill Number</label>
+                                    <input type="text" nz-input formControlName="voucherNumber" nzSize="default" />
+                                </nz-form-control>
+                            </div>
+                            <div class="col-md-3 col-sm-12 mb-4">
+                                <nz-form-control nzErrorTip="Please Select Account!">
+                                    <div class="d-flex justify-content-between">
+                                        <label>Liability Account</label>
+                                        <!-- <div>
+                                            <label class="me-3">To GRN</label>
+                                            <input type="checkbox" formControlName="isChecked" (click)="check()" />
+                                        </div> -->
+                                    </div>
+                                    <nz-select nzShowSearch formControlName="chartofaccId" class="custom-select">
+                                        <nz-option *ngFor="let liability of liabilityList" [nzValue]="liability.id"
+                                        [nzLabel]="liability.accountName"></nz-option>
+                                    </nz-select>
+                                </nz-form-control>
+                            </div>
+                            <div class="col-md-3 col-sm-12 mb-4">
+                                <nz-form-control nzErrorTip="Please Select Account!">
+                                    <label>Expencess Account</label>
+                                    <nz-select nzShowSearch formControlName="expencessAccid" class="custom-select">
+                                        <nz-option [nzValue]="'IMPORT'" [nzLabel]="'IMPORT CONTROL ACCOUNT'"></nz-option>
+                                        <nz-option *ngFor="let expencess of expencessList" [nzValue]="expencess.id"
+                                            [nzLabel]="expencess.accountName"></nz-option>
+                                    </nz-select>
+                                </nz-form-control>
+                            </div>
+                            <div class="col-md-4 col-sm-12 mb-4">
+                                <nz-form-control nzErrorTip="Please input Date!">
+                                    <label>Ref Number</label>
+                                    <input type="text" nz-input formControlName="refNumber" nzSize="default"
+                                        class="shadowform" />
+                                </nz-form-control>
+                            </div>
+                            <div class=" text-start col-md-12 col-sm-4 mb-4  ">
+                                <nz-form-control>
+                                    <label>Memo</label>
+                                    <input type="text" nz-input formControlName="note" nzSize="default" />
+                                </nz-form-control>
+                            </div>
+                            <div class="col-md-7 col-sm-12 mb-4">
+                                <nz-form-control>
+                                    <label>Amount</label>
+                                    <input type="text" formControlName="amount" nz-input nzSize="default" />
+                                </nz-form-control>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <div class="col-md-3 col-sm-12 mb-4">
+                        <label>Utility Bill Image</label>
+                        <nz-upload nzType="drag" [nzMultiple]="true"
+                            nzAction="https://www.mocky.io/v2/5cc8019d300000980a055e76">
+                            <p class="ant-upload-drag-icon">
+                                <span nz-icon nzType="inbox"></span>
+                            </p>
+                            <p class="ant-upload-text">Click or drag file to this area to upload</p>
+                            <p class="ant-upload-hint">
+                                Support for a single or bulk upload. Strictly prohibit from uploading company data or
+                                other band files
+                            </p>
+                        </nz-upload>
+                    </div> -->
+                </div>
+            </form>
+            <nz-divider class="m-0 mb-3"></nz-divider>
+            <div class="process mt-5">
+                <button class="primary w-100" (click)="submit()">Create Utility Bill</button>
+            </div>
+        </div>
+    </div>
+</nz-spin>

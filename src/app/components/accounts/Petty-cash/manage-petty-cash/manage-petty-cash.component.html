@@ -1,0 +1,40 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <h3>{{action}} Petty Cash</h3>
+    <small>{{voucherNumber}}</small>
+    <form class="pt-4" [formGroup]="pettyCashForm">
+        <div class="row mb-3">
+            @if(mode === 'Petty Cash'){
+            <div class="col-12 mb-3">
+                <nz-form-control nzErrorTip="Please Select Expencess Account!">
+                    <label>Expencess Account</label>
+                    <nz-select nzShowSearch formControlName="chartofaccId" class="custom-select">
+                        <nz-option *ngFor="let expencess of expencessList" [nzValue]="expencess.id"
+                            [nzLabel]="expencess.accountName"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </div>
+            }
+            @else{
+            <div class="col-12 mb-3">
+                <nz-form-control nzErrorTip="Please Select Expencess Account!">
+                    <label>Users</label>
+                    <nz-select nzShowSearch formControlName="userId" class="custom-select">
+                        <nz-option *ngFor="let user of userList" [nzValue]="user.id" [nzLabel]="user.name"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </div>
+            }
+            <div class="col-12 mb-3">
+                <nz-form-control nzErrorTip="Please Enter Amount!">
+                    <label>Amount</label>
+                    <input type="number" nz-input formControlName="amount" nzSize="large" />
+                </nz-form-control>
+            </div>
+        </div>
+        <div class="footer d-flex justify-content-end">
+            <button class="primary px-5" nz-popconfirm
+                nzPopconfirmTitle="Are you sure Save this Petty Cash?" (nzOnConfirm)="submit()"
+                (nzOnCancel)="cancel()">{{action}}</button>
+        </div>
+    </form>
+</nz-spin>

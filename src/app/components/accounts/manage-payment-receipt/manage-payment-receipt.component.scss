@@ -1,0 +1,71 @@
+nz-form-control label {
+    font-size: 18px;
+    color: var(--light-Db-FontColor);
+    margin-bottom: 5px;
+}
+
+nz-form-control input {
+    font-size: large;
+    color: rgb(0, 0, 0);
+    background-color: var(--input-color);
+    border-radius: 8px;
+    border-color: var(--input-bordercolor);
+}
+
+nz-input-group input {
+    font-size: large;
+    color: rgb(0, 0, 0);
+    background-color: var(--input-color);
+    border-radius: 8px;
+    border-color: var(--input-bordercolor);
+}
+
+
+nz-form-control textarea {
+    font-size: large;
+    color: rgb(0, 0, 0);
+    background-color: var(--input-color);
+    border-radius: 8px;
+    border-color: var(--input-bordercolor);
+}
+
+::ng-deep nz-date-picker .ant-picker-input input {
+    font-size: large;
+    color: rgb(0, 0, 0);
+    font-family: "Roboto", sans-serif;
+}
+
+nz-date-picker {
+    color: rgb(0, 0, 0);
+    background-color: var(--input-color);
+    border-radius: 8px;
+    border-color: var(--input-bordercolor);
+    padding: 6px 15px;
+}
+
+.custom-select {
+    font-size: large;
+    color: rgb(0, 0, 0);
+    background-color: var(--input-color);
+    border-radius: 8px;
+    border-color: var(--input-bordercolor);
+}
+
+.card {
+    border: none;
+    border-radius: 8px;
+}
+
+p {
+    color: var(--light-Db-FontColor);
+}
+
+// .ant-btn-primary{
+//     background-color:var(--primary-color) ;
+//     border-color:var(--light-Db-FontColor) ;
+// }
+
+// .ant-btn-primary:hover{
+//     background-color:var( --use-secondary-color) ;
+//     border-color:var(--secondary-color) ;
+// }

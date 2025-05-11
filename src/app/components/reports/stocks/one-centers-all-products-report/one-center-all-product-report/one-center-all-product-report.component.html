@@ -1,0 +1,22 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div class="container-fluid px-4 pt-2 m-0">
+      <div class="header mb-3 d-flex justify-content-between">
+        <h2>Stock Report: {{ centerName }}</h2>
+      </div>
+      <div class="d-flex mb-2 align-items-center">
+        <div class="flex-grow-1">
+          <nz-input-group nzPrefixIcon="search" nzSize="large" class="rounded-3 shadowform">
+            <input nz-input placeholder="Search product" nz-tooltip="Search" [formControl]="searchControl"
+              nzTooltipTrigger="focus" nzTooltipPlacement="topLeft" />
+          </nz-input-group>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4 mb-4" *ngFor="let product of filteredStockData">
+          <nz-card [nzTitle]="product.name" class="shadowform">
+            <p><strong>Quantity:</strong> {{ product.quantity }}</p>
+          </nz-card>
+        </div>
+      </div>
+    </div>
+  </nz-spin>

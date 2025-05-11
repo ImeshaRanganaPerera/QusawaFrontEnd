@@ -1,0 +1,21 @@
+nz-form-control label {
+    font-size: 18px;
+    color: var(--light-Db-FontColor);
+    margin-bottom: 5px;
+}
+
+nz-form-control input {
+    font-size: large;
+    color: rgb(0, 0, 0);
+    background-color: var(--input-color);
+    border-radius: 8px;
+    border-color: var(--input-bordercolor);
+}
+
+.custom-select {
+    font-size: large;
+    color: rgb(0, 0, 0);
+    background-color: var(--input-color);
+    border-radius: 8px;
+    border-color: var(--input-bordercolor);
+}

@@ -1,0 +1,55 @@
+<form [formGroup]="dateRangeForm" (ngSubmit)="onSubmit()" class="form-container">
+  <nz-card nzTitle="Profit/Loss Report" class="report-card">
+    <div nz-row nzGutter="16">
+      <div nz-col nzSpan="12" class="form-group">
+        <label for="startDate">Start Date:</label>
+        <input nz-input type="date" id="startDate" formControlName="startDate">
+        <div *ngIf="dateRangeForm.get('startDate')?.invalid && dateRangeForm.get('startDate')?.touched" class="error">
+          Start date is required.
+        </div>
+      </div>
+
+      <div nz-col nzSpan="12" class="form-group">
+        <label for="endDate">End Date:</label>
+        <input nz-input type="date" id="endDate" formControlName="endDate">
+        <div *ngIf="dateRangeForm.get('endDate')?.invalid && dateRangeForm.get('endDate')?.touched" class="error">
+          End date is required.
+        </div>
+      </div>
+    </div>
+
+    <!-- Error message if date range includes future dates -->
+    <div *ngIf="isFutureDateError" class="error">
+      The selected date range includes future dates. No data is available.
+    </div>
+
+    <button nz-button nzType="primary" type="submit" class="submit-button">Generate Report</button>
+  </nz-card>
+</form>
+
+<div *ngIf="profitData.length" class="report-container">
+  <h3>Profit/Loss Report</h3>
+  <nz-table #basicTable [nzData]="profitData" nzBordered nzSize="small">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Profit/Loss</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of profitData">
+        <td>{{ item.date | date }}</td>
+        <td [ngStyle]="{'color': item.profitOrLoss >= 0 ? 'green' : 'red'}">
+          {{ item.profitOrLoss | currency }}
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+  
+  <h4 class="total-report">
+    Total: 
+    <span [ngStyle]="{'color': totalProfitOrLoss >= 0 ? 'green' : 'red'}">
+      {{ totalProfitOrLoss | currency }}
+    </span>
+  </h4>
+</div>

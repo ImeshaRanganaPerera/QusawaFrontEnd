@@ -1,0 +1,83 @@
+<div class="container-fluid px-4 pt-2 m-0">
+    <div class="header mb-3 d-flex justify-content-between">
+        <h2>Bank Reconciliation Report</h2>
+        <!-- <button class="primary me-3 mb-4" (click)="exportToCSV()">
+        <span class="me-2" nz-icon nzType="export"></span>Export to Excel
+      </button> -->
+    </div>
+
+    <form class="row mb-3" [formGroup]="salesmanForm">
+        <div class="col-6">
+            <nz-input-group nzPrefixIcon="search" nzSize="large" class="rounded-3 shadowform">
+                <input nz-input placeholder="Search" nz-tooltip="Search" nzTooltipTrigger="focus"
+                    [formControl]="searchControl" nzTooltipPlacement="topLeft" />
+            </nz-input-group>
+        </div>
+        <div class="col-4">
+            <nz-range-picker class="w-100" formControlName="date" nzSize="large"></nz-range-picker>
+        </div>
+        <div class="col-2">
+            <button nz-button class="primary w-100" (click)="applyDateFilter()">
+                <span nz-icon nzType="filter"></span>Filter
+            </button>
+        </div>
+    </form>
+
+    <nz-table #basicTable [nzData]="filteredData" [nzShowPagination]="true" [nzPageSize]="10000" class="shadowform">
+        <thead>
+            <tr>
+                <th></th>
+                <th nzWidth="1%">No</th>
+                <th nzWidth="10%">Date</th>
+                <th nzWidth="10%">Rec Number</th>
+                <th nzWidth="20%">Bank Account</th>
+                <th nzWidth="20%">Start Date</th>
+                <th nzWidth="20%">End Date</th>
+                <th nzWidth="20%">Starting Amount</th>
+                <th nzWidth="20%">Ending Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(data of filteredData; track data;) {
+            <tr>
+                <td [(nzExpand)]="data.expand"></td>
+                <td>{{ (filteredData).indexOf(data) + 1 }}</td>
+                <td>{{ data.date | date: 'yyyy/MM/dd' }}</td>
+                <td>{{ data.voucherNumber }}</td>
+                <td>{{ data.chartofacc? data.chartofacc.accountName: '-' }}</td>
+                <td>{{ data.startDate| date: 'yyyy/MM/dd' }}</td>
+                <td>{{ data.endDate| date: 'yyyy/MM/dd' }}</td>
+                <td>{{ data.startingValue | currency: ' '}}</td>
+                <td>{{ data.endingValue | currency: ' '}}</td>
+            </tr>
+            <tr [nzExpand]="data.expand">
+                <nz-table #innerTable [nzData]="data.bankRecJournal" nzSize="middle" [nzShowPagination]="false"
+                    [nzPageSize]="1000">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Credit Amount</th>
+                            <th>Debit Amount</th>
+                        </tr>
+                    </thead>
+        <tbody>
+            @for (list of innerTable.data; track list; let i = $index) {
+            <tr>
+                <td>{{ i + 1 }}</td>
+                <td>{{ list.date| date: 'yyyy/MM/dd' }}</td>
+                <td>
+                    <span nz-icon [nzType]="list.isStatus? 'check-circle': 'close-circle'" nzTheme="outline"></span>
+                </td>
+                <td>{{ list.creditAmount }}</td>
+                <td>{{ list.debitAmount }}</td>
+            </tr>
+            }
+        </tbody>
+    </nz-table>
+    </tr>
+    }
+    </tbody>
+    </nz-table>
+</div>

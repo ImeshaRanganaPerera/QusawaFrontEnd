@@ -1,0 +1,97 @@
+<div class="page-container" id="Receipt">
+    <div class="voucher">
+        <div class="header">
+            <img src="img/logo.png" alt="Company Logo" class="logo">
+            <div class="company-details">
+                <h4>HITECH (PVT) LTD.</h4>
+                <p>No.730/2A, Kotunna, Heiyanthuduwa</p>
+                <p>Tel: 011-2082222 / 011-2964433</p>
+                <p>Mobile: 0773146656 / 0766912329</p>
+                <p>Email: maheshmotorsmail.com</p>
+            </div>
+        </div>
+        <h1>Payment</h1>
+
+        <div class="info-grid">
+            <div class="info-item">
+                <label>Payment No:</label>
+                <div class="output-line">{{ voucherData.voucherNo }}</div>
+            </div>
+            <div class="info-item">
+                <label>Received from:</label>
+                <div class="output-line">{{ voucherData.payee }}</div>
+            </div>
+        </div>
+
+        <div class="info-grid">
+            <div class="info-item">
+                <label>Sum Of Rupee:</label>
+                <div class="output-line">{{ voucherData.rupee }}</div>
+            </div>
+            <div class="info-item">
+                <label>Being payment of:</label>
+                <div class="output-line">{{ voucherData.paymentMethod }}</div>
+            </div>
+        </div>
+       
+        <div class="info-grid">
+            <div class="info-item">
+                <label>Cheque No:</label>
+                <div class="output-line">{{ voucherData.chequeNo ? voucherData.chequeNo : 'Not applicable' }}</div>
+            </div>
+            <div class="info-item">
+                <label>Cheque Date:</label>
+                <div class="output-line">{{ voucherData.chequeDate ? voucherData.chequeDate : 'No date' }}</div>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>GRN No</th>
+                    <th>GRN Date</th>
+                    <th>GRN Amount</th>
+                    <th>Due Amount</th>
+                    <th>Settle Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of voucherData.items">
+                    <td>{{ item.unitPrice | currency }}</td>
+                    <td>{{ item.amount | currency }}</td>
+                    <td>{{ item.amount2 | currency }}</td>
+                    <td>{{ item.amount2 | currency }}</td>
+                    <td>{{ item.amount2 | currency }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="signature">
+            <div>
+                <div class="signature-line"></div>
+                <p>{{ voucherData.preparedBy }}</p>
+                <label>Prepared by</label>
+            </div>
+            <div>
+                <div class="signature-line"></div>
+                <p>{{ voucherData.checkedBy }}</p>
+                <label>Checked by</label>
+            </div>
+            <div>
+                <div class="signature-line"></div>
+                <p>{{ voucherData.approvedBy }}</p>
+                <label>Approved by</label>
+            </div>
+            <div>
+                <div class="signature-line"></div>
+                <p>{{ voucherData.receivedBy }}</p>
+                <label>Received by</label>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <p><strong>Thank you for your business!</strong></p>
+        <p>Implemented By Cybernetic</p>
+    </div>
+</div>
+<button class="download-btn" (click)="downloadVoucher()">Download PDF</button>

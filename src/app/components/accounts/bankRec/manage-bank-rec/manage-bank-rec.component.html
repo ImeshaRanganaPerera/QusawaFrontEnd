@@ -1,0 +1,115 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div class="container-fluid px-4 pt-2 m-0">
+        <div class="header mb-3 d-flex justify-content-between">
+            <h2>Bank Reconciliation</h2>
+        </div>
+        <div class="card p-4">
+
+            <form [formGroup]="bankRecForm">
+                <div class="row">
+                    <div class="row">
+                        <div class="col-md-3 col-sm-12 mb-4">
+                            <nz-form-control nzErrorTip="Please input Date!">
+                                <label>Date</label><br />
+                                <nz-date-picker [nzDisabledDate]="disabledDate" class="w-100" formControlName="date"
+                                    nzSize="large"></nz-date-picker>
+                            </nz-form-control>
+                        </div>
+                        <div class="col-md-3 col-sm-12 mb-4">
+                            <nz-form-control>
+                                <label>Bank Reconciliation Number</label>
+                                <input type="text" formControlName="voucherNumber" nz-input nzSize="large" />
+                            </nz-form-control>
+                        </div>
+                        <div class="col-md-3 col-sm-12 mb-4">
+                            <nz-form-control nzErrorTip="Please Select Bank Account!">
+                                <label>Bank Account</label>
+                                <nz-select nzShowSearch formControlName="chartofAccountId" class="custom-select w-100"
+                                    nzPlaceHolder="Select Account" [nzSize]="'large'">
+                                    <nz-option *ngFor="let bank of banklist" [nzValue]="bank.id"
+                                        [nzLabel]="bank.accountName"></nz-option>
+                                </nz-select>
+                            </nz-form-control>
+                        </div>
+                        <div class="col-md-3 col-sm-12 mb-4  ">
+                            <nz-form-control nzErrorTip="Please input Date Range!">
+                                <label>Date Range</label><br />
+                                <nz-range-picker nzSize="large" class="w-100" formControlName="daterange"
+                                    nzSize="large"></nz-range-picker>
+                            </nz-form-control>
+                        </div>
+                        <div class="col-md-3 col-sm-12 mb-4">
+                            <nz-form-control nzErrorTip="Please Select Starting Value!">
+                                <label>Starting Value</label>
+                                <input type="text" nz-input formControlName="startValue" nzSize="large" />
+                            </nz-form-control>
+                        </div>
+                        <div class="col-md-3 col-sm-12 mb-4">
+                            <nz-form-control nzErrorTip="Please Select Ending Value!">
+                                <label>Ending Value</label>
+                                <input type="text" nz-input formControlName="endValue" nzSize="large" />
+                            </nz-form-control>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <nz-divider class="m-0 mb-3"></nz-divider>
+            <nz-table #basicTable [nzData]="datasource" [nzPageSize]="pageSize" [nzShowPagination]="false"
+                (nzPageIndexChange)="onPageChange($event)">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Select</th>
+                        <th>Date</th>
+                        <th>Account Name</th>
+                        <th>Ref</th>
+                        <th>Debit Amount</th>
+                        <th>Credit Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of basicTable.data; let i = index">
+                        <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+                        <td [nzChecked]="setOfCheckedId.has(data.id)"
+                            (nzCheckedChange)="onItemChecked(data.id, $event)"></td>
+                        <td>{{ data.date | date: 'yyyy/MM/dd'}}</td>
+                        <td>{{ data.account.accountName }}</td>
+                        <td>{{ data.ref }}</td>
+                        <td>{{ data.debitAmount | currency: ' ' }}</td>
+                        <td>{{ data.creditAmount | currency: ' ' }}</td>
+
+                        <!-- <td class="d-flex justify-content-center">
+                            <button nz-button nz-tooltip="confirm" nzType="primary" nzShape="circle"
+                                (click)="updateConform(data)" nzTooltipPlacement="bottom" class="me-3">
+                                <span nz-icon nzType="check"></span>
+                            </button>
+                        </td> -->
+                    </tr>
+                </tbody>
+            </nz-table>
+
+            <div class="row mt-3">
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-6">
+                            <p>Starting Amount:</p>
+                            <p>Ending Amount:</p>
+                            <p>Difference:</p>
+                        </div>
+                        <div class="col-6 text-end">
+                            <p>{{startValue | currency: ' '}}</p>
+                            <p>{{endValue | currency: ' '}}</p>
+                            <p>{{difference + selectedTotalAmount | currency: ' '}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="process mt-5">
+                <button class="primary w-100 shadowform" nz-popconfirm
+                nzPopconfirmTitle="Are you sure Save this Bank Reconciliation" (nzOnConfirm)="save()"
+                (nzOnCancel)="cancel()">Save</button>
+            </div>
+        </div>
+    </div>
+</nz-spin>

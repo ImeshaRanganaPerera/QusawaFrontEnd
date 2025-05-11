@@ -1,0 +1,137 @@
+.pdf-container {
+  background: white;
+  width: 200mm; // A4 width
+  margin: 0 auto;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.pdf-page {
+  position: relative;
+  width: 200mm; // A4 width
+  min-height: 297mm;
+  padding: 20mm;
+  margin-bottom: 20mm;
+  background: white;
+  box-sizing: border-box;
+  page-break-after: always;
+}
+
+.header-container {
+  margin-bottom: 20px;
+
+  .logo {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .company-name {
+    font-size: 24px;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+
+  .company-details p {
+    margin: 2px 0;
+    font-size: 14px;
+  }
+
+  .date-range {
+    margin: 15px 0;
+    padding: 10px;
+    background: #f5f5f5;
+    border-radius: 4px;
+
+    p {
+      margin: 5px 0;
+    }
+  }
+
+  .report-title {
+    font-size: 20px;
+    text-align: center;
+    margin: 20px 0;
+    padding: 10px;
+    border-bottom: 2px solid #333;
+  }
+}
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+    text-align: left;
+  }
+
+  .text-right {
+    text-align: right;
+  }
+
+  .invoice-header td {
+    background-color: #f8f8f8;
+    font-weight: bold;
+  }
+
+  .customer-info td {
+    background-color: #fff;
+  }
+
+  .product-row td {
+    background-color: #fff;
+  }
+
+  .invoice-total td {
+    background-color: #f4f4f4;
+  }
+
+  .spacing-row td {
+    height: 10px;
+    border: none;
+  }
+}
+
+.grand-total {
+  margin: 20px 0;
+  padding: 10px;
+  text-align: right;
+  font-size: 16px;
+  border-top: 2px solid #333;
+}
+
+.page-footer {
+  position: absolute;
+  bottom: 20mm;
+  left: 20mm;
+  right: 20mm;
+  padding: 10px 0;
+  border-top: 1px solid #ddd;
+  font-size: 12px;
+  color: #666;
+  display: flex;
+  justify-content: space-between;
+}
+
+.download-btn {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.download-btn:hover {
+  background-color: #2980b9;
+}

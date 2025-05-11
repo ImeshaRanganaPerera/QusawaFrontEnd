@@ -1,0 +1,56 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div class="container-fluid px-4 pt-2 m-0">
+        <div class="header mb-3 d-flex justify-content-between">
+            <h2>Product Price List</h2>
+        </div>
+        <div class="d-flex mb-2 align-items-center">
+            <div class="flex-grow-1">
+                <nz-input-group nzPrefixIcon="search" nzSize="large" class="rounded-3 shadowform">
+                    <input nz-input placeholder="Search" nz-tooltip="Search" [formControl]="searchControl"
+                        nzTooltipTrigger="focus" nzTooltipPlacement="topLeft" />
+                </nz-input-group>
+            </div>
+        </div>
+        <nz-table #basicTable [nzData]="filteredData" [nzPageSize]="pageSize"
+            (nzPageIndexChange)="onPageChange($event)">
+            <thead>
+                <tr>
+                    <th nzWidth="1%">No</th>
+                    <th nzWidth="10%">Product Name</th>
+                    @if(role === 'ADMIN'){
+                    <th nzWidth="10%">Cost</th>
+                    }
+                    <th nzWidth="10%">MRP</th>
+                    @for(level of discountLevels; track level){
+                    <th nzWidth="1%">{{ level }}</th>
+                    @if(role === 'ADMIN'){
+                    <th nzWidth="1%">Cost (%)</th>
+                    <th nzWidth="1%">MRP (%)</th>
+                    }
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let product of filteredData; let i = index">
+                    <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+                    <td>{{ product.productName }}</td>
+                    @if(role === 'ADMIN'){
+                    <td>{{ product.cost | currency: ' ' }}</td>
+                    }
+                    <td>{{ product.MRP | currency: ' '}}</td>
+                    @for(level of discountLevels; track level){
+                    <td>{{ product[level] || '-'}}</td>
+                    @if(role === 'ADMIN'){
+                    <td>
+                        {{ getrate({discount: product[level], cost: product.cost, MRP: product.MRP}, 'COST') +'%' }}
+                    </td>
+                    <td>
+                        {{ getrate({discount: product[level], cost: product.cost, MRP: product.MRP}, 'MRP')+'%' }}
+                    </td>
+                    }
+                    }
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
+</nz-spin>

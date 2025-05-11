@@ -1,0 +1,69 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div class="container-fluid px-4 pt-2 m-0">
+        <div class="header mb-3 d-flex justify-content-between">
+            <h2>Ledger Listing Report</h2>
+            <div>
+                <button class="primary me-3" (click)="exportAsCSV()">
+                    <span class="me-2" nz-icon nzType="export"></span>Export to Excel
+                </button>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-4">
+                <nz-input-group nzPrefixIcon="search" nzSize="large" class="rounded-3 shadowform">
+                    <input nz-input placeholder="Search" nz-tooltip="Search" nzTooltipTrigger="focus"
+                        [formControl]="searchControl" nzTooltipPlacement="topLeft" />
+                </nz-input-group>
+            </div>
+            <div class="col-2">
+                <nz-select nzShowSearch [(ngModel)]="chartofAccountId" class="custom-select w-100"
+                    nzPlaceHolder="Select Account" [nzSize]="'large'">
+                    <nz-option [nzValue]="''" [nzLabel]="'All Account'"></nz-option>
+                    <nz-option *ngFor="let acc of chartofaccList" [nzValue]="acc.id"
+                        [nzLabel]="acc.accountName"></nz-option>
+                </nz-select>
+            </div>
+            <div class="col-4">
+                <nz-range-picker nzSize="large" class="w-100" [(ngModel)]="date"></nz-range-picker>
+            </div>
+
+            <div class="col-2">
+                <button nz-button nzType="primary" class="w-100" nzSize="large" (click)="applyDateFilter()">
+                    <span nz-icon nzType="filter"></span>Filter
+                </button>
+            </div>
+        </div>
+
+        <nz-table #basicTable [nzData]="filteredData" class="shadowform" [nzShowPagination]="true"
+            [nzPageSize]="pageSize" (nzPageIndexChange)="onPageChange($event)">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Date</th>
+                    <th>Account Name</th>
+                    <th></th>
+                    <th>Invoice Number</th>
+                    <th>Debit</th>
+                    <th>Credit</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data; let i = index">
+                    <td>{{ basicTable.data.indexOf(data) + 1 }}</td>
+                    <td>{{ data.date | date: 'yyyy/MM/dd' }}</td>
+                    <td>{{ data.account.accountName }}</td>
+                    <td>{{ data.journal? data.journal.party? data.journal.party.name : data.journal.chartofacc? data.journal.chartofacc.accountName: '-' : '-' }}</td>
+                    <td>{{ data.journal?.voucherNumber || '-' }}</td>
+                    <td>{{ data.debitAmount | currency: ' ' }}</td>
+                    <td>{{ data.creditAmount | currency: ' ' }}</td>
+                </tr>
+                <tr *ngIf="basicTable.data.length > 0">
+                    <td class="text-center" [colSpan]="5"><strong>Total</strong></td>
+                    <td><strong>{{totalDebit | currency: ' ' }}</strong></td>
+                    <td><strong>{{totalCredit | currency: ' ' }}</strong></td>
+                </tr>
+            </tbody>
+        </nz-table>
+
+    </div>
+</nz-spin>

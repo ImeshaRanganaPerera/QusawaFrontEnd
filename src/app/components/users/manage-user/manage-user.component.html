@@ -1,0 +1,83 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <h3>{{action}} User</h3>
+    <form class="pt-4" [formGroup]="userForm">
+        <div class="row mb-3">
+            <div class="col-12 mb-3">
+                <nz-form-control nzErrorTip="Please input Customer Name!">
+                    <label>Name</label>
+                    <input type="text" nz-input formControlName="name" nzSize="large" />
+                </nz-form-control>
+            </div>
+            <div class="col-12 mb-3">
+                <nz-form-control nzErrorTip="Please input Phone Number!">
+                    <label>Phone Number</label>
+                    <input type="number" nz-input formControlName="phoneNumber" nzSize="large" />
+                </nz-form-control>
+            </div>
+            <div class="col-6 mb-3">
+                <nz-form-control nzErrorTip="Please input Date!">
+                    <label>Date of Birth</label><br>
+                    <nz-date-picker class="w-100" formControlName="dateofbirth" nzSize="large"></nz-date-picker>
+                </nz-form-control>
+            </div>
+            <div class="col-6 mb-3">
+                <nz-form-control>
+                    <label>NIC</label>
+                    <input type="text" nz-input formControlName="nic" nzSize="large" />
+                </nz-form-control>
+            </div>
+            <div class="col-12 mb-3">
+                <nz-form-control nzErrorTip="Please input Address!">
+                    <label>Address</label>
+                    <textarea type="text" nz-input formControlName="address" nzSize="large"></textarea>
+                </nz-form-control>
+            </div>
+            <div class="col-12 mb-3">
+                <nz-form-control nzErrorTip="Please Select Supplier!">
+                    <label>Role</label>
+                    <nz-select nzShowSearch formControlName="role" class="custom-select">
+                        <nz-option nzValue="ADMIN" nzLabel="Admin"></nz-option>
+                        <nz-option nzValue="MANAGER" nzLabel="Manager"></nz-option>
+                        <nz-option nzValue="SALESMEN" nzLabel="Salesmen"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </div>
+
+            <div class="col-12 mb-3" *ngIf="userForm.get('role')?.value === 'MANAGER' && dataSource.length > 0">
+                <label>Select Centers</label>
+                <div nz-checkbox-group>
+                    <label *ngFor="let center of dataSource">
+                        {{ center.centerName }}
+                        <input type="checkbox" [value]="center.id" (change)="onCenterSelect($event, center.id)" />
+                    </label>
+                </div>
+            </div>
+
+            <div class="col-12 mb-3" *ngIf="userForm.get('role')?.value === 'SALESMEN'">
+                <nz-form-control nzErrorTip="Please input Target Value!">
+                    <label>Target</label>
+                    <input type="number" nz-input formControlName="target" nzSize="large" />
+                </nz-form-control>
+            </div>
+
+            <div class="col-6 mb-3">
+                <nz-form-control nzErrorTip="Please input Customer Name!">
+                    <label>Username</label>
+                    <input type="text" nz-input formControlName="username" nzSize="large" />
+                </nz-form-control>
+            </div>
+            @if(isEdit === false){
+                <div class="col-6 mb-3">
+                    <nz-form-control nzErrorTip="Please input Customer Name!">
+                        <label>Password</label>
+                        <input type="text" nz-input formControlName="password" nzSize="large" />
+                    </nz-form-control>
+                </div>
+            }
+
+        </div>
+        <div class="footer d-flex justify-content-end">
+            <button class="primary px-5" (click)="submit()">{{action}}</button>
+        </div>
+    </form>
+</nz-spin>

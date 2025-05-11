@@ -1,0 +1,72 @@
+<div class="page-container" id="Receipt">
+    <div class="voucher">
+      <div class="header mb-3 d-flex justify-content-lg-start ">
+        <img src="img/logo.png" alt="Company Logo" class="logo">
+        <br>
+        <div class="company-details">
+          <h4>{{voucherData?.companyName}}</h4>
+          <p>{{voucherData?.companyAddress}}</p>
+          <p>Tel: {{voucherData?.companyPhone}}</p>
+          <p>Email: {{voucherData?.companyEmail}}</p>
+        </div>
+      </div>
+      <h1>{{ voucherData?.voucherType || 'Receipt' }}</h1>
+  
+      <div class="info-grid">
+        <div class="info-item">
+          <label>Receipt No:</label>
+          <div class="output-line">{{voucherData?.voucherNumber}}</div>
+        </div>
+        <div class="info-item">
+          <label>Received from:</label>
+          <div class="output-line">{{voucherData?.party?.name}}</div>
+        </div>
+      </div>
+  
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>voucherNumber</th> <!--{{voucherData?.voucherNumberLabel}}-->
+            <th>Customer/Supplier</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let referVoucher of voucherData?.referVouchers">
+            <td>{{ referVoucher.date | date: 'yyyy-MM-dd' }}</td>
+            <td>{{ referVoucher.voucherNumber }}</td>
+            <td>{{ referVoucher.paidValue }}</td>
+            <td>{{ referVoucher.amount }}</td>
+          </tr>
+        </tbody>
+      </table>
+  
+      <!-- <div class="signature">
+        <div>
+          <div class="signature-line"></div>
+          <label>Prepared by</label>
+        </div>
+        <div>
+          <div class="signature-line"></div>
+          <label>Checked by</label>
+        </div>
+        <div>
+          <div class="signature-line"></div>
+          <label>Approved by</label>
+        </div>
+        <div>
+          <div class="signature-line"></div>
+          <label>Received by</label>
+        </div>
+      </div> -->
+  
+      <div class="footer">
+        <p><strong>Thank you for your business!</strong></p>
+        <p>Implemented by Cybernetic</p>
+      </div>
+    </div>
+  </div>
+  
+  <button (click)="downloadReceipt()">Download PDF</button>
+  <button (click)="closeModal()">Close</button>
