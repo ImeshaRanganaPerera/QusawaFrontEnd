@@ -73,14 +73,14 @@ export class ManageProductPriceComponent implements OnInit {
       return;
     }
 
-    if (cost > MRP) {
-      this.notification.create(
-        'error',
-        'Quantity Error',
-        `The Cost not Above MRP`
-      );
-      return;
-    }
+    // if (cost > MRP) {
+    //   this.notification.create(
+    //     'error',
+    //     'Quantity Error',
+    //     `The Cost not Above MRP`
+    //   );
+    //   return;
+    // }
     // if (cost > minPrice) {
     //   this.notification.create(
     //     'error',

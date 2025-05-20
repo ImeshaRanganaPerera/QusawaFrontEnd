@@ -20,7 +20,7 @@ export class ReportPdfComponent implements AfterViewInit {
   voucherGrp!: string;
   type!: string;
   category!: string;
-  email: string = 'info@hitechlanka.lk';
+  email: string = 'info@qaswa.lk';
   pages: any[][] = [];
   isGeneratingPdf = false;
 

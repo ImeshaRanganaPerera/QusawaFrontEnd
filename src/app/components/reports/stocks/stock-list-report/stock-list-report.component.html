@@ -51,6 +51,7 @@
                 <tr>
                     <th nzWidth="1%">No</th>
                     <th nzWidth="20%">Product</th>
+                    <th nzWidth="20%">Batch number</th>
                     @if(role !== 'SALESMEN'){
                     <th nzWidth="20%">Cost</th>
                     }
@@ -63,10 +64,12 @@
                 <ng-container *ngFor="let center of filteredData">
                     <tr>
                         <td [colSpan]="6"><strong>{{ center.centerName }}</strong></td>
+                    
                     </tr>
                     <tr *ngFor="let product of center.products; let i = index">
                         <td>{{i + 1}}</td>
                         <td>{{ product.productName }}</td>
+                         <td>{{ product.batchNo }}</td>
                         @if(role !== 'SALESMEN'){
                         <td>{{ product.cost | currency: ' ' }}</td>
                         }
@@ -114,33 +117,37 @@
             </nz-page-header-extra>
         </nz-page-header>
 
-        <nz-table #basicTable [nzData]="stockMovementData" [nzShowPagination]="true" [nzPageSize]="10000"
-            class="shadowform">
-            <thead>
-                <tr>
-                    <th nzWidth="1%">No</th>
-                    <th nzWidth="10%">Date</th>
-                    <th nzWidth="10%">Invoice Name</th>
-                    <th nzWidth="10%">Invoice Number</th>
-                    <th nzWidth="20%">Customer/Supplier name</th>
-                    <th nzWidth="10%">Quantity In</th>
-                    <th nzWidth="10%">Quantity Out</th>
-                </tr>
-            </thead>
-            <tbody>
-                <ng-container *ngFor="let data of stockMovementData">
-                    <tr>
-                        <td>{{(stockMovementData.indexOf(data) + 1)}}</td>
-                        <td>{{data.date | date:'dd-MM-yyyy'}}</td>
-                        <td>{{ data.voucherName }}</td>
-                        <td>{{ data.voucherNumber }}</td>
-                        <td>{{ data.partyName }}</td>
-                        <td>{{ data.qtyIn }}</td>
-                        <td>{{ data.qtyOut }}</td>
-                    </tr>
-                </ng-container>
-            </tbody>
-        </nz-table>
+    <nz-table [nzShowPagination]="false" class="shadowform">
+  <thead>
+    <tr>
+      <th>No</th>
+      <th>Date</th>
+      <th>Invoice Name</th>
+      <th>Invoice Number</th>
+      <th>Customer/Supplier name</th>
+      <th>Quantity In</th>
+      <th>Quantity Out</th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngFor="let batch of groupedStockMovementData">
+      <tr class="batch-row">
+        <td colspan="7" style="font-weight: bold; background: #f5f5f5;">
+          Batch No: {{ batch.batchNo }}
+        </td>
+      </tr>
+      <tr *ngFor="let data of batch.records; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ data.date | date: 'dd-MM-yyyy' }}</td>
+        <td>{{ data.voucherName }}</td>
+        <td>{{ data.voucherNumber }}</td>
+        <td>{{ data.partyName }}</td>
+        <td>{{ data.qtyIn }}</td>
+        <td>{{ data.qtyOut }}</td>
+      </tr>
+    </ng-container>
+  </tbody>
+</nz-table>
         }
 
     </div>

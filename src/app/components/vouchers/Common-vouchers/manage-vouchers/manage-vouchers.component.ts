@@ -13,6 +13,9 @@ import { RefVouchersComponent } from '../../../../shared/ref-vouchers/ref-vouche
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { PdfSelectionComponent } from '../../../../shared/pdf-selection/pdf-selection.component';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { addDays, isBefore } from 'date-fns';
+import { CurrencyService } from '../../../../services/currency/currency.service';
+
 
 @Component({
   selector: 'app-manage-vouchers',
@@ -22,6 +25,8 @@ import { NzMessageService } from 'ng-zorro-antd/message';
   styleUrl: './manage-vouchers.component.scss'
 })
 export class ManageVouchersComponent {
+  localAmount: number = 0;
+  usdAmount: string | null = null;
   isSpinning = false;
   searchControl: FormControl = new FormControl('');
   filteredData: any[] = [];
@@ -42,7 +47,7 @@ export class ManageVouchersComponent {
   isconform: boolean = true;
   paidAmount: number = 0;
   current: number = 0;
-
+  message = inject(NzMessageService)
   notification = inject(NzNotificationService)
   voucherservice = inject(VoucherService)
   centerservice = inject(CenterService)
@@ -50,6 +55,7 @@ export class ManageVouchersComponent {
   modal = inject(NzModalService)
   viewContainerRef = inject(ViewContainerRef)
   inverntoryservice = inject(InventoryService)
+  currencyservice = inject(CurrencyService)
   route = inject(ActivatedRoute)
 
   disabledDate = (current: Date): boolean =>
@@ -69,6 +75,7 @@ export class ManageVouchersComponent {
     directvoucherNumber: new FormControl(''),
   })
   refVoucherNumber: any;
+  
 
   ngOnInit(): void {
     this.getRole()
@@ -90,6 +97,7 @@ export class ManageVouchersComponent {
           this.getProduct(centerId);
         }
       });
+
       this.voucherForm.get('partyId')?.valueChanges.subscribe(partyId => {
         if (partyId) {
           this.isSpinning = true;
@@ -190,7 +198,10 @@ export class ManageVouchersComponent {
     }
     this.getCenter();
   }
-
+ removeRow(index: number): void {
+  this.dataSource.splice(index, 1);
+  this.dataSource = [...this.dataSource]; // Update view
+}
   getRole() {
     this.role = localStorage.getItem('role')
   }
@@ -278,7 +289,7 @@ export class ManageVouchersComponent {
   }
 
   getProduct(centerId: string) {
-    this.inverntoryservice.getbyCenterId(centerId).subscribe((res: any) => {
+    this.inverntoryservice.getproduct().subscribe((res: any) => {
       this.productData = res.data.map((product: any) => ({
         ...product.product,
         ...product
@@ -317,7 +328,10 @@ export class ManageVouchersComponent {
         sellingPrice: 0,
         minPrice: 0,
         MRP: selectedProduct.MRP,
-        amount: 0
+        amount: 0,
+        batchNo: selectedProduct.batchNo,
+        ExpnotifDays: selectedProduct.ExpnotifDays,
+        expiryDate: selectedProduct.expDate,
       };
       this.dataSource = [...this.dataSource, newRow];
       this.inputValue = ''; // Clear the input after adding
@@ -395,50 +409,67 @@ export class ManageVouchersComponent {
       }
     });
   }
+playSoundEffect() {
+  const audio = new Audio('assets/sounds/error.mp3'); // put a nice sound in assets/sounds/error.mp3
+  audio.play();
+}
 
+showFancyErrorToast(msg: string) {
+  this.playSoundEffect();
+  this.message.create('error', msg, { nzDuration: 4000 });
+}
   async submit() {
     try {
-      if (this.voucherForm.invalid) {
-        Object.values(this.voucherForm.controls).forEach(control => {
-          if (control.invalid) {
-            control.markAsDirty();
-            control.updateValueAndValidity({ onlySelf: true });
-          }
-        })
-        return;
-      }
+   if (this.voucherForm.invalid) {
+  Object.values(this.voucherForm.controls).forEach(control => {
+    if (control.invalid) {
+      control.markAsDirty();
+      control.updateValueAndValidity({ onlySelf: true });
+    }
+  });
+  return;
+}
 
-      for (const row of this.dataSource) {
-        const product = this.productData.find(p => p.id === row.productId);
-        if (product && row.quantity === 0) {
-          this.notification.create(
-            'error',
-            'Quantity Error',
-            `The quantity for ${row.productName} has to be above 0`
-          );
-          return; // Stop submission
-        }
+const todayPlus10 = new Date();
+todayPlus10.setDate(todayPlus10.getDate() + 10);
 
-        if (this.voucherType === 'STOCK-TRANSFER') {
-          if (product && row.quantity > product.quantity) {
-            this.notification.create(
-              'error',
-              'Quantity Error',
-              `The quantity for ${row.productName} exceeds available stock. Maximum available: ${product.quantity}.`
-            );
-            return; // Stop submission
-          }
-        }
+for (const row of this.dataSource) {
+  const product = this.productData.find(p => p.id === row.productId);
 
-        if (product && row.cost === 0) {
-          this.notification.create(
-            'error',
-            'Quantity Error',
-            `The Cost for ${row.productName} has to be above 0`
-          );
-          return; // Stop submission
-        }
-      }
+  if (product && row.quantity === 0) {
+  this.showFancyErrorToast(`❗ The quantity for ${row.productName} must be above 0`);
+  return;
+}
+
+if (this.voucherType === 'STOCK-TRANSFER') {
+  if (product && row.quantity > product.quantity) {
+    this.showFancyErrorToast(`⚠️ Quantity for ${row.productName} exceeds stock. Max available: ${product.quantity}`);
+    return;
+  }
+}
+
+if (product && row.cost === 0) {
+  this.showFancyErrorToast(`💰 The cost for ${row.productName} must be above 0`);
+  return;
+}
+
+if (row.expiryDate) {
+  const expiryDate = new Date(row.expiryDate);
+  const todayPlus10 = new Date();
+  todayPlus10.setDate(todayPlus10.getDate() + 10);
+
+  if (expiryDate < todayPlus10) {
+    this.showFancyErrorToast(`⏳ Expiry date for ${row.productName} (${expiryDate.toLocaleDateString()}) must be at least 10 days ahead`);
+    return;
+  }
+}
+if (product && (!row.batchNo || row.batchNo.trim() === '')) {
+  this.showFancyErrorToast(`📦 The batch number for ${row.productName} is required.`);
+  return;
+}
+
+}
+
 
       this.isSpinning = true;
       const coords = await this.getCurrentLocation();
@@ -453,6 +484,7 @@ export class ManageVouchersComponent {
         this.isSpinning = false;
         return;
       }
+ 
 
       if (this.voucherType === 'STOCK-TRANSFER') {
         if (formData.fromCenterId === formData.toCenterId) {
@@ -461,7 +493,17 @@ export class ManageVouchersComponent {
           return;
         }
       }
-
+      for (const row of this.dataSource){
+       this.currencyservice.get(row.cost, 'LKR').subscribe({
+      next: (res) => {
+        this.usdAmount = res.amountInUSD;
+      },
+      error: () => {
+        this.usdAmount = 'Error fetching conversion';
+      },
+    });
+      }
+   
       var data;
 
       if (this.params === 'GRN') {

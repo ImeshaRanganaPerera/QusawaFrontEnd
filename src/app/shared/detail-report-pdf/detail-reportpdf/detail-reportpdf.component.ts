@@ -23,7 +23,7 @@ export class DetailReportpdfComponent {
   voucherGrp!: string;
   type!: string;
   category!: string;
-  email: string = 'info@hitechlanka.lk';
+  email: string = 'info@qaswa.lk';
   startDate: string | null = null;
   endDate: string | null = null;
   grandTotal: number = 0;

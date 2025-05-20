@@ -18,7 +18,7 @@ import { ChequeService } from '../../services/cheque/cheque.service';
 
 export class ReceiptVoucherComponent {
   title = 'Payment Voucher';
-  email: string = 'info@hitechlanka.lk';
+  email: string = 'info@qaswa.lk';
 
   voucherService = inject(VoucherService)
   partyService = inject(PartyService)

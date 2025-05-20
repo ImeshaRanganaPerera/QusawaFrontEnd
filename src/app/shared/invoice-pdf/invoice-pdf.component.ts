@@ -19,7 +19,7 @@ export class InvoicePdfComponent {
   voucherService = inject(VoucherService)
   private cdRef = inject(ChangeDetectorRef);
   voucherData: any;
-  email: string = 'info@hitechlanka.lk';
+  email: string = 'info@qaswa.lk';
   userPhoneNumber: any
   type = this.nzModalData.type;
   mode: any

@@ -22,11 +22,17 @@ export class InventoryService {
   get(): Observable<APIResponse> {
     return this.httpClient.get<APIResponse>(this.url + '/inventory');
   }
-
+convertToUSD(amount: number, from: string): Observable<{ amountInUSD: string }> {
+    const params = new HttpParams().set('amount', amount).set('from', from);
+    return this.httpClient.get<{ amountInUSD: string }>(this.url + '/Currency', { params });
+  }
   getbyCenterId(id: any): Observable<APIResponse> {
     return this.httpClient.get<APIResponse>(this.url + '/inventory/' + id);
   }
 
+getproduct(): Observable<APIResponse> {
+    return this.httpClient.get<APIResponse>(this.url + '/product');
+  }
   update(id: any, data: any): Observable<APIResponse> {
     return this.httpClient.put<APIResponse>(this.url + '/inventory/' + id, data, {
       headers: new HttpHeaders().set('Content-Type', 'application/json')

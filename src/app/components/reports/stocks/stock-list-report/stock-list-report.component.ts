@@ -53,7 +53,7 @@ export class StockListReportComponent {
   stockData: any[] = [];
   stockMovementData: any[] = [];
   filteredStockData: any[] = [];
-
+  groupedStockMovementData: { batchNo: string; records: any[] }[] = [];
   pagesize = 100;
 
   viewContainerRef = inject(ViewContainerRef);
@@ -159,39 +159,79 @@ export class StockListReportComponent {
 
   }
 
+  // stockMovement(data: any) {
+  //   this.isStockMovement = !this.isStockMovement
+  //   this.isSpinning = true;
+  //   const productId = data.productId
+  //   const centerId = data.centerId
+  //   const date = this.stockReportForm.get('date')?.value;
+
+  //   this.productList.map((product: any) => {
+  //     if (product.id === productId) {
+  //       this.productName = product.printName
+  //     }
+  //   })
+
+  //   this.centerList.map((center: any) => {
+  //     if (center.id === centerId) {
+  //       this.centerName = center.centerName
+  //     }
+  //   })
+
+  //   this.stockMovementData = []
+  //   this.inventoryService.getStockMovement(productId, centerId, date).subscribe((res: APIResponse) => {
+  //     this.stockMovementData = res.data;
+  //     this.pagesize = this.stockMovementData.length
+  //     this.calculateTotal();
+  //     this.isSpinning = false;
+  //   })
+  // }
   stockMovement(data: any) {
-    this.isStockMovement = !this.isStockMovement
-    this.isSpinning = true;
-    const productId = data.productId
-    const centerId = data.centerId
-    const date = this.stockReportForm.get('date')?.value;
+  this.isStockMovement = !this.isStockMovement;
+  this.isSpinning = true;
 
-    this.productList.map((product: any) => {
-      if (product.id === productId) {
-        this.productName = product.printName
-      }
-    })
+  const productId = data.productId;
+  const centerId = data.centerId;
+  const date = this.stockReportForm.get('date')?.value;
 
-    this.centerList.map((center: any) => {
-      if (center.id === centerId) {
-        this.centerName = center.centerName
-      }
-    })
+  // Get selected product and center name
+  const selectedProduct = this.productList.find((product: any) => product.id === productId);
+  const selectedCenter = this.centerList.find((center: any) => center.id === centerId);
 
-    this.stockMovementData = []
-    this.inventoryService.getStockMovement(productId, centerId, date).subscribe((res: APIResponse) => {
-      this.stockMovementData = res.data;
-      this.pagesize = this.stockMovementData.length
-      this.calculateTotal();
-      this.isSpinning = false;
-    })
-  }
+  this.productName = selectedProduct?.printName || '';
+  this.centerName = selectedCenter?.centerName || '';
+
+  this.stockMovementData = [];
+  this.groupedStockMovementData = []; // <-- Clear previous batch groups
+
+this.inventoryService.getStockMovement(productId, centerId, date).subscribe((res: any) => {
+  console.log('Grouped stock movement object:', res);
+
+  const stockArray: any[] = [];
+
+ this.groupedStockMovementData = Object.entries(res.data).map(([batchNo, records]) => ({
+    batchNo,
+    records: records as any[]
+  }));
+
+  this.stockMovementData = stockArray;
+  this.pagesize = stockArray.length;
+
+  this.calculateTotal();
+  this.isSpinning = false;
+});
+
+
+}
+
 
   calculateTotal() {
-    const qtyIn = this.stockMovementData.reduce((sum, stock) => sum + (stock.qtyIn || 0), 0);
-    const qtyOut = this.stockMovementData.reduce((sum, stock) => sum + (stock.qtyOut || 0), 0);
-  
-    this.totalQuantity = qtyIn - qtyOut;
+  const allRecords = this.groupedStockMovementData.flatMap(batch => batch.records);
+
+  const qtyIn = allRecords.reduce((sum, stock) => sum + (stock.qtyIn || 0), 0);
+  const qtyOut = allRecords.reduce((sum, stock) => sum + (stock.qtyOut || 0), 0);
+
+  this.totalQuantity = qtyIn - qtyOut;
   }
 
   changeStock() {

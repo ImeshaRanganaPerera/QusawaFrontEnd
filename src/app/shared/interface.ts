@@ -166,6 +166,9 @@ export interface ITableRow {
     MRP: number;
     discount: any;
     amount: number;
+    batchNo: any;
+    ExpnotifDays:number;
+    expiryDate:any,
 }
 
 export interface ItemData {

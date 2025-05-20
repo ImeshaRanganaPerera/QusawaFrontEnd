@@ -263,13 +263,13 @@ body, html {
   align-items: center;
   background:linear-gradient(
     135deg,
-    hsl(240deg 100% 50%) 0%,
-    hsl(220deg 100% 50%) 26%,
-    hsl(211deg 100% 50%) 39%,
-    hsl(203deg 100% 50%) 50%,
-    hsl(201deg 100% 60%) 61%,
-    hsl(203deg 95% 78%) 74%,
-    hsl(200deg 53% 90%) 100%
+    hsl(240, 10%, 24%) 0%,
+    hsl(220, 14%, 17%) 26%,
+    hsl(216, 3%, 34%) 39%,
+    hsl(203, 11%, 54%) 50%,
+    hsl(199, 7%, 44%) 61%,
+    hsl(192, 3%, 36%)4%,
+    hsl(198, 7%, 64%) 100%
   );
   position: relative;
   overflow: hidden;
@@ -312,7 +312,7 @@ body, html {
   padding: 40px;
   max-width: 400px;
   text-align: center;
-  color: white;
+  color: rgba(255, 255, 255, 0);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   justify-items: center;
 }
@@ -439,7 +439,7 @@ body, html {
   // right: 10px;
   top: -10px;
   transition: transform 0.3s ease; /* Smooth transform */
-  background-color: var(--BG-transparent);
+  background-color: var();
 }
 
 .header-logo:hover {

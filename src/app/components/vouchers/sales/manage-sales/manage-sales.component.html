@@ -10,7 +10,7 @@
                             <div class="row">
                                 <div class="col-12">
                                     @if(voucherType === 'SALES'){
-                                    <h2>Invoice</h2>
+                                    <h2>Sales Invoice</h2>
                                     }
                                     @else {
                                     <h2>{{voucherType}}</h2>
@@ -26,7 +26,13 @@
                                         </nz-select>
                                     </nz-form-control>
                                     }
-
+                                    <div class="col-md-4 col-sm-12 mb-4">
+                                        <nz-form-control nzErrorTip="Please input Date!">
+                                            <label>Ref Number</label>
+                                            <input type="text" nz-input formControlName="refNumber"
+                                                [(ngModel)]="refNumberso" nzSize="default" class="shadowform" />
+                                        </nz-form-control>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -37,7 +43,7 @@
                                     <nz-form-control nzErrorTip="Please input Date!">
                                         <label>Date</label><br>
                                         <nz-date-picker [nzDisabledDate]="disabledDate" class="w-100 shadowform"
-                                            formControlName="date" nzSize="large"></nz-date-picker>
+                                            formControlName="date" nzSize="small"></nz-date-picker>
                                     </nz-form-control>
                                 </div>
                                 }
@@ -56,8 +62,7 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                <div class="col-md-4 text-start">
+                                <div class="col-md-4 text-start customer-details">
                                     <nz-form-control nzErrorTip="Customer is required!">
                                         <label>Customer Details</label>
                                         <nz-select nzShowSearch formControlName="partyId"
@@ -70,50 +75,44 @@
                                         <p><strong>Name:</strong> {{ selectedCustomer.name }}</p>
                                         <p><strong>Phone:</strong> {{ selectedCustomer.phoneNumber }}</p>
                                         <p><strong>Address:</strong> {{ selectedCustomer.address1 }}</p>
-                                        <!-- Add other details as needed -->
                                     </div>
                                 </div>
-                                <div class="col-md-4 col-sm-12 mb-4">
-                                    <nz-form-control nzErrorTip="Please input Date!">
-                                        <label>Ref Number</label>
-                                        <input type="text" nz-input formControlName="refNumber"  [(ngModel)]="refNumberso" nzSize="default"
-                                            class="shadowform" />
-                                    </nz-form-control>
-                                </div>
+
                             </div>
                         </div>
                     </div>
                 </form>
 
                 <nz-divider></nz-divider>
-                <!-- <nz-divider nzText="Left Text" nzOrientation="left"></nz-divider> -->
-                <!-- <label>Customer Details</label> -->
-                <!-- <div class="col-4">
-                <h3>Sale Invoice</h3>
-                <small>#{{invoiceNumber}}</small>
-            </div> -->
+
+                <label for="lkrInput">Change rate (optional):</label>
+                <input type="number" [(ngModel)]="lkrAmount" id="lkrInput" placeholder="Enter new LKR amount"
+                    step="0.01" style="width: 120px;"/>
                 <div class="row align-items-center ">
                     <div class="col-md-5 col-sm-6 mb-4">
                         <nz-form-control nzErrorTip="Please input Customer Name!">
                             <label>Product</label>
-                            <nz-input-group> <!-- nzSearch [nzAddOnAfter]="suffixIconButton" -->
+                            <nz-input-group>
                                 <input placeholder="Enter product name" nz-input [(ngModel)]="inputValue"
                                     (input)="onInput($event)" [nzAutocomplete]="auto" class="shadowform" />
                                 <nz-autocomplete #auto>
                                     <nz-auto-option *ngFor="let product of filteredProducts"
-                                        [nzValue]="product.printName">
-                                        <div class="row">
-                                            <div class="col-4">
-                                                {{product.printName}}
-                                            </div>
-                                            <div class="col-4 text-center">
-                                                {{product.itemCode}}
-                                            </div>
-                                            <div class="col-4 text-center">
-                                                QTY {{product.quantity}}
+                                        [nzValue]="product.printName" (click)="selectProduct(product)">
+
+                                        <div class="product-item-wrapper">
+                                            <div class="product-item">
+                                                <div class="cell id">{{ product.batchNo }}</div>
+                                                <div class="cell date">{{ product.expDate | date: 'yyyy-MM-dd' }}</div>
+                                                <div class="cell date">{{ product.closingExpDate | date: 'yyyy-MM-dd' }}
+                                                </div>
+                                                <div class="cell name" title="{{ product.printName }}">{{
+                                                    product.printName }}</div>
+                                                <div class="cell qty">QTY {{ product.quantity }}</div>
                                             </div>
                                         </div>
+
                                     </nz-auto-option>
+
                                 </nz-autocomplete>
                             </nz-input-group>
                         </nz-form-control>
@@ -139,8 +138,9 @@
                     }
                     <div class="col-md-2 col-sm-2 mb-4 row  ">
                         <h3 class="text-end fs-6">Total Amount</h3>
-                        <p class="text-end fs-4">{{totalAmount | currency:'Rs '}}</p>
+                        <p class="text-end fs-4">{{totalAmount | currency:'USD '}}</p>
                     </div>
+
                 </div>
                 <nz-table #basicTable [nzShowPagination]="false" [nzPageSize]="100" [nzData]="dataSource"
                     class="shadowform">
@@ -148,8 +148,11 @@
                         <tr>
                             <th style="width: 1%;">No</th>
                             <th style="width: 20%;">Product Name</th>
+                            <th style="width: 20%;">Batch No</th>
+                            <th style="width: 20%;">Exp.Date</th>
+                            <th style="width: 20%;">Close.Exp</th>
                             <th style="width: 10%;">Qty</th>
-                            <th style="width: 10%;">Unit Price</th>
+                            <th style="width: 10%;">Unit Price(USD)</th>
                             <th style="width: 10%;">Discount</th>
                             <th style="width: 15%;">Total</th>
                             <th style="width: 5%;"></th>
@@ -160,16 +163,19 @@
                         <tr *ngFor="let row of basicTable.data; let i=index">
                             <td>{{ i + 1 }}</td>
                             <td>{{ row.printName }}</td>
+                            <td>{{ row.batchNo }}</td>
+                            <td>{{ expdate | date: 'yyyy-MM-dd'}}</td>
+                            <td>{{ closinexp | date: 'yyyy-MM-dd'}}</td>
                             <td>
                                 <input type="number" nz-input [(ngModel)]="row.quantity"
                                     (ngModelChange)="onFieldChange(row, 'quantity', $event)"
-                                    [max]="getProductMaxQuantity(row.productId)"
-                                    [disabled]="getProductMaxQuantity(row.productId) === 0" />
-                                <small>Available: {{ getProductMaxQuantity(row.productId) }}</small>
+                                    [max]="getProductMaxQuantity(row.productId,row.batchNo)"
+                                    [disabled]="getProductMaxQuantity(row.productId,row.batchNo) === 0" />
+                                <small>Available: {{ getProductMaxQuantity(row.productId,row.batchNo) }}</small>
                             </td>
                             <td>
                                 <input type="number" nz-input [(ngModel)]="row.MRP"
-                                    (ngModelChange)="onFieldChange(row, 'MRP', $event)" disabled />
+                                    (ngModelChange)="onFieldChange(row, 'MRP', $event)" [disabled]="!isAdmin" />
                             </td>
                             <td>
                                 <input type="text" nz-input [(ngModel)]="row.discount"

@@ -13,26 +13,14 @@ nz-form-control input {
 }
 
 nz-form-control textarea {
-    font-size: large;
+    font-size: medium;
     color: rgb(0, 0, 0);
     background-color: var(--input-color);
     border-radius: 8px;
     border-color: var(--input-bordercolor);
 }
 
-::ng-deep nz-date-picker .ant-picker-input input {
-    font-size: large;
-    color: rgb(0, 0, 0);
-    font-family: "Roboto", sans-serif;
-}
 
-nz-date-picker {
-    color: rgb(0, 0, 0);
-    background-color: var(--input-color);
-    border-radius: 8px;
-    border-color: var(--input-bordercolor);
-    padding: 6px 15px;
-}
 
 .custom-select {
     font-size: large;
@@ -49,6 +37,27 @@ nz-date-picker {
 
 p {
     color: var(--light-Db-FontColor);
+}
+::ng-deep .custom-toast {
+  background: linear-gradient(135deg, #ff6a00, #ee0979) !important;
+  color: #050404 !important;
+  font-weight: bold;
+  font-size: 65px !important; /* Increase font size */
+  font-weight: 500;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  animation: toast-pop 0.4s ease-out forwards;
+}
+
+@keyframes toast-pop {
+  0% {
+    transform: translateY(-30px) scale(0.9);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
 }
 
 // .ant-btn-primary{

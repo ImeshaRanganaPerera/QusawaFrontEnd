@@ -21,7 +21,7 @@ export class DownloadPdfComponent {
   private cdRef = inject(ChangeDetectorRef);
   route = inject(ActivatedRoute);
   voucherData: any;
-  email: string = 'info@hitechlanka.lk';
+  email: string = 'info@qaswa.lk';
   userPhoneNumber: any
   mode: any
   isTemplateVisible: boolean = false; // Initially set to true

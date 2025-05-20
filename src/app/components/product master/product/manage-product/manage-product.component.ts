@@ -55,9 +55,10 @@ export class ManageProductComponent implements OnInit {
     printName: new FormControl(''),
     image: new FormControl(''),
     criticalLevel: new FormControl(0),
+    ExpnotifDays:new FormControl(0),
     typeId: new FormControl(''),
     // brandId: new FormControl(''),
-    OEMnumber: new FormControl(''),
+    // OEMnumber: new FormControl(''),
   })
 
   ngOnInit(): void {
@@ -186,12 +187,12 @@ export class ManageProductComponent implements OnInit {
       })
       return;
     }
-    const oemNumbers = this.productForm.get('OEMnumber')?.value.split(',').map((num: string) => num.trim()) || [];
+ //   const oemNumbers = this.productForm.get('OEMnumber')?.value.split(',').map((num: string) => num.trim()) || [];
 
     // Map the array of strings into an array of objects
-    const oemNumberObjects = oemNumbers.map((num: string) => ({
-      OEMnumber: num // Assuming `OEnumber` is the field in your Prisma schema
-    }));
+    // const oemNumberObjects = oemNumbers.map((num: string) => ({
+    //   OEMnumber: num // Assuming `OEnumber` is the field in your Prisma schema
+    // }));
 
     const discountLevels = this.discountLevelList.map(level => ({
       discountLevelId: level.id,
@@ -205,7 +206,7 @@ export class ManageProductComponent implements OnInit {
 
     const updatedFormValue = {
       ...this.productForm.value,
-      OEMnumberList: oemNumberObjects, // Assign the list of objects
+      // OEMnumberList: oemNumberObjects, // Assign the list of objects
       discountLevels: discountLevels,
       commissionLevels: productcommissionRate
     };

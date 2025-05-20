@@ -6,10 +6,10 @@
                 <img src="img/logo.png" alt="Logo" class="img-fluid" />
             </div>
             <div class="col-9">
-                <h1 class="fs-4 fw-bold">HITECH LANKA (PVT) LTD</h1>
-                <span>No 932A, Kotte Road, Ethul Kotte | Com.Reg. No PV-00283449</span><br>
-                <span>Hot Line: 0727 205 205</span><br>
-                <span>Email: {{email}} | Website: www.hitechlanka.lk</span>
+                <h1 class="fs-4 fw-bold">MODERN INNOVATION (PVT) LTD</h1>
+                <span>No 122/1, Kawdana Road, Dehiwala, Srilanka</span><br>
+                <span>Hot Line: +94 112 724 292</span><br>
+                <span>Email: {{email}}</span>
             </div>
         </div>
     </div>
@@ -39,7 +39,7 @@
                     <label class="fw-bold">Sum Of Rupee:</label>
                 </div>
                 <div class="col-6 mb-4">
-                    <div>{{ voucherData.amount | currency:' ' }}</div>
+                    <div>{{ voucherData.amount | currency:' USD' }}</div>
                 </div>
             </div>
         </div>
@@ -125,9 +125,9 @@
                     <td>{{ data.invoiceDate | date: 'YYYY/MM/dd' }}</td>
                     <td>{{ data.invoiceAmount | currency:' ' }}</td>
                     @if(type === 'Payment'){
-                    <td>{{ data.value? data.value : 0 | currency:' ' }}</td>
+                    <td>{{ data.value? data.value : 0 | currency:'USD' }}</td>
                     }
-                    <td>{{ data.settledAmount | currency:' ' }}</td>
+                    <td>{{ data.settledAmount | currency:'USD' }}</td>
                     <td>{{ type === 'Payment'? data.value - data.settledAmount : data.invoiceAmount - data.settledAmount
                         | currency:' '}}</td>
                 </tr>
@@ -149,7 +149,7 @@
                     <span>{{payment.paymentType}}</span>
                 </div>
                 <div class="col-6">
-                    <span>{{payment.amount | currency:'LKR '}}</span>
+                    <span>{{payment.amount | currency:'USD '}}</span>
                 </div>
             </div>
             }

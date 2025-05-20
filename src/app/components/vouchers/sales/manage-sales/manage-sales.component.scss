@@ -1,240 +1,437 @@
-.container-fluid{
-  overflow: scroll;
+// .container-fluid{
+//   overflow: scroll;
+// }
+
+
+// nz-form-control label {
+//     font-size: 18px;
+//     color: var(--light-Db-FontColor);
+//     margin-bottom: 5px;
+// }
+
+// nz-form-control input {
+//     font-size: large;
+//     color: rgb(0, 0, 0);
+//     background-color: var(--sidepanelback-color);
+//     border-radius: 8px;
+//     border-color: var(--input-bordercolor);
+// }
+// :root {
+//     --sidepanelback-color: #1f1f3f; /* Example dark blue-gray */
+// }
+
+
+// nz-form-control textarea {
+//     font-size: large;
+//     color: rgb(0, 0, 0);
+//     background-color: var(--sidepanelback-color);
+//     border-radius: 8px;
+//     border-color: var(--input-bordercolor);
+// }
+
+// ::ng-deep nz-date-picker .ant-picker-input input {
+//     font-size: large;
+//     color: rgb(0, 0, 0);
+//     font-family: "Roboto", sans-serif;
+// }
+
+// nz-date-picker {
+//     color: rgb(0, 0, 0);
+//     background-color: var(--input-color);
+//     border-radius: 8px;
+//     border-color: var(--input-bordercolor);
+//     padding: 6px 15px;
+// }
+
+// .container-fluid {
+//     height: 100dvh;
+// }
+
+// .custom-select {
+//     font-size: large;
+//     color: rgb(0, 0, 0);
+//     background-color: var(--input-color);
+//     border-radius: 8px;
+//     border-color: var(--input-bordercolor);
+// }
+
+// .custom-select-text{
+//     font-size: large;
+//     color: rgb(0, 0, 0);
+//     background-color: #ffffff;
+//     // background-color: var(--input-color);
+//     border-radius: 8px;
+//     border-color: var(--input-bordercolor);
+// }
+
+// .card {
+//     border: none;
+//     border-radius: 8px;
+// }
+
+// .left {
+//     height: calc(100dvh - 100px);
+//     overflow: scroll;
+//     overflow-y: auto;
+// }
+
+// p {
+//     color: var(--secondary-color);
+//     // font-weight: 400;
+//     padding: 0;
+//     margin: 0;
+// }
+
+// .card p {
+//     color: var(--secondary-color);
+//     font-size: 15px;
+// }
+
+// .product-content p {
+//     color: rgb(64, 64, 64);
+//     font-weight: 400;
+//     font-size: 22px;
+// }
+
+// .product-action p {
+//     color: rgb(0, 0, 0);
+//     font-weight: 600;
+//     font-size: 15px;
+// }
+
+// .content p {
+//     color: rgb(0, 0, 0);
+// }
+
+
+// .card span {
+//     font-weight: 500;
+//     font-size: 18px;
+
+// }
+
+// .invoice {
+//     height: calc(100dvh - 100px);
+//     display: flex;
+//     flex-direction: column;
+// }
+
+// .product-list {
+//     flex: 1;
+//     overflow-y: auto;
+
+// }
+
+// .footer {
+//     position: sticky;
+//     bottom: 0;
+//     background-color: white;
+//     z-index: 10;
+//     padding: 15px 0;
+// }
+
+// .item-btn {
+//     display: flex;
+//     background-color: #fff;
+//     border: none;
+//     padding: 0;
+//     border-radius: 0 15px 15px 0;
+// }
+
+// .pro-a{
+//     position: relative;
+//     top: 4px;
+// }
+
+// .pro-a1{
+//     position: relative;
+//     top: 16px;
+// }
+
+// .center {
+//     width: 100%;
+//     height: 100%;
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+//     perspective: 1000px;
+//   }
+//   .number-input {
+//     width: 380px;
+//     height: 200px;
+//     background: rgb(249, 207, 0);
+//     border-radius: 10mm;
+//     box-sizing: border-box;
+//     padding: 30px;
+//     display: flex;
+//     align-items: center;
+//     justify-content: space-between;
+//     font-family: poppins;
+//     transform-style: preserve-3d;
+//     box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+//       rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+//     transition: 0.25s;
+//   }
+//   .btn {
+//     width: 80px;
+//     height: 80px;
+//     border-radius: 50%;
+//     background: white;
+//     color: black;
+//     outline: none;
+//     border: none;
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+//     cursor: pointer;
+//     position: relative;
+//   }
+//   .btn span {
+//     font-size: 55px;
+//   }
+//   .btn:active::before {
+//     position: absolute;
+//     content: "";
+//     width: 80px;
+//     height: 80px;
+//     border-radius: 50%;
+//     background: rgb(255, 255, 255);
+//     top: 50%;
+//     left: 50%;
+//     transform: translate(-50%, -50%);
+//     opacity: 0.8;
+//     animation: ripple 0.25s ease-out;
+//   }
+//   @keyframes ripple {
+//     0% {
+//       width: 80px;
+//       height: 80px;
+//       opacity: 0.8;
+//     }
+//     100% {
+//       width: 230px;
+//       height: 230px;
+//       opacity: 0.3;
+//     }
+//   }
+//   .value {
+//     flex-grow: 1;
+//     display: flex;
+//     height: 100%;
+//     align-items: center;
+//     justify-content: center;
+//     flex-direction: column;
+//   }
+//   .number {
+//     flex-grow: 1;
+//     display: flex;
+//     align-items: flex-end;
+//     justify-content: center;
+//     font-size: 60px;
+//     font-weight: 600;
+//   }
+//   .text {
+//     font-size: 16px;
+//     font-weight: 500;
+//     letter-spacing: 1px;
+//   }
+
+//   .invoiceNum{
+//     font-size: 25px;
+//     color: #f40808;
+//     font-weight: 600;
+//     margin-bottom: 10px;
+//   }
+// :root {
+//   --sidepanelback-color: #1e2746;
+//   --input-color: #2b0d0d;
+//   --input-bordercolor: #6c6f93;
+//   --secondary-color: #1d1e20;
+//   --light-Db-FontColor: #080811;
+//   --primary-gradient: linear-gradient(135deg, #1f1f3f, #323a78);
+// }
+
+// body {
+//   margin: 0;
+//   padding: 0;
+//   background: var(--primary-gradient);
+//   font-family: 'Poppins', sans-serif;
+//   color: var(--secondary-color);
+// }
+
+// .container-fluid {
+//   height: 100dvh;
+//   overflow: auto;
+//   padding: 20px;
+//   background: var(--primary-gradient);
+//   border-radius: 12px;
+//   box-shadow: 0 0 20px rgba(0,0,0,0.4);
+// }
+
+// nz-form-control label {
+//   font-size: 18px;
+//   color: var(--light-Db-FontColor);
+//   margin-bottom: 5px;
+// }
+
+// nz-form-control input,
+// nz-form-control textarea,
+
+// nz-date-picker {
+//   font-size: large;
+//   color: #000;
+//   background-color: var(--input-color);
+//   border-radius: 10px;
+//   border: 1px solid var(--input-bordercolor);
+//   padding: 10px;
+// }
+
+// ::ng-deep nz-date-picker .ant-picker-input input {
+//   font-size: large;
+//   color: #000;
+//   font-family: "Roboto", sans-serif;
+// }
+
+// .card {
+//   background-color: rgba(255, 255, 255, 0.05);
+//   backdrop-filter: blur(10px);
+//   border-radius: 12px;
+//   border: 1px solid rgba(255, 255, 255, 0.1);
+//   box-shadow: 0 0 10px rgba(0,0,0,0.2);
+//   margin-bottom: 20px;
+// }
+
+// .card p,
+// .product-content p,
+// .product-action p,
+// .content p {
+//   color: var(--secondary-color);
+//   font-weight: 400;
+//   font-size: 15px;
+// }
+
+// .left {
+//   height: calc(100dvh - 100px);
+//   overflow-y: auto;
+// }
+
+// .footer {
+//   position: sticky;
+//   bottom: 0;
+//   background-color: #222b4a;
+//   padding: 15px 0;
+//   color: #141010;
+//   border-top: 1px solid #444b71;
+// }
+
+// .item-btn {
+//   display: flex;
+//   background-color: #fff;
+//   border: none;
+//   padding: 0;
+//   border-radius: 0 15px 15px 0;
+// }
+
+// .number-input {
+//   background: #0f0f0c;
+//   border-radius: 20px;
+//   padding: 30px;
+//   box-shadow: 0px 4px 20px rgba(0,0,0,0.2);
+// }
+
+// .btn {
+//   background: white;
+//   color: black;
+//   border-radius: 50%;
+//   width: 80px;
+//   height: 80px;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   cursor: pointer;
+// }
+
+// .btn span {
+//   font-size: 55px;
+// }
+
+// .btn:active::before {
+//   content: "";
+//   position: absolute;
+//   width: 80px;
+//   height: 80px;
+//   border-radius: 50%;
+//   background: #271c1c;
+//   transform: translate(-50%, -50%);
+//   opacity: 0.8;
+//   animation: ripple 0.25s ease-out;
+// }
+
+// @keyframes ripple {
+//   0% {
+//     width: 80px;
+//     height: 80px;
+//     opacity: 0.8;
+//   }
+//   100% {
+//     width: 230px;
+//     height: 230px;
+//     opacity: 0.3;
+//   }
+// }
+.customer-details p {
+  margin: 4px 0;          /* Reduce vertical spacing */
+  line-height: 1.2;       /* Tighter line height */
+  font-size: 15px;        /* Optional: slightly smaller font for compactness */
 }
 
-
-nz-form-control label {
-    font-size: 18px;
-    color: var(--light-Db-FontColor);
-    margin-bottom: 5px;
+.invoiceNum {
+  font-size: 25px;
+  color: #ff4081;
+  font-weight: 700;
+  margin-bottom: 15px;
 }
 
-nz-form-control input {
-    font-size: large;
-    color: rgb(0, 0, 0);
-    background-color: var(--input-color);
-    border-radius: 8px;
-    border-color: var(--input-bordercolor);
+.product-item-wrapper {
+  overflow-x: auto;
 }
 
-nz-form-control textarea {
-    font-size: large;
-    color: rgb(0, 0, 0);
-    background-color: var(--input-color);
-    border-radius: 8px;
-    border-color: var(--input-bordercolor);
+.product-item {
+  display: flex;
+  min-width: 800px; /* triggers horizontal scroll if content overflows */
+  align-items: center;
+  white-space: nowrap;
+  padding: 4px 10px;
 }
 
-::ng-deep nz-date-picker .ant-picker-input input {
-    font-size: large;
-    color: rgb(0, 0, 0);
-    font-family: "Roboto", sans-serif;
+.cell {
+  padding: 0 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  font-family: 'Segoe UI', sans-serif;
+  flex-shrink: 0;
 }
 
-nz-date-picker {
-    color: rgb(0, 0, 0);
-    background-color: var(--input-color);
-    border-radius: 8px;
-    border-color: var(--input-bordercolor);
-    padding: 6px 15px;
+.cell.id {
+  width: 60px;
+  text-align: center;
 }
 
-.container-fluid {
-    height: 100dvh;
+.cell.date {
+  width: 110px;
+  text-align: center;
 }
 
-.custom-select {
-    font-size: large;
-    color: rgb(0, 0, 0);
-    background-color: var(--input-color);
-    border-radius: 8px;
-    border-color: var(--input-bordercolor);
+.cell.name {
+  width: 300px;
 }
 
-.custom-select-text{
-    font-size: large;
-    color: rgb(0, 0, 0);
-    background-color: #ffffff;
-    // background-color: var(--input-color);
-    border-radius: 8px;
-    border-color: var(--input-bordercolor);
+.cell.qty {
+  width: 100px; /* increased from 80px */
+  text-align: right;
+  font-weight: 600;
+  overflow: visible; /* allow full number display */
+  text-overflow: clip; /* do not clip long text */
 }
-
-.card {
-    border: none;
-    border-radius: 8px;
-}
-
-.left {
-    height: calc(100dvh - 100px);
-    overflow: scroll;
-    overflow-y: auto;
-}
-
-p {
-    color: var(--secondary-color);
-    // font-weight: 400;
-    padding: 0;
-    margin: 0;
-}
-
-.card p {
-    color: var(--secondary-color);
-    font-size: 15px;
-}
-
-.product-content p {
-    color: rgb(64, 64, 64);
-    font-weight: 400;
-    font-size: 22px;
-}
-
-.product-action p {
-    color: rgb(0, 0, 0);
-    font-weight: 600;
-    font-size: 15px;
-}
-
-.content p {
-    color: rgb(0, 0, 0);
-}
-
-
-.card span {
-    font-weight: 500;
-    font-size: 18px;
-
-}
-
-.invoice {
-    height: calc(100dvh - 100px);
-    display: flex;
-    flex-direction: column;
-}
-
-.product-list {
-    flex: 1;
-    overflow-y: auto;
-
-}
-
-.footer {
-    position: sticky;
-    bottom: 0;
-    background-color: white;
-    z-index: 10;
-    padding: 15px 0;
-}
-
-.item-btn {
-    display: flex;
-    background-color: #fff;
-    border: none;
-    padding: 0;
-    border-radius: 0 15px 15px 0;
-}
-
-.pro-a{
-    position: relative;
-    top: 4px;
-}
-
-.pro-a1{
-    position: relative;
-    top: 16px;
-}
-
-.center {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    perspective: 1000px;
-  }
-  .number-input {
-    width: 380px;
-    height: 200px;
-    background: rgb(249, 207, 0);
-    border-radius: 10mm;
-    box-sizing: border-box;
-    padding: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-family: poppins;
-    transform-style: preserve-3d;
-    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
-      rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
-    transition: 0.25s;
-  }
-  .btn {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: white;
-    color: black;
-    outline: none;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    position: relative;
-  }
-  .btn span {
-    font-size: 55px;
-  }
-  .btn:active::before {
-    position: absolute;
-    content: "";
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: rgb(255, 255, 255);
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 0.8;
-    animation: ripple 0.25s ease-out;
-  }
-  @keyframes ripple {
-    0% {
-      width: 80px;
-      height: 80px;
-      opacity: 0.8;
-    }
-    100% {
-      width: 230px;
-      height: 230px;
-      opacity: 0.3;
-    }
-  }
-  .value {
-    flex-grow: 1;
-    display: flex;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-  }
-  .number {
-    flex-grow: 1;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    font-size: 60px;
-    font-weight: 600;
-  }
-  .text {
-    font-size: 16px;
-    font-weight: 500;
-    letter-spacing: 1px;
-  }
-
-  .invoiceNum{
-    font-size: 25px;
-    color: #f40808;
-    font-weight: 600;
-    margin-bottom: 10px;
-  }

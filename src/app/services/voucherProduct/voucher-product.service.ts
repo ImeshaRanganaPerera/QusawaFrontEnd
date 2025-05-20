@@ -19,11 +19,12 @@ export class VoucherProductService {
     return this.httpClient.get<APIResponse>(this.url + '/voucherProduct/byvoucher/' + id);
   }
 
-  getFilteredVouchers(productId: string, centerId: string): Observable<any> {
+  getFilteredVouchers(productId: string, centerId: string,batchNo: string): Observable<any> {
     let params = new HttpParams();
     params = params.set('productId', productId);
     if (productId) {
       params = params.set('centerId', centerId);
+      params = params.set('batchNo', batchNo)
     }
     return this.httpClient.get(`${this.url}/voucherProduct/byProductCenter`, { params });
   }

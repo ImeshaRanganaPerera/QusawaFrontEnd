@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, ViewContainerRef } from '@angular/core';
 import { MaterialModule } from '../../../../modules/material/material.module';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { CenterService } from '../../../../services/center/center.service';
 import { InventoryService } from '../../../../services/inventory/inventory.service';
@@ -17,6 +17,9 @@ import { RefVouchersComponent } from '../../../../shared/ref-vouchers/ref-vouche
 import { PdfSelectionComponent } from '../../../../shared/pdf-selection/pdf-selection.component';
 import { differenceInCalendarDays } from 'date-fns';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { CurrencyService } from '../../../../services/currency/currency.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogboxComponent } from '../../../../dialogbox/dialogbox.component';
 
 @Component({
   selector: 'app-manage-sales',
@@ -27,7 +30,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 })
 
 export class ManageSalesComponent implements OnInit {
-  discountLevelIddesc : any
+  discountLevelIddesc: any
   currentDate: Date = new Date();
   name: any = localStorage.getItem('name');
   voucherTotal!: string;
@@ -43,7 +46,7 @@ export class ManageSalesComponent implements OnInit {
   partyData: IParty[] = [];
   productData: any[] = [];
   filteredProducts: any[] = [];
-  discountLevel : any[] = [];
+  discountLevel: any[] = [];
   productdiscountLevel: any[] = [];
   invoiceNumber: any
   params: any
@@ -52,18 +55,23 @@ export class ManageSalesComponent implements OnInit {
   refVoucherNumber: any;
   ischecked: boolean = true;
   isref: boolean = false;
-  TotalAmount : number =0;
+  TotalAmount: number = 0;
   inputValue?: string;
+  selectedBatchNo: string = '';
+  expdate!: Date;
+  closinexp!: Date;
+  closdays: number = 0;
   fixedtotalAmount: number = 0;
   totalAmount: number = 0;
   responseMessage: any;
   dueDays: any;
   authUser: any;
-  refNumberso:any;
+  refNumberso: any;
   invoiceAmount: number = 0;
-
+  currencyservice = inject(CurrencyService)
   route = inject(ActivatedRoute)
   notification = inject(NzNotificationService)
+  dialog = inject(MatDialog)
   voucherservice = inject(VoucherService)
   centerservice = inject(CenterService)
   partyservice = inject(PartyService)
@@ -76,6 +84,8 @@ export class ManageSalesComponent implements OnInit {
   role: any;
 
   qty: any | null = null;
+  isAdmin = false;
+
 
   startEdit(id: any): void {
     this.qty = id;
@@ -84,10 +94,22 @@ export class ManageSalesComponent implements OnInit {
   stopEdit(): void {
     this.qty = null;
   }
-
+  usdAmount: string | null = null;
+  lkrAmount: string | null = null;
   selectedCustomer: IParty | null = null;
   selectedCenter: ICenter | null = null;
-  formdata: { qty: number | null } = { qty: null };
+  formdata: {
+    qty: number | null;
+    batchNo: string | null;
+    expdate: string | null;
+    closinexp: string | null;
+  } = {
+      qty: null,
+      batchNo: null,
+      expdate: null,
+      closinexp: null
+    };;
+
 
   saleForm = new FormGroup({
     centerId: new FormControl('', [(Validators.required)]),
@@ -105,6 +127,17 @@ export class ManageSalesComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       this.params = params['type'];
     })
+    this.userrolesidemenu()
+    
+    this.currencyservice.get(1, 'LKR').subscribe({
+      next: (res) => {
+        this.usdAmount = res.amountInUSD;
+        this.lkrAmount = res.amountLkr;
+      },
+      error: () => {
+        this.usdAmount = 'Error fetching conversion';
+      },
+    })
     if (this.params === 'Sales') {
       this.voucherType = 'INVOICE'
       this.getVoucherNumber(this.voucherType);
@@ -114,12 +147,13 @@ export class ManageSalesComponent implements OnInit {
       this.saleForm.get('discountLevelId')?.clearValidators();
       this.saleForm.get('discountLevelId')?.updateValueAndValidity();
       this.getVoucherNumber(this.voucherType);
-
     }
     else {
       this.voucherType = 'SALES-ORDER'
       this.getVoucherNumber(this.voucherType);
     }
+
+    
 
     this.getCustomer();
     this.getCenter();
@@ -130,13 +164,13 @@ export class ManageSalesComponent implements OnInit {
         // Call getproductDiscount with the selected discount level ID
         this.getproductDiscount(discountLevelId);
         // Update discounts for each item in dataSource
-        if (this.isref=true){
+        if (this.isref = true) {
 
-        } 
-        else{
+        }
+        else {
           this.updateDiscountsForProducts(discountLevelId);
-        }     
-       
+        }
+
       }
     });
 
@@ -183,13 +217,32 @@ export class ManageSalesComponent implements OnInit {
         }
       }
     });
-    
+
   }
 
   getRole() {
     this.role = localStorage.getItem('role')
   }
+  selectProduct(product: any): void {
+    this.inputValue = product.printName;
+    this.selectedBatchNo = product.batchNo;
+    this.expdate = product.expDate;
+    this.closinexp = product.closingExpDate;
+    this.closdays = product.ExpnotifDays;
+    // Calculate the difference in days
 
+    // Optionally, you can also store the whole object:
+    // this.selectedProduct = product;
+  }
+userrolesidemenu() {
+    const role = localStorage.getItem('role');
+    if (role) {
+      this.role = role;
+      this.isAdmin = role === 'ADMIN'
+    } else {
+      console.error('No role found in localStorage!');
+    }
+  }
 
   updateDiscountsForProducts(discountLevelId: any) {
     this.discountLevelService.getproductDiscountbyid(discountLevelId).subscribe((res: APIResponse) => {
@@ -205,7 +258,7 @@ export class ManageSalesComponent implements OnInit {
         // Recalculate the amount based on the new discount
         this.updateAmount(row);
       });
-      
+
       this.calculateTotalAmount(); // Recalculate total amount after updating discounts
     });
   }
@@ -281,17 +334,17 @@ export class ManageSalesComponent implements OnInit {
     modal.afterClose.subscribe((result: any) => {
       if (result && result.data) {
         this.isref = true,
-        this.dataSource = result.data.voucherProduct.map((product: any) => ({
-          ...product,
-          printName: product.product?.printName
-        }))
-       // this.saleForm.get('discountLevelId')?.reset
+          this.dataSource = result.data.voucherProduct.map((product: any) => ({
+            ...product,
+            printName: product.product?.printName
+          }))
+        // this.saleForm.get('discountLevelId')?.reset
         this.authUser = result.data.authUser;
-        this.discountLevelIddesc =  result.data.DiscountLevel
+        this.discountLevelIddesc = result.data.DiscountLevel
         this.refVoucherNumber = result.data.voucherNumber;
-          this.refNumberso = result.data.voucherNumber;
-          console.log(this.discountLevelIddesc)
-          this.saleForm.get('discountLevelId')?.setValue(result.data.discountId)
+        this.refNumberso = result.data.voucherNumber;
+        console.log(this.discountLevelIddesc)
+        this.saleForm.get('discountLevelId')?.setValue(result.data.discountId)
         this.calculateTotalAmount();
       }
       else {
@@ -329,7 +382,7 @@ export class ManageSalesComponent implements OnInit {
     const value = (e.target as HTMLInputElement).value;
     this.filteredProducts = this.productData.filter(product =>
       product.printName.toLowerCase().includes(value.toLowerCase()) ||
-      product.itemCode.toString().includes(value.toLowerCase())
+      product.batchNo.toString().includes(value.toLowerCase())
     );
   }
 
@@ -351,7 +404,7 @@ export class ManageSalesComponent implements OnInit {
         discount => discount.productId === selectedProduct.id
       );
 
-      this.getproductlist(selectedProduct.id, this.Center);
+      this.getproductlist(selectedProduct.id, this.Center, selectedProduct.batchNo);
 
       // Get the discount rate, defaulting to "0" if not found
       const discountRateString = productDiscount ? productDiscount.discountRate : "0"; // Default to "0%"
@@ -383,7 +436,10 @@ export class ManageSalesComponent implements OnInit {
         sellingPrice: selectedProduct.sellingPrice || 0,
         minPrice: selectedProduct.minPrice,
         MRP: selectedProduct.MRP,
-        amount: amount > 0 ? amount : 0 // Ensure amount is not negative
+        amount: amount > 0 ? amount : 0, // Ensure amount is not negative
+        batchNo: this.selectedBatchNo,
+        expiryDate:this.expdate,
+        ExpnotifDays: selectedProduct.ExpnotifDays,
       };
 
       // Update the data source with the new row
@@ -392,6 +448,7 @@ export class ManageSalesComponent implements OnInit {
       // Reset input fields
       this.inputValue = '';
       this.formdata.qty = null;
+      this.formdata.batchNo = null;
 
       // Recalculate the total amount after adding the new row
       this.calculateTotalAmount();
@@ -402,8 +459,8 @@ export class ManageSalesComponent implements OnInit {
   }
 
   voucherProduct: any[] = [];
-  getproductlist(productId: any, centerId: any) {
-    this.voucherProductService.getFilteredVouchers(productId, centerId).subscribe((res: APIResponse) => {
+  getproductlist(productId: any, centerId: any, batchNo: any) {
+    this.voucherProductService.getFilteredVouchers(productId, centerId, batchNo).subscribe((res: APIResponse) => {
       this.voucherProduct = res.data
       this.isSpinning = false;
       console.log(this.voucherProduct)
@@ -420,11 +477,11 @@ export class ManageSalesComponent implements OnInit {
     // If the discount changes, adjust the amount
     if (field === 'discount') {
       this.applyDiscount(row);
-    }``
+    } ``
   }
 
-  getProductMaxQuantity(productId: string): number {
-    const product = this.productData.find(p => p.id === productId);
+  getProductMaxQuantity(productId: string, batchNo: string): number {
+    const product = this.productData.find(p => p.id === productId && p.batchNo === batchNo);
     return product ? product.quantity : 0;
   }
 
@@ -479,7 +536,253 @@ export class ManageSalesComponent implements OnInit {
     });
   }
 
+  submitForm() {
+    for (const row of this.dataSource) {
+
+      const product = this.productData.find(p => p.id === row.productId && p.batchNo === row.batchNo);
+      const cleanDate = this.getDateOnlyFromString(product.expDate);
+      const isValid = this.checkIfDateHasEnoughDaysLeft(cleanDate, product.ExpnotifDays);
+      const P = product.ExpnotifDays
+      if (!isValid) {
+        const dialogRef = this.dialog.open(DialogboxComponent, {
+          data: {
+            message: 'The expiry date has been reached. Send approvals or cancel?'
+          }
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            this.proceedWithSubmit();
+          } else {
+            console.log('User cancelled.');
+          }
+        });
+      } else {
+        if (this.voucherType === 'INVOICE') {
+          if (this.saleForm.invalid) {
+            Object.values(this.saleForm.controls).forEach(control => {
+              if (control.invalid) {
+                control.markAsDirty();
+                control.updateValueAndValidity({ onlySelf: true });
+              }
+            })
+            return;
+          }
+          for (const row of this.dataSource) {
+            const product = this.productData.find(p => p.id === row.productId && p.batchNo === row.batchNo);
+            if (this.voucherType !== 'SALES-ORDER') {
+              if (product && Number(row.quantity) > Number(product.quantity)) {
+                this.notification.create(
+                  'error',
+                  'Quantity Error',
+                  `The quantity for ${row.printName} exceeds available stock. Maximum available: ${product.quantity}.`
+                );
+                return; // Stop submission
+              }
+            }
+
+            if (product && Number(row.quantity) === 0) {
+              this.notification.create(
+                'error',
+                'Quantity Error',
+                `The quantity for ${row.printName} has to be above 0`
+              );
+              return; // Stop submission
+            }
+            if (product && Number(row.MRP) < Number(product.minPrice)) {
+              this.notification.create(
+                'error',
+                'Min Price Error',
+                `The Min Price for ${row.printName} has to be above ${product.minPrice}`
+              );
+              return; // Stop submission
+            }
+          }
+          if (this.totalAmount <= 0) {
+            this.notification.create('error', 'Error', 'Paid amount should not be 0');
+            return;
+          }
+          // this.submit();
+          //this.paymentMode('ALL', this.totalAmount, 'DEBIT')
+        }
+        // else if (this.voucherType === 'SALES-RETURN') {
+        //   if (this.saleForm.invalid) {
+        //     Object.values(this.saleForm.controls).forEach(control => {
+        //       if (control.invalid) {
+        //         control.markAsDirty();
+        //         control.updateValueAndValidity({ onlySelf: true });
+        //       }
+        //     })
+        //     return;
+        //   }
+        //   if (this.totalAmount <= 0) {
+        //     this.notification.create('error', 'Error', 'Paid amount should not be 0');
+        //     return;
+        //   }
+        //   this.paymentMode('ALL', this.totalAmount, 'CREDIT')
+        // }
+        else {
+          if (this.saleForm.invalid) {
+            Object.values(this.saleForm.controls).forEach(control => {
+              if (control.invalid) {
+                control.markAsDirty();
+                control.updateValueAndValidity({ onlySelf: true });
+              }
+            })
+            return;
+          }
+          // this.submit();
+        }
+        this.paymentMode('ALL', this.totalAmount, 'CREDIT')
+      }
+
+    }
+
+
+
+  }
+
+  async proceedWithSubmit() {
+    this.ischecked = false
+    if (this.saleForm.invalid) {
+      Object.values(this.saleForm.controls).forEach(control => {
+        if (control.invalid) {
+          control.markAsDirty();
+          control.updateValueAndValidity({ onlySelf: true });
+        }
+      })
+      return;
+    }
+    for (const row of this.dataSource) {
+      const product = this.productData.find(p => p.id === row.productId && p.batchNo === row.batchNo);
+      if (this.voucherType !== 'SALES-ORDER') {
+        if (product && Number(row.quantity) > Number(product.quantity)) {
+          this.notification.create(
+            'error',
+            'Quantity Error',
+            `The quantity for ${row.printName} exceeds available stock. Maximum available: ${product.quantity}.`
+          );
+          return; // Stop submission
+        }
+      }
+
+      if (product && Number(product.quantity) === 0) {
+        this.notification.create(
+          'error',
+          'Quantity Error',
+          `The quantity for ${row.printName} has to be above 0`
+        );
+        return; // Stop submission
+      }
+      if (product && Number(row.MRP) < Number(product.minPrice)) {
+        this.notification.create(
+          'error',
+          'Min Price Error',
+          `The Min Price for ${row.printName} has to be above ${product.minPrice}`
+        );
+        return; // Stop submission
+      }
+    }
+
+    if (this.totalAmount <= 0) {
+      this.notification.create('error', 'Error', 'Paid amount should not be 0');
+      return;
+    }
+
+    const coords = await this.getCurrentLocation();
+    const location = `Latitude: ${coords.latitude}, Longitude: ${coords.longitude}`;
+
+    // Add location to form data or process as needed
+    this.saleForm.get('location')?.setValue(location);
+    var formData = this.saleForm.value;
+
+    if (!(this.dataSource && this.dataSource.length > 0)) {
+      this.notification.create('error', 'Error', 'Product list is empty');
+      this.isSpinning = false;
+      return;
+    }
+
+    var data;
+
+    data = {
+      date: formData.date,
+      voucherNumber: this.invoiceNumber,
+      refNumber: formData.refNumber,
+      centerId: formData.centerId,
+      partyId: formData.partyId,
+      amount: this.totalAmount,
+      authUser: this.authUser ? this.authUser : null,
+      location: formData.location,
+      isconform: this.ischecked,
+      isPayment: this.ischecked,
+      stockStatus: this.ischecked,
+      status: 'PENDING',
+      refVoucherNumber: this.refVoucherNumber || null,
+      discountLevel: this.saleForm.get('discountLevelId')?.value,
+      isRef: false,
+      dueDays: this.dueDays,
+      voucherGroupname: this.voucherType,
+      discountLevelIddesc: this.saleForm.get('discountLevelId')?.value,
+      productList: this.dataSource
+    }
+
+    console.log(data)
+
+    this.voucherservice.create(data).subscribe((res: APIResponse) => {
+      this.responseMessage = res.message
+      this.resetForm()
+      this.isSpinning = false;
+      this.ischecked = true;
+      this.notification.create('success', 'Success', this.responseMessage);
+    }, (error) => {
+      this.responseMessage = error.error?.message || 'Something went wrong!'
+      this.isSpinning = false;
+      this.notification.create('error', 'Error', this.responseMessage);
+    })
+  }
+
+  sanitizeDateString(dateStr: string): string {
+    // Fix malformed year (e.g. "025" → "2025")
+    if (dateStr.length >= 24 && dateStr.startsWith('025')) {
+      dateStr = '202' + dateStr.substring(1);
+    }
+    return dateStr;
+  }
+
+
+  getDateOnlyFromString(dateStr: string): string {
+    const sanitized = this.sanitizeDateString(dateStr);
+    const date = new Date(sanitized);
+
+    // Format to YYYY-MM-DD
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  }
+
+
+  checkIfDateHasEnoughDaysLeft(dateString: string, minDays: number): boolean {
+    if (dateString.startsWith("025")) {
+      dateString = "202" + dateString.substring(1);
+    }
+    const expiryDate = new Date(dateString);
+
+    // Strip time from today
+    const today = new Date();
+    const todayDateOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+    const timeDiff = expiryDate.getTime() - todayDateOnly.getTime();
+    const dayDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+    return dayDiff >= minDays;
+  }
+
+
   async checkout() {
+    this.submitForm()
+
     if (this.ischecked === true) {
       if (this.voucherType === 'INVOICE') {
         if (this.saleForm.invalid) {
@@ -492,7 +795,7 @@ export class ManageSalesComponent implements OnInit {
           return;
         }
         for (const row of this.dataSource) {
-          const product = this.productData.find(p => p.id === row.productId);
+          const product = this.productData.find(p => p.id === row.productId && p.batchNo === row.batchNo);
           if (this.voucherType !== 'SALES-ORDER') {
             if (product && Number(row.quantity) > Number(product.quantity)) {
               this.notification.create(
@@ -525,7 +828,8 @@ export class ManageSalesComponent implements OnInit {
           this.notification.create('error', 'Error', 'Paid amount should not be 0');
           return;
         }
-        this.paymentMode('ALL', this.totalAmount, 'DEBIT')
+        // this.submit();
+        //this.paymentMode('ALL', this.totalAmount, 'DEBIT')
       }
       // else if (this.voucherType === 'SALES-RETURN') {
       //   if (this.saleForm.invalid) {
@@ -553,7 +857,7 @@ export class ManageSalesComponent implements OnInit {
           })
           return;
         }
-        this.submit();
+        // this.submit();
       }
     }
 
@@ -568,7 +872,7 @@ export class ManageSalesComponent implements OnInit {
         return;
       }
       for (const row of this.dataSource) {
-        const product = this.productData.find(p => p.id === row.productId);
+        const product = this.productData.find(p => p.id === row.productId && p.batchNo === row.batchNo);
         if (this.voucherType !== 'SALES-ORDER') {
           if (product && Number(row.quantity) > Number(product.quantity)) {
             this.notification.create(
@@ -616,42 +920,42 @@ export class ManageSalesComponent implements OnInit {
         return;
       }
 
-      var data;
+      // var data;
 
-      data = {
-        date: formData.date,
-        voucherNumber: this.invoiceNumber,
-        refNumber: formData.refNumber,
-        centerId: formData.centerId,
-        partyId: formData.partyId,
-        amount: this.totalAmount,
-        authUser: this.authUser ? this.authUser : null,
-        location: formData.location,
-        isconform: this.ischecked,
-        isPayment: this.ischecked,
-        stockStatus: this.ischecked,
-        status: 'PENDING',
-        refVoucherNumber: this.refVoucherNumber || null,
-        discountLevel : this.saleForm.get('discountLevelId')?.value,
-        isRef: false,
-        dueDays: this.dueDays,
-        voucherGroupname: this.voucherType,
-        discountLevelIddesc:this.saleForm.get('discountLevelId')?.value,
-        productList: this.dataSource
-      }
+      // data = {
+      //   date: formData.date,
+      //   voucherNumber: this.invoiceNumber,
+      //   refNumber: formData.refNumber,
+      //   centerId: formData.centerId,
+      //   partyId: formData.partyId,
+      //   amount: this.totalAmount,
+      //   authUser: this.authUser ? this.authUser : null,
+      //   location: formData.location,
+      //   isconform: this.ischecked,
+      //   isPayment: this.ischecked,
+      //   stockStatus: this.ischecked,
+      //   status: 'PENDING',
+      //   refVoucherNumber: this.refVoucherNumber || null,
+      //   discountLevel: this.saleForm.get('discountLevelId')?.value,
+      //   isRef: false,
+      //   dueDays: this.dueDays,
+      //   voucherGroupname: this.voucherType,
+      //   discountLevelIddesc: this.saleForm.get('discountLevelId')?.value,
+      //   productList: this.dataSource
+      // }
 
-      console.log(data)
+      // console.log(data)
 
-      this.voucherservice.create(data).subscribe((res: APIResponse) => {
-        this.responseMessage = res.message
-        this.resetForm()
-        this.isSpinning = false;
-        this.notification.create('success', 'Success', this.responseMessage);
-      }, (error) => {
-        this.responseMessage = error.error?.message || 'Something went wrong!'
-        this.isSpinning = false;
-        this.notification.create('error', 'Error', this.responseMessage);
-      })
+      // this.voucherservice.create(data).subscribe((res: APIResponse) => {
+      //   this.responseMessage = res.message
+      //   this.resetForm()
+      //   this.isSpinning = false;
+      //   this.notification.create('success', 'Success', this.responseMessage);
+      // }, (error) => {
+      //   this.responseMessage = error.error?.message || 'Something went wrong!'
+      //   this.isSpinning = false;
+      //   this.notification.create('error', 'Error', this.responseMessage);
+      // })
     }
   }
 
@@ -681,11 +985,11 @@ export class ManageSalesComponent implements OnInit {
 
   async submit(payments?: any) {
     try {
-      const coords = await this.getCurrentLocation();
-      const location = `Latitude: ${coords.latitude}, Longitude: ${coords.longitude}`;
+      // const coords = await this.getCurrentLocation();
+      // const location = `Latitude: ${coords.latitude}, Longitude: ${coords.longitude}`;
 
-      // Add location to form data or process as needed
-      this.saleForm.get('location')?.setValue(location);
+      // // Add location to form data or process as needed
+      // this.saleForm.get('location')?.setValue(location);
       var formData = this.saleForm.value;
 
       if (!(this.dataSource && this.dataSource.length > 0)) {
@@ -703,7 +1007,7 @@ export class ManageSalesComponent implements OnInit {
           centerId: formData.centerId,
           partyId: formData.partyId,
           amount: this.totalAmount,
-          discountLevelIddesc:this.saleForm.get('discountLevelId')?.value,
+         // discountLevelIddesc: this.saleForm.get('discountLevelId')?.value,
           authUser: this.authUser ? this.authUser : null,
           location: formData.location,
           isconform: this.ischecked,
@@ -721,7 +1025,7 @@ export class ManageSalesComponent implements OnInit {
           discountLevel: this.saleForm.get('discountLevelId')?.value,
           // invoiceAmount: this.totalAmount,
         };
-        
+
       }
       else if (this.voucherType === 'SALES-RETURN') {
         data = {
@@ -757,7 +1061,7 @@ export class ManageSalesComponent implements OnInit {
           centerId: formData.centerId,
           partyId: formData.partyId,
           amount: this.totalAmount,
-          discountLevelIddesc:this.saleForm.get('discountLevelId')?.value,
+         // discountLevelIddesc: this.saleForm.get('discountLevelId')?.value,
           dueDays: this.dueDays,
           isPayment: false,
           stockStatus: false,

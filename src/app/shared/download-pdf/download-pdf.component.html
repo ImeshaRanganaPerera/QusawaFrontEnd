@@ -7,10 +7,10 @@
                     <img src="img/logo.png" alt="Logo" class="img-fluid" />
                 </div>
                 <div class="col-9">
-                    <h1 class="fs-4 fw-bold">HITECH LANKA (PVT) LTD</h1>
-                    <span>No 932A, Kotte Road, Ethul Kotte | Com.Reg. No PV-00283449</span><br>
-                    <span>Hot Line: 0727 205 205</span><br>
-                    <span>Email: {{email}} | Website: www.hitechlanka.lk</span>
+                    <h1 class="fs-4 fw-bold">MODERN INNOVATION (PVT) LTD</h1>
+                    <span>No 122/1, Kawdana Road, Dehiwala, Srilanka</span><br>
+                    <span>Hot Line: +94 112 724 292</span><br>
+                    <span>Email: {{email}}</span>
                 </div>
             </div>
         </div>
@@ -31,7 +31,7 @@
                 @else {
                 <div class="col-6 ms-auto invoice-info-sub ">
                     <h5>Amount</h5>
-                    <h4>{{ getTotal() | currency:'LKR ' }}</h4>
+                    <h4>{{ getTotal() | currency:'USD ' }}</h4>
                     @if(voucherData.dueDays > 0) {
                     <span>Credit Period: {{ voucherData.dueDays }} Days</span>
                     }
@@ -176,7 +176,7 @@
                         @if(this.mode === 'payable'){
                         <td>{{ data.cost | currency:'LKR ' }}</td>
                         }@else {
-                        <td>{{ data.MRP | currency:'LKR ' }}</td>
+                        <td>{{ data.MRP | currency:'USD ' }}</td>
                         }
                         @if(data.discount === '' || data.discount === null || data.discount === undefined){
                         <td>{{ 0 }}</td>
@@ -186,11 +186,11 @@
                         }
                         <td>{{ data.quantity }} </td>
                         @if(this.mode === 'payable'){
-                        <td>{{ getDiscountRate(data.discount, data.cost) | currency:'LKR ' }}</td>
+                        <td>{{ getDiscountRate(data.discount, data.cost) | currency:'USD ' }}</td>
                         }@else {
-                        <td>{{ getDiscountRate(data.discount, data.MRP) | currency:'LKR ' }}</td>
+                        <td>{{ getDiscountRate(data.discount, data.MRP) | currency:'USD ' }}</td>
                         }
-                        <td>{{ getAmount(data) | currency:'LKR ' }}</td>
+                        <td>{{ getAmount(data) | currency:'USD ' }}</td>
                         }
 
                     </tr>
@@ -209,7 +209,7 @@
                         <span>{{payment.paymentType}}</span>
                     </div>
                     <div class="col-6">
-                        <span>{{payment.amount | currency:'LKR '}}</span>
+                        <span>{{payment.amount | currency:'USD '}}</span>
                     </div>
                 </div>
                 }
@@ -221,7 +221,7 @@
             @else {
             <div class="col-6 text-end">
                 <span class="fs-5 fw-bold">Total: </span>
-                <span class="fs-5 fw-bold">{{ getSubtotal() | currency:'LKR ' }}</span>
+                <span class="fs-5 fw-bold">{{ getSubtotal() | currency:'USD ' }}</span>
             </div>
             }
 
