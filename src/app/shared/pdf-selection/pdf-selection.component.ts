@@ -85,7 +85,7 @@ export class PdfSelectionComponent {
   whatsapp() {
     const phoneNumber = this.dataSource.party.phoneNumber;
     const invoiceId = this.dataSource.id;
-    const downloadUrl = `${environment.URL}/download?type=${this.type}&id=${invoiceId}`;
+    const downloadUrl = `${environment.apiUrl}/download?type=${this.type}&id=${invoiceId}`;
     
     // Format the message with a new line before the URL
     const message = `Reliable Parts, Lasting Solutions - Driving Excellence Every Mile!\n\nDownload your Invoice: ${downloadUrl}`;

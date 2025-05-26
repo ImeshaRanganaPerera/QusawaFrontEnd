@@ -30,7 +30,13 @@
       @else {
       <div class="col-6 ms-auto invoice-info-sub ">
         <h5>Amount</h5>
+        @if(this.mode === 'payable'){
+        <h4>{{ getTotal() | currency:'LKR ' }}</h4>
+        }
+        @else {
         <h4>{{ getTotal() | currency:'USD ' }}</h4>
+        }
+
         @if(voucherData.dueDays > 0) {
         <span>Credit Period: {{ voucherData.dueDays }} Days</span>
         }
@@ -174,7 +180,7 @@
           <td>{{ data.batchNo }}</td>
           <td>{{ data.expDate | date: 'yyyy-MM-dd'}}</td>
           @if(this.mode === 'payable'){
-          <td>{{ data.cost | currency:'LKR ' }}</td>
+          <td>{{ data.cost }}</td>
           }@else {
           <td>{{ data.MRP }}</td>
           }
@@ -201,15 +207,21 @@
   <nz-divider class="m-0 mb-3"></nz-divider>
   <div class="row">
     <div class="col-6">
-      @if(voucherData?.PaymentVoucher.length > 0){
+      @if(voucherData?.paymentVoucher.length > 0){
       <p class="fs-5 fw-bold">Payments</p>
-      @for(payment of voucherData?.PaymentVoucher; track payment){
+      @for(payment of voucherData?.paymentVoucher; track payment){
       <div class="row">
         <div class="col-6">
           <span>{{payment.paymentType}}</span>
         </div>
         <div class="col-6">
+          @if(this.mode === 'payable'){
+          <span>{{payment.amount | currency:'LKR '}}</span>
+          }
+          @else {
           <span>{{payment.amount | currency:'USD '}}</span>
+          }
+
         </div>
       </div>
       }
@@ -221,7 +233,13 @@
     @else {
     <div class="col-6 text-end">
       <span class="fs-5 fw-bold">Total: </span>
+      @if(this.mode === 'payable'){
+      <span class="fs-5 fw-bold">{{ getSubtotal() | currency:'LKR ' }}</span>
+      }
+      @else {
       <span class="fs-5 fw-bold">{{ getSubtotal() | currency:'USD ' }}</span>
+      }
+
     </div>
     }
 

@@ -52,6 +52,7 @@
                     <th nzWidth="1%">No</th>
                     <th nzWidth="20%">Product</th>
                     <th nzWidth="20%">Batch number</th>
+                    <th nzWidth="20%">Exp.Date</th>
                     @if(role !== 'SALESMEN'){
                     <th nzWidth="20%">Cost</th>
                     }
@@ -70,6 +71,7 @@
                         <td>{{i + 1}}</td>
                         <td>{{ product.productName }}</td>
                          <td>{{ product.batchNo }}</td>
+                          <td>{{ product.expDate | date: 'yyyy-MM-dd' }}</td>
                         @if(role !== 'SALESMEN'){
                         <td>{{ product.cost | currency: ' ' }}</td>
                         }

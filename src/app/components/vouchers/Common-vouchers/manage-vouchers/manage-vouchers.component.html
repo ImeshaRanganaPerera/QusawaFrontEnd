@@ -154,7 +154,6 @@
       @if(params !== 'Stock Transfer' && params !== 'Stock Verification'){
          <th style="min-width: 100px;">Batch No</th>
         <th style="min-width: 120px;" nz-tooltip="Expiry Date">Exp. Date</th>
-        <th style="min-width: 140px;" nz-tooltip="Closing Expiry Date">Cost. Exp. Date</th>
         <th style="min-width: 80px;">Cost</th>
         <th style="min-width: 80px;">Qty</th>
         <th style="min-width: 100px;">Discount</th>
@@ -174,7 +173,6 @@
       @if(params !== 'Stock Transfer' && params !== 'Stock Verification'){
         <td><input type="text" nz-input [(ngModel)]="row.batchNo" (ngModelChange)="onFieldChange(row, 'batchNo', $event)" /></td>
         <td><nz-date-picker nzSize="small" [(ngModel)]="row.expiryDate" (ngModelChange)="onFieldChange(row, 'expiryDate', $event)" class="w-100" format="yyyy-MM-dd"></nz-date-picker></td>
-        <td><nz-date-picker nzSize="small" [(ngModel)]="row.costingExpiryDate" (ngModelChange)="onFieldChange(row, 'costingExpiryDate', $event)" class="w-100" format="yyyy-MM-dd"></nz-date-picker></td>
         <td><input type="number" nz-input [(ngModel)]="row.cost" (ngModelChange)="onFieldChange(row, 'cost', $event)" /></td>
         <td><input type="number" nz-input [(ngModel)]="row.quantity" (ngModelChange)="onFieldChange(row, 'quantity', $event)" /></td>
         <td><input type="text" nz-input [(ngModel)]="row.discount" (ngModelChange)="onFieldChange(row, 'discount', $event)" /></td>

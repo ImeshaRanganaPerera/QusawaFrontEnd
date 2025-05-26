@@ -231,6 +231,8 @@
           @if(role !== 'SALESMEN'){
           <th>Cost</th>
           }
+          <th>Batch No</th>
+          <th>Exp.Date</th>
           <th>Quantity</th>
           <th>MRP</th>
           <th>Discount</th>
@@ -245,6 +247,8 @@
           @if(role !== 'SALESMEN'){
           <td>{{ data.cost | currency: ' ' }}</td>
           }
+          <td>{{ data.batchNo }}</td>
+          <td>{{ data.expDate | date: 'yyyy-MM-dd'}}</td>
           <td>{{ data.quantity }}</td>
           <td>{{ data.MRP | currency: ' ' }}</td>
           <td>{{ data.discount }}</td>
