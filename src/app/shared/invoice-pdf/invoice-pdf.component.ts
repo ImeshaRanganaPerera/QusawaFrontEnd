@@ -23,13 +23,15 @@ export class InvoicePdfComponent {
   userPhoneNumber: any
   type = this.nzModalData.type;
   mode: any
-
+$index: any;
+amountInWords:any;
   ngOnInit(): void {
     console.log(this.type)
     if (this.nzModalData?.data) {
       this.getVoucherDatabyID(this.nzModalData?.data)
       console.log(this.nzModalData?.data)
     }
+  this.amountInWords = this.amountToWords(this.getSubtotal());
     if (this.type === 'Sales Return' || this.type === 'Invoice' || this.type === 'Sales Order' || this.type === 'INVOICE' || this.type === 'SALES-RETURN' || this.type === 'SALES-ORDER') {
       this.mode = 'recivable';
     }
@@ -39,6 +41,33 @@ export class InvoicePdfComponent {
     console.log(this.mode)
     console.log(this.type)
   }
+amountToWords(value: number): string {
+  const a = [
+    '', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine',
+    'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen',
+    'Seventeen', 'Eighteen', 'Nineteen'
+  ];
+  const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+  if ((value = +value.toFixed(2)) === 0) return 'Zero';
+
+  let number = Math.floor(value);
+  const fraction = Math.round((value - number) * 100);
+
+  const numToWords = (n: number): string => {
+    if (n < 20) return a[n];
+    if (n < 100) return b[Math.floor(n / 10)] + (n % 10 ? ' ' + a[n % 10] : '');
+    if (n < 1000) return a[Math.floor(n / 100)] + ' Hundred' + (n % 100 ? ' and ' + numToWords(n % 100) : '');
+    if (n < 1000000) return numToWords(Math.floor(n / 1000)) + ' Thousand' + (n % 1000 ? ' ' + numToWords(n % 1000) : '');
+    if (n < 1000000000) return numToWords(Math.floor(n / 1000000)) + ' Million' + (n % 1000000 ? ' ' + numToWords(n % 1000000) : '');
+    return numToWords(Math.floor(n / 1000000000)) + ' Billion' + (n % 1000000000 ? ' ' + numToWords(n % 1000000000) : '');
+  };
+
+  const words = numToWords(number);
+  const centPart = fraction ? ` and ${numToWords(fraction)} Cents` : '';
+
+  return `${words}${centPart} Only`;
+}
 
   getVoucherDatabyID(id: string): void {
     this.voucherService.getbyId(id).subscribe((res: APIResponse) => {

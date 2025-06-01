@@ -1,0 +1,168 @@
+<!-- 
+<div class="page-container pdf-container" id="Receipt" #pdfContent>
+  <div id="pdf-content" >
+    <div class="voucher">
+      <div class="header-container">
+        <div class="row">
+          <div class="col-3">
+            <img src="img/logo.png" alt="Logo" class="img-fluid" />
+          </div>
+          <div class="col-9 ">
+            <h1 class="fs-2 fw-bold">HITECH LANKA (PVT) LTD</h1>
+            <span>No 932A, Kotte Road, Ethul Kotte | Com.Reg. No PV-00283449</span><br>
+            <span>Phone: +94 11 223 3111 / Hot Line: 0727 205 205</span><br>
+            <span>Email: {{email}} | Website: www.hitechlanka.lk</span>
+          </div>
+        </div>
+      </div>
+        <h1>{{ voucherGrp }} Report - {{ mode }}</h1>
+
+        <table>
+            <thead>
+                <tr>
+                  <th>Invoice Date</th>
+                    <th>Invoice No</th>
+                    @if(type === 'GRN || type === '){
+
+                      <th>Name of Supplier</th>
+                      }
+                      @else if(type === 'Stock Transfer'){ 
+                        <th>From Center</th>
+                      }@else {
+                        <th>Name of Customer</th>
+                      }
+                      @if( type === 'Stock Transfer'){
+                        
+                        <th>To Center</th>
+                      }@else {
+                        <th>Invoice Amount</th>
+                      }
+                </tr>
+            </thead>
+            <tbody>
+                @for(item of filteredData; track item){
+                  <tr>
+                    <td>{{ item.date | date:'yyyy-MM-dd' }}</td>
+                    <td>{{ item.voucherNumber }}</td>
+                    @if(type === 'Stock Transfer'){
+                      @for(center of item.VoucherCenter; track center){
+                        
+                        <td>{{ center.center.centerName }}</td>
+                      }
+                    }@else{
+                      <td>{{ item.party?.name }}</td>
+                      <td>{{ item.amount | currency:'LKR ' }}</td>
+                    }
+                  </tr>
+                  @if (mode === 'Detail wise') {
+                    <tr>
+                      <td colspan="4">
+                        <table>
+                          <thead>
+                            <tr>
+                              <th>Product</th>
+                              <th>Cost</th>
+                              <th>Quantity</th>
+                              <th>MRP</th>
+                              <th>Discount</th>
+                              <th>Amount</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            @for (product of item.voucherProduct; track product) {
+                              <tr>
+                                <td>{{ product.product.printName }}</td>
+                                <td>{{ product.cost | currency:'LKR ' }}</td>
+                                <td>{{ product.quantity }}</td>
+                                <td>{{ product.MRP | currency:'LKR ' }}</td>
+                                <td>{{ product.discount | percent }}</td>
+                                <td>{{ product.quantity * (category === 'Good Received note' ? product.cost : product.MRP) | currency:'LKR ' }}</td>
+                              </tr>
+                            }
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="footer">
+        <p>Implemented By Cybernetic</p>
+    </div>
+  </div>
+</div>
+<button class="download-btn" (click)="downloadPdf()">Download PDF</button>
+
+ -->
+
+<div class="pdf-container" #pdfContent>
+  <ng-container *ngFor="let page of pages; let i = index">
+    <div class="page" id="page-{{i}}">
+      <div class="header-container">
+        <div class="row">
+          <div class="col-3">
+            <img src="img/logo.png" alt="Logo" class="img-fluid" />
+          </div>
+          <div class="col-9">
+            <h1 class="fs-2 fw-bold">MODERN INNOVATION (PVT) LTD</h1>
+            <span>No 122/1, Kawdana Road, Dehiwala, Srilanka</span><br>
+            <span>Hot Line: +94 112 724 292</span><br>
+            <span>Email: {{email}}</span>
+          </div>
+        </div>
+      </div>
+      <h1>{{ voucherGrp }} Report - {{ mode }}</h1>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Invoice Date</th>
+            <th>Invoice No</th>
+            <th *ngIf="type === 'GRN' || type === ''">Name of Supplier</th>
+            <th *ngIf="type === 'Stock Transfer'">From Center</th>
+            <th *ngIf="type !== 'GRN' && type !== '' && type !== 'Stock Transfer'">Name of Customer</th>
+            <th *ngIf="category == 'Sales'">Refernce Number</th>
+            <th *ngIf="type === 'Stock Transfer'">To Center</th>
+            <th *ngIf="type !== 'Stock Transfer'">Invoice Amount</th>
+            <th *ngIf="type === 'Customer Outstanding' || type === 'Supplier Outstanding'">Invoice Amount</th>
+            <ng-container *ngIf="type === 'Customer Outstanding' || type === 'Supplier Outstanding'">
+              <th>Paid Amount</th>
+              <th>Outstanding</th>
+              <th>Salesman</th>
+            </ng-container>
+          </tr>
+        </thead>
+<table>
+  <thead>
+    <tr>
+      <th colspan="2">Customer Name</th>
+      <th>Total Invoice Amount</th>
+      <th>Total Paid</th>
+      <th>Total Outstanding</th>
+      <th>Salesman</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of customerSummary">
+      <td colspan="2">{{ item.name }}</td>
+      <td>{{ item.totalAmount | currency:' ' }}</td>
+      <td>{{ item.totalPaid | currency:' ' }}</td>
+      <td>{{ item.outstanding | currency:' ' }}</td>
+      <td>{{ item.salesman }}</td>
+    </tr>
+  </tbody>
+</table>
+
+
+      </table>
+      <div class="page-number">Page {{i + 1}} of {{pages.length}}</div>
+    </div>
+    <div class="footer">
+      <p>Implemented By Cybernetic</p>
+    </div>
+  </ng-container>
+</div>
+<button class="download-btn" (click)="downloadPdf()">Download PDF</button>

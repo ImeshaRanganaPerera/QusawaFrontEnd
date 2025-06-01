@@ -15,6 +15,9 @@ import { PdfSelectionComponent } from '../../../../shared/pdf-selection/pdf-sele
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { addDays, isBefore } from 'date-fns';
 import { CurrencyService } from '../../../../services/currency/currency.service';
+import { DialogboxComponent } from '../../../../dialogbox/dialogbox.component';
+import { MatDialog } from '@angular/material/dialog';
+import { lastValueFrom } from 'rxjs';
 
 
 @Component({
@@ -39,7 +42,7 @@ export class ManageVouchersComponent {
   params: any;
   today = new Date();
   role: any;
-
+  dialog = inject(MatDialog)
   inputValue?: string;
   totalAmount: number = 0;
   responseMessage: any;
@@ -75,7 +78,7 @@ export class ManageVouchersComponent {
     directvoucherNumber: new FormControl(''),
   })
   refVoucherNumber: any;
-  
+
 
   ngOnInit(): void {
     this.getRole()
@@ -94,7 +97,13 @@ export class ManageVouchersComponent {
       this.voucherForm.get('centerId')?.valueChanges.subscribe(centerId => {
         if (centerId) {
           this.isSpinning = true;
-          this.getProduct(centerId);
+          if (this.params === 'Stock Transfer') {
+            this.getProductExpWise(centerId);
+          }
+          else {
+            this.getProduct(centerId);
+          }
+
         }
       });
 
@@ -131,7 +140,8 @@ export class ManageVouchersComponent {
       this.voucherForm.get('centerId')?.valueChanges.subscribe(centerId => {
         if (centerId) {
           this.isSpinning = true;
-          this.getProduct(centerId);
+          // this.getProduct(centerId);
+          this.getProductExpWise(centerId);
         }
       });
       this.voucherForm.get('partyId')?.valueChanges.subscribe(partyId => {
@@ -171,7 +181,12 @@ export class ManageVouchersComponent {
       this.voucherForm.get('fromCenterId')?.valueChanges.subscribe(centerId => {
         if (centerId) {
           this.isSpinning = true;
-          this.getProduct(centerId);
+          if (this.params === 'Stock Transfer') {
+            this.getProductExpWise(centerId);
+          }
+          else {
+            this.getProduct(centerId);
+          }
         }
       });
     }
@@ -182,12 +197,12 @@ export class ManageVouchersComponent {
       else {
         this.getallCenter();
       }
-      this.voucherType = 'STOCK-VERIFICATION' 
-/*       this.voucherForm.get('fromCenterId')?.setValidators([Validators.required]); */
-   /*    this.voucherForm.get('toCenterId')?.setValidators([Validators.required]); */
+      this.voucherType = 'STOCK-VERIFICATION'
+      /*       this.voucherForm.get('fromCenterId')?.setValidators([Validators.required]); */
+      /*    this.voucherForm.get('toCenterId')?.setValidators([Validators.required]); */
 
-  /*     this.voucherForm.get('fromCenterId')?.updateValueAndValidity();
-      this.voucherForm.get('toCenterId')?.updateValueAndValidity(); */
+      /*     this.voucherForm.get('fromCenterId')?.updateValueAndValidity();
+          this.voucherForm.get('toCenterId')?.updateValueAndValidity(); */
       this.getVoucherNumber(this.voucherType);
       this.voucherForm.get('centerId')?.valueChanges.subscribe(centerId => {
         if (centerId) {
@@ -198,10 +213,10 @@ export class ManageVouchersComponent {
     }
     this.getCenter();
   }
- removeRow(index: number): void {
-  this.dataSource.splice(index, 1);
-  this.dataSource = [...this.dataSource]; // Update view
-}
+  removeRow(index: number): void {
+    this.dataSource.splice(index, 1);
+    this.dataSource = [...this.dataSource]; // Update view
+  }
   getRole() {
     this.role = localStorage.getItem('role')
   }
@@ -226,6 +241,40 @@ export class ManageVouchersComponent {
     })
     this.isSpinning = false;
   }
+  checkIfDateHasEnoughDaysLeft(dateString: string, minDays: number): boolean {
+    if (dateString.startsWith("025")) {
+      dateString = "202" + dateString.substring(1);
+    }
+    const expiryDate = new Date(dateString);
+
+    // Strip time from today
+    const today = new Date();
+    const todayDateOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+    const timeDiff = expiryDate.getTime() - todayDateOnly.getTime();
+    const dayDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+    return dayDiff >= minDays;
+  }
+  sanitizeDateString(dateStr: string): string {
+    // Fix malformed year (e.g. "025" → "2025")
+    if (dateStr.length >= 24 && dateStr.startsWith('025')) {
+      dateStr = '202' + dateStr.substring(1);
+    }
+    return dateStr;
+  }
+  getDateOnlyFromString(dateStr: string): string {
+    const sanitized = this.sanitizeDateString(dateStr);
+    const date = new Date(sanitized);
+
+    // Format to YYYY-MM-DD
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  }
+
 
   refVoucher(data: any) {
     const modal = this.modal.create({
@@ -302,6 +351,21 @@ export class ManageVouchersComponent {
     });
   }
 
+  getProductExpWise(centerId: string) {
+    this.inverntoryservice.getbyCenterId(centerId).subscribe((res: any) => {
+      this.productData = res.data.map((product: any) => ({
+        ...product.product,
+        ...product,
+        expdate: product.expDate
+      }));
+      this.filteredProducts = [...this.productData];
+      console.log(this.filteredProducts)
+      this.isSpinning = false;
+    }, (error) => {
+      this.notification.create('error', 'Error', error.error?.message || 'Something went wrong!');
+    });
+  }
+
   onInput(e: Event): void {
     const value = (e.target as HTMLInputElement).value;
     this.filteredProducts = this.productData.filter(product =>
@@ -311,34 +375,80 @@ export class ManageVouchersComponent {
   }
 
   onadd() {
-    const selectedProduct = this.productData.find(
-      product => product.printName === this.inputValue
-    );
-    console.log(selectedProduct.quantity)
+    if (this.params === 'Stock Transfer' || this.params === 'Purchase Return' || this.params === 'Stock Verification') {
+      const selectedProduct = this.productData.find(
+        product =>
+          product.batchNo === this.inputValue
+      )
+      console.log(selectedProduct.quantity)
 
-    if (selectedProduct) {
-      const newRow: ITableRow = {
-        printName: selectedProduct.printName,
-        productName: selectedProduct.printName,
-        productId: selectedProduct.id,
-        cost: parseFloat(selectedProduct.cost).toFixed(2),
-        currentStock: selectedProduct.quantity,
-        discount: "0",
-        quantity: 0,
-        sellingPrice: 0,
-        minPrice: 0,
-        MRP: selectedProduct.MRP,
-        amount: 0,
-        batchNo: selectedProduct.batchNo,
-        ExpnotifDays: selectedProduct.ExpnotifDays,
-        expiryDate: selectedProduct.expDate,
-      };
-      this.dataSource = [...this.dataSource, newRow];
-      this.inputValue = ''; // Clear the input after adding
+      if (selectedProduct) {
+        const newRow: ITableRow = {
+          printName: selectedProduct.printName,
+          productName: selectedProduct.printName,
+          productId: selectedProduct.id,
+          cost: parseFloat(selectedProduct.cost).toFixed(2),
+          currentStock: selectedProduct.quantity,
+          discount: "0",
+          quantity: 0,
+          sellingPrice: 0,
+          minPrice: 0,
+          MRP: selectedProduct.MRP,
+          amount: 0,
+          batchNo: selectedProduct.batchNo,
+          ExpnotifDays: selectedProduct.ExpnotifDays,
+          expiryDate: selectedProduct.expDate,
+          Packsize: selectedProduct.Packsize,
+          Manufacture: selectedProduct.Manufacture,
+          country: selectedProduct.country,
+          usdRate:"0",
+          mfdate:selectedProduct.mfdate,
+        };
+        this.dataSource = [...this.dataSource, newRow];
+        this.inputValue = ''; // Clear the input after adding
+      }
+      else {
+        this.notification.create('error', 'Error', "Product is unavailable")
+      }
     }
     else {
-      this.notification.create('error', 'Error', "Product is unavailable")
+      const selectedProduct = this.productData.find(
+        product =>
+          product.printName === this.inputValue
+      )
+      console.log(selectedProduct.quantity)
+
+      if (selectedProduct) {
+        const newRow: ITableRow = {
+          printName: selectedProduct.printName,
+          productName: selectedProduct.printName,
+          productId: selectedProduct.id,
+          cost: parseFloat(selectedProduct.cost).toFixed(2),
+          currentStock: selectedProduct.quantity,
+          discount: "0",
+          quantity: 0,
+          sellingPrice: 0,
+          minPrice: 0,
+          MRP: selectedProduct.MRP,
+          amount: 0,
+          batchNo: selectedProduct.batchNo,
+          ExpnotifDays: selectedProduct.ExpnotifDays,
+          expiryDate: selectedProduct.expDate,
+          Packsize: selectedProduct.Packsize,
+          Manufacture: selectedProduct.Manufacture,
+          country: selectedProduct.country,
+          usdRate:"0",
+          mfdate:selectedProduct.mfdate,
+        };
+        this.dataSource = [...this.dataSource, newRow];
+        this.inputValue = ''; // Clear the input after adding
+      }
+      else {
+        this.notification.create('error', 'Error', "Product is unavailable")
+      }
     }
+
+
   }
 
   // Calculate amount automatically whenever cost or qty changes
@@ -409,66 +519,97 @@ export class ManageVouchersComponent {
       }
     });
   }
-playSoundEffect() {
-  const audio = new Audio('assets/sounds/error.mp3'); // put a nice sound in assets/sounds/error.mp3
-  audio.play();
-}
+  playSoundEffect() {
+    const audio = new Audio('assets/sounds/error.mp3'); // put a nice sound in assets/sounds/error.mp3
+    audio.play();
+  }
 
-showFancyErrorToast(msg: string) {
-  this.playSoundEffect();
-  this.message.create('error', msg, { nzDuration: 4000 });
-}
-  async submit() {
-    try {
-   if (this.voucherForm.invalid) {
-  Object.values(this.voucherForm.controls).forEach(control => {
-    if (control.invalid) {
-      control.markAsDirty();
-      control.updateValueAndValidity({ onlySelf: true });
+  showFancyErrorToast(msg: string) {
+    this.playSoundEffect();
+    this.message.create('error', msg, { nzDuration: 4000 });
+  }
+
+ async submitForm() {
+  if (this.params !== 'Stock Verification' && this.params !== 'Purchase Return' && this.params !== 'Stock Transfer') {
+    for (const row of this.dataSource) {
+      const product = this.productData.find(p => p.id === row.productId && p.batchNo === row.batchNo);
+      const cleanDate = this.getDateOnlyFromString(row.expiryDate);
+      const isValid = this.checkIfDateHasEnoughDaysLeft(cleanDate, row.ExpnotifDays);
+
+      if (!isValid) {
+        const dialogRef = this.dialog.open(DialogboxComponent, {
+          data: {
+            message: 'The expiry date has been reached. Send approvals or cancel?'
+          }
+        });
+
+        const result = await lastValueFrom(dialogRef.afterClosed());
+
+        if (result) {
+          //User approved — run proceedWithSubmit() and EXIT completely
+          this.proceedWithSubmit();
+          return;
+        } else {
+          //  User cancelled — just exit
+          console.log('User cancelled.');
+          return;
+        }
+      }
     }
-  });
-  return;
-}
 
-const todayPlus10 = new Date();
-todayPlus10.setDate(todayPlus10.getDate() + 10);
-
-for (const row of this.dataSource) {
-  const product = this.productData.find(p => p.id === row.productId);
-
-  if (product && row.quantity === 0) {
-  this.showFancyErrorToast(`❗ The quantity for ${row.productName} must be above 0`);
-  return;
-}
-
-if (this.voucherType === 'STOCK-TRANSFER') {
-  if (product && row.quantity > product.quantity) {
-    this.showFancyErrorToast(`⚠️ Quantity for ${row.productName} exceeds stock. Max available: ${product.quantity}`);
-    return;
+    // If all rows passed the expiry check
+    this.isconform = true;
+    this.submit();
+  } else {
+    //  If the form type doesn't require expiry checking
+    this.isconform = true;
+    this.submit();
   }
 }
+  async proceedWithSubmit() {
+    try {
+      this.isconform = false
+      if (this.voucherForm.invalid) {
+        Object.values(this.voucherForm.controls).forEach(control => {
+          if (control.invalid) {
+            control.markAsDirty();
+            control.updateValueAndValidity({ onlySelf: true });
+          }
+        });
+        return;
+      }
 
-if (product && row.cost === 0) {
-  this.showFancyErrorToast(`💰 The cost for ${row.productName} must be above 0`);
-  return;
-}
+      const todayPlus10 = new Date();
+      todayPlus10.setDate(todayPlus10.getDate() + 10);
 
-if (row.expiryDate) {
-  const expiryDate = new Date(row.expiryDate);
-  const todayPlus10 = new Date();
-  todayPlus10.setDate(todayPlus10.getDate() + 10);
+      for (const row of this.dataSource) {
+        const product = this.productData.find(p => p.id === row.productId);
 
-  if (expiryDate < todayPlus10) {
-    this.showFancyErrorToast(`⏳ Expiry date for ${row.productName} (${expiryDate.toLocaleDateString()}) must be at least 10 days ahead`);
-    return;
-  }
-}
-if (product && (!row.batchNo || row.batchNo.trim() === '')) {
-  this.showFancyErrorToast(`📦 The batch number for ${row.productName} is required.`);
-  return;
-}
+        if (product && row.quantity === 0) {
+          this.showFancyErrorToast(`❗ The quantity for ${row.productName} must be above 0`);
+          return;
+        }
 
-}
+        if (this.voucherType === 'STOCK-TRANSFER') {
+          if (product && row.quantity > product.quantity) {
+            this.showFancyErrorToast(`⚠️ Quantity for ${row.productName} exceeds stock. Max available: ${product.quantity}`);
+            return;
+          }
+        }
+
+        if (product && row.cost === 0) {
+          this.showFancyErrorToast(`💰 The cost for ${row.productName} must be above 0`);
+          return;
+        }
+
+
+
+        if (product && (!row.batchNo || row.batchNo.trim() === '')) {
+          this.showFancyErrorToast(`📦 The batch number for ${row.productName} is required.`);
+          return;
+        }
+
+      }
 
 
       this.isSpinning = true;
@@ -484,7 +625,7 @@ if (product && (!row.batchNo || row.batchNo.trim() === '')) {
         this.isSpinning = false;
         return;
       }
- 
+
 
       if (this.voucherType === 'STOCK-TRANSFER') {
         if (formData.fromCenterId === formData.toCenterId) {
@@ -493,17 +634,250 @@ if (product && (!row.batchNo || row.batchNo.trim() === '')) {
           return;
         }
       }
-      for (const row of this.dataSource){
-       this.currencyservice.get(row.cost, 'LKR').subscribe({
-      next: (res) => {
-        this.usdAmount = res.amountInUSD;
-      },
-      error: () => {
-        this.usdAmount = 'Error fetching conversion';
-      },
-    });
+      for (const row of this.dataSource) {
+        this.currencyservice.get(row.cost, 'LKR').subscribe({
+          next: (res) => {
+            this.usdAmount = res.amountInUSD;
+          },
+          error: () => {
+            this.usdAmount = 'Error fetching conversion';
+          },
+        });
       }
-   
+
+      var data;
+
+      if (this.params === 'GRN') {
+        data = {
+          date: formData.date,
+          voucherNumber: formData.voucherNumber,
+          centerId: formData.centerId,
+          partyId: formData.partyId || null,
+          amount: this.totalAmount,
+          isPayment: false,
+          location: formData.location,
+          paidValue: this.refVoucherNumber ? this.paidAmount : 0,
+          refVoucherNumber: this.refVoucherNumber || null,
+          refNumber: formData.refNumber,
+          isRef: this.refVoucherNumber ? true : false,
+          isconform: this.isconform,
+          status: 'PENDING',
+          stockStatus: this.isconform,
+          voucherGroupname: this.voucherType,
+          fromCenterId: formData.fromCenterId,
+          toCenterId: formData.toCenterId,
+          productList: this.dataSource,
+          journalEntries: [
+            {
+              accountId: 'INVENTORY',
+              debit: this.totalAmount,
+              credit: 0,
+            },
+            {
+              accountId: 'IMPORT',
+              debit: 0,
+              credit: this.totalAmount,
+            }
+          ],
+        }
+      }
+      else if (this.params === 'Purchase Return') {
+        data = {
+          date: formData.date,
+          voucherNumber: formData.voucherNumber,
+          centerId: formData.centerId,
+          partyId: formData.partyId || null,
+          amount: this.totalAmount,
+          location: formData.location,
+          returnValue: this.totalAmount,
+          isPayment: false,
+          stockStatus: true,
+          paidValue: this.refVoucherNumber ? this.paidAmount : 0,
+          refVoucherNumber: this.refVoucherNumber || null,
+          refNumber: formData.refNumber,
+          isRef: this.refVoucherNumber ? true : false,
+          isconform: this.isconform,
+          voucherGroupname: this.voucherType,
+          fromCenterId: formData.fromCenterId,
+          toCenterId: formData.toCenterId,
+          productList: this.dataSource,
+          journalEntries: [
+            {
+              accountId: 'IMPORT',
+              debit: this.totalAmount,
+              credit: 0,
+            },
+            {
+              accountId: 'INVENTORY',
+              debit: 0,
+              credit: this.totalAmount,
+            }
+          ],
+        }
+      }
+      else if (this.params !== 'Stock Verification') {
+        data = {
+          date: formData.date,
+          voucherNumber: formData.voucherNumber,
+          centerId: formData.centerId,
+          partyId: formData.partyId || null,
+          amount: this.totalAmount,
+          isPayment: false,
+          location: formData.location,
+          paidValue: this.refVoucherNumber ? this.paidAmount : 0,
+          refVoucherNumber: this.refVoucherNumber || null,
+          refNumber: formData.refNumber,
+          isRef: this.refVoucherNumber ? true : false,
+          isconform: this.isconform,
+          stockStatus: this.params === 'Purchase Order' ? false : true,
+          voucherGroupname: this.voucherType,
+          fromCenterId: formData.fromCenterId,
+          toCenterId: formData.toCenterId,
+          productList: this.dataSource,
+        }
+      }
+      else if (this.params === 'Stock Transfer') {
+        data = {
+          date: formData.date,
+          voucherNumber: formData.voucherNumber,
+          centerId: formData.centerId,
+          partyId: formData.partyId || null,
+          amount: this.totalAmount,
+          isPayment: false,
+          location: formData.location,
+          paidValue: this.refVoucherNumber ? this.paidAmount : 0,
+          refVoucherNumber: this.refVoucherNumber || null,
+          refNumber: formData.refNumber,
+          isRef: this.refVoucherNumber ? true : false,
+          isconform: this.isconform,
+          stockStatus: true,
+          voucherGroupname: this.voucherType,
+          fromCenterId: formData.fromCenterId,
+          toCenterId: formData.toCenterId,
+          productList: this.dataSource,
+        }
+      }
+      if (this.params !== 'Stock Verification') {
+        this.voucherservice.create(data).subscribe((res: APIResponse) => {
+          this.responseMessage = res.message
+          this.isSpinning = false;
+          this.resetForm()
+          this.notification.create('success', 'Success', this.responseMessage);
+          console.log(res.data)
+          this.printoutSelection(res.data, this.voucherType);
+        }, (error) => {
+          this.responseMessage = error.error?.message || 'Something went wrong!'
+          this.isSpinning = false;
+          this.notification.create('error', 'Error', this.responseMessage);
+        })
+      }
+      else {
+        this.voucherservice.PostStockVerification(data).subscribe((res: APIResponse) => {
+          this.responseMessage = res.message
+          this.isSpinning = false;
+          this.resetForm()
+          this.notification.create('success', 'Success', this.responseMessage);
+          console.log(res.data)
+          this.printoutSelection(res.data, this.voucherType);
+        }, (error) => {
+          this.responseMessage = error.error?.message || 'Something went wrong!'
+          this.isSpinning = false;
+          this.notification.create('error', 'Error', this.responseMessage);
+        })
+      }
+    } catch (error) {
+      console.error('Error getting location:', error);
+      this.isSpinning = false;
+      this.notification.create('error', 'Error', 'Failed to get current location.');
+    }
+  }
+  async submit() {
+    try {
+      if (this.voucherForm.invalid) {
+        Object.values(this.voucherForm.controls).forEach(control => {
+          if (control.invalid) {
+            control.markAsDirty();
+            control.updateValueAndValidity({ onlySelf: true });
+          }
+        });
+        return;
+      }
+
+      const todayPlus10 = new Date();
+      todayPlus10.setDate(todayPlus10.getDate() + 10);
+
+      for (const row of this.dataSource) {
+        const product = this.productData.find(p => p.id === row.productId);
+
+        if (product && row.quantity === 0) {
+          this.showFancyErrorToast(`❗ The quantity for ${row.productName} must be above 0`);
+          return;
+        }
+
+        if (this.voucherType === 'STOCK-TRANSFER') {
+          if (product && row.quantity > product.quantity) {
+            this.showFancyErrorToast(`⚠️ Quantity for ${row.productName} exceeds stock. Max available: ${product.quantity}`);
+            return;
+          }
+        }
+
+        if (product && row.cost === 0) {
+          this.showFancyErrorToast(`💰 The cost for ${row.productName} must be above 0`);
+          return;
+        }
+
+
+        if (row.expiryDate) {
+          const expiryDate = new Date(row.expiryDate);
+          const todayPlus10 = new Date();
+          todayPlus10.setDate(todayPlus10.getDate() + 10);
+
+          if (expiryDate < todayPlus10) {
+            this.showFancyErrorToast(`⏳ Expiry date for ${row.productName} (${expiryDate.toLocaleDateString()}) must be at least 10 days ahead`);
+            return;
+          }
+        }
+        if (product && (!row.batchNo || row.batchNo.trim() === '')) {
+          this.showFancyErrorToast(`📦 The batch number for ${row.productName} is required.`);
+          return;
+        }
+
+      }
+
+
+      this.isSpinning = true;
+      const coords = await this.getCurrentLocation();
+      const location = `Latitude: ${coords.latitude}, Longitude: ${coords.longitude}`;
+
+      // Add location to form data or process as needed
+      this.voucherForm.get('location')?.setValue(location);
+      var formData = this.voucherForm.value;
+
+      if (!(this.dataSource && this.dataSource.length > 0)) {
+        this.notification.create('error', 'Error', 'Product list is empty');
+        this.isSpinning = false;
+        return;
+      }
+
+
+      if (this.voucherType === 'STOCK-TRANSFER') {
+        if (formData.fromCenterId === formData.toCenterId) {
+          this.notification.create('error', 'Error', 'Center should not be same');
+          this.isSpinning = false;
+          return;
+        }
+      }
+      for (const row of this.dataSource) {
+        this.currencyservice.get(row.cost, 'LKR').subscribe({
+          next: (res) => {
+            this.usdAmount = res.amountInUSD;
+          },
+          error: () => {
+            this.usdAmount = 'Error fetching conversion';
+          },
+        });
+      }
+
       var data;
 
       if (this.params === 'GRN') {
@@ -573,7 +947,7 @@ if (product && (!row.batchNo || row.batchNo.trim() === '')) {
           ],
         }
       }
-      else if (this.params !== 'Stock Verification'){
+      else if (this.params !== 'Stock Verification') {
         data = {
           date: formData.date,
           voucherNumber: formData.voucherNumber,
@@ -594,7 +968,7 @@ if (product && (!row.batchNo || row.batchNo.trim() === '')) {
           productList: this.dataSource,
         }
       }
-      else if (this.params === 'Stock Verification'){
+      else if (this.params === 'Stock Verification') {
         data = {
           date: formData.date,
           voucherNumber: formData.voucherNumber,
@@ -616,33 +990,33 @@ if (product && (!row.batchNo || row.batchNo.trim() === '')) {
         }
       }
       if (this.params !== 'Stock Verification') {
-      this.voucherservice.create(data).subscribe((res: APIResponse) => {
-        this.responseMessage = res.message
-        this.isSpinning = false;
-        this.resetForm()
-        this.notification.create('success', 'Success', this.responseMessage);
-        console.log(res.data)
-        this.printoutSelection(res.data, this.voucherType);
-      }, (error) => {
-        this.responseMessage = error.error?.message || 'Something went wrong!'
-        this.isSpinning = false;
-        this.notification.create('error', 'Error', this.responseMessage);
-      })
-    }
-    else{
-      this.voucherservice.PostStockVerification(data).subscribe((res: APIResponse) => {
-        this.responseMessage = res.message
-        this.isSpinning = false;
-        this.resetForm()
-        this.notification.create('success', 'Success', this.responseMessage);
-        console.log(res.data)
-        this.printoutSelection(res.data, this.voucherType);
-      }, (error) => {
-        this.responseMessage = error.error?.message || 'Something went wrong!'
-        this.isSpinning = false;
-        this.notification.create('error', 'Error', this.responseMessage);
-      })
-    }
+        this.voucherservice.create(data).subscribe((res: APIResponse) => {
+          this.responseMessage = res.message
+          this.isSpinning = false;
+          this.resetForm()
+          this.notification.create('success', 'Success', this.responseMessage);
+          console.log(res.data)
+          this.printoutSelection(res.data, this.voucherType);
+        }, (error) => {
+          this.responseMessage = error.error?.message || 'Something went wrong!'
+          this.isSpinning = false;
+          this.notification.create('error', 'Error', this.responseMessage);
+        })
+      }
+      else {
+        this.voucherservice.PostStockVerification(data).subscribe((res: APIResponse) => {
+          this.responseMessage = res.message
+          this.isSpinning = false;
+          this.resetForm()
+          this.notification.create('success', 'Success', this.responseMessage);
+          console.log(res.data)
+          this.printoutSelection(res.data, this.voucherType);
+        }, (error) => {
+          this.responseMessage = error.error?.message || 'Something went wrong!'
+          this.isSpinning = false;
+          this.notification.create('error', 'Error', this.responseMessage);
+        })
+      }
     } catch (error) {
       console.error('Error getting location:', error);
       this.isSpinning = false;

@@ -59,6 +59,13 @@ p {
     opacity: 1;
   }
 }
+.cell {
+  padding: 0 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 
 // .ant-btn-primary{
 //     background-color:var(--primary-color) ;

@@ -20,6 +20,20 @@ nz-form-control textarea {
     border-color: var(--input-bordercolor);
 }
 
+.country-select {
+  height: 38px;
+  font-size: 16px;
+  padding: 7px;
+  border-radius: 6px;
+  width: 100%; /* optional */
+}
+.small-heading {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333; /* Optional for styling */
+}
+
 
 .custom-select {
     font-size: large;
@@ -27,4 +41,21 @@ nz-form-control textarea {
     background-color: var(--input-color);
     border-radius: 8px;
     border-color: var(--input-bordercolor);
+}
+
+.shadowform {
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
+  border-radius: 6px;
+}
+
+.form-label {
+  font-weight: 500;
+  font-size: 14px;
+  color: #333;
+}
+
+.form-select {
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid #d9d9d9;
 }

@@ -5,6 +5,7 @@ import { MaterialModule } from '../../../../../modules/material/material.module'
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { ReportPdfComponent } from '../../../../../shared/Report-Pdf/report-pdf/report-pdf.component';
 import { DetailReportpdfComponent } from '../../../../../shared/detail-report-pdf/detail-reportpdf/detail-reportpdf.component';
+import { OutstandingSummeryComponent } from '../../../../../shared/outstanding-summery/outstanding-summery.component';
 
 @Component({
   selector: 'app-report-selection',
@@ -39,16 +40,16 @@ export class ReportSelectionComponent {
   }
 
   handleModelChange(index: number): void {
-    this.mode = index === 0 ? 'Summarize' : 'Detail wise';
+    this.mode = index === 0 ? 'InvoiceWise Summarize' : 'Customer Wise Summarize';
   }
 
   onButtonClick(): void {
     let modalContent: any;
   
-    if (this.mode === 'Summarize') {
+    if (this.mode === 'InvoiceWise Summarize') {
       modalContent = ReportPdfComponent; // Ensure it complies with the expected type
     } else {
-      modalContent = DetailReportpdfComponent; // Ensure this is also of the correct type
+      modalContent = OutstandingSummeryComponent; // Ensure this is also of the correct type
     }
   
     const modal = this.modalService.create({

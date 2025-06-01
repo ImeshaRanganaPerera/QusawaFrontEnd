@@ -198,3 +198,18 @@ body {
   border-top: 1px solid #191818;
   margin-top: 50px;
 }
+.signature-line {
+  border-top: 1px solid black;
+  margin: 40px auto 10px;
+  width: 80%;
+}
+.invoice-box {
+  font-size: 13px;
+  color: #000;
+  background: #fff;
+}
+
+.table th,
+.table td {
+  vertical-align: middle !important;
+}

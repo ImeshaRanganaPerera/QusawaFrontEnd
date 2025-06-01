@@ -12,7 +12,8 @@
           <div class="col-md-3 col-sm-6">
             <nz-form-control nzErrorTip="Please input Date!">
               <label>Date</label>
-              <nz-date-picker [nzDisabledDate]="disabledDate" formControlName="date" nzSize="large" class="w-100 shadow-sm"></nz-date-picker>
+              <nz-date-picker [nzDisabledDate]="disabledDate" formControlName="date" nzSize="large"
+                class="w-100 shadow-sm"></nz-date-picker>
             </nz-form-control>
           </div>
 
@@ -26,78 +27,83 @@
 
           <!-- Conditional Fields -->
           @if(params !== 'Stock Transfer' && params !== 'Stock Verification'){
-            <div class="col-md-3 col-sm-6">
-              <nz-form-control nzErrorTip="Please Select Center!">
-                <label>Center</label>
-                <nz-select nzShowSearch formControlName="centerId" class="w-100 shadow-sm">
-                  <nz-option *ngFor="let center of centerData" [nzValue]="center.center?.id" [nzLabel]="center.center?.centerName || ''"></nz-option>
-                </nz-select>
-              </nz-form-control>
-            </div>
+          <div class="col-md-3 col-sm-6">
+            <nz-form-control nzErrorTip="Please Select Center!">
+              <label>Center</label>
+              <nz-select nzShowSearch formControlName="centerId" class="w-100 shadow-sm">
+                <nz-option *ngFor="let center of centerData" [nzValue]="center.center?.id"
+                  [nzLabel]="center.center?.centerName || ''"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </div>
 
-            <div class="col-md-3 col-sm-6">
-              <nz-form-control nzErrorTip="Please Select Supplier!">
-                <label>Supplier Name</label>
-                <nz-select nzShowSearch formControlName="partyId" class="w-100 shadow-sm">
-                  <nz-option *ngFor="let party of partyData" [nzValue]="party.id" [nzLabel]="party.name"></nz-option>
-                </nz-select>
-              </nz-form-control>
-            </div>
+          <div class="col-md-3 col-sm-6">
+            <nz-form-control nzErrorTip="Please Select Supplier!">
+              <label>Supplier Name</label>
+              <nz-select nzShowSearch formControlName="partyId" class="w-100 shadow-sm">
+                <nz-option *ngFor="let party of partyData" [nzValue]="party.id" [nzLabel]="party.name"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </div>
 
-            <div class="col-md-3 col-sm-6">
-              <nz-form-control nzErrorTip="Please input Reference Number!">
-                <label>Ref Number</label>
-                <input type="text" nz-input formControlName="refNumber" nzSize="default" class="w-100 shadow-sm" />
-              </nz-form-control>
-            </div>
+          <div class="col-md-3 col-sm-6">
+            <nz-form-control nzErrorTip="Please input Reference Number!">
+              <label>Ref Number</label>
+              <input type="text" nz-input formControlName="refNumber" nzSize="default" class="w-100 shadow-sm" />
+            </nz-form-control>
+          </div>
 
-            @if(directPayment.length > 0){
-              <div class="col-md-3 col-sm-6">
-                <nz-form-control nzErrorTip="Please Select Direct Payment Number!">
-                  <label>Direct Payment Number</label>
-                  <nz-select nzShowSearch formControlName="directvoucherNumber" class="w-100 shadow-sm">
-                    <nz-option *ngFor="let payment of directPayment" [nzValue]="payment.voucherNumber" [nzLabel]="payment.voucherNumber"></nz-option>
-                  </nz-select>
-                </nz-form-control>
-              </div>
+          @if(directPayment.length > 0){
+          <div class="col-md-3 col-sm-6">
+            <nz-form-control nzErrorTip="Please Select Direct Payment Number!">
+              <label>Direct Payment Number</label>
+              <nz-select nzShowSearch formControlName="directvoucherNumber" class="w-100 shadow-sm">
+                <nz-option *ngFor="let payment of directPayment" [nzValue]="payment.voucherNumber"
+                  [nzLabel]="payment.voucherNumber"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </div>
 
-              <div class="col-md-3 col-sm-6 d-flex align-items-end">
-                @if(paidAmount>0){
-                  <p class="mb-0">Total Paid Value: <strong>{{paidAmount}}</strong></p>
-                }
-              </div>
+          <div class="col-md-3 col-sm-6 d-flex align-items-end">
+            @if(paidAmount>0){
+            <p class="mb-0">Total Paid Value: <strong>{{paidAmount}}</strong></p>
             }
+          </div>
+          }
           }
 
           @else if(params === 'Stock Transfer'){
-            <div class="col-md-3 col-sm-6">
-              <nz-form-control nzErrorTip="Please Select From Center!">
-                <label>From Center</label>
-                <nz-select nzShowSearch formControlName="fromCenterId" class="w-100 shadow-sm">
-                  <nz-option *ngFor="let center of centerData" [nzValue]="center.center?.id" [nzLabel]="center.center?.centerName || ''"></nz-option>
-                </nz-select>
-              </nz-form-control>
-            </div>
+          <div class="col-md-3 col-sm-6">
+            <nz-form-control nzErrorTip="Please Select From Center!">
+              <label>From Center</label>
+              <nz-select nzShowSearch formControlName="fromCenterId" class="w-100 shadow-sm">
+                <nz-option *ngFor="let center of centerData" [nzValue]="center.center?.id"
+                  [nzLabel]="center.center?.centerName || ''"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </div>
 
-            <div class="col-md-3 col-sm-6">
-              <nz-form-control nzErrorTip="Please Select To Center!">
-                <label>To Center</label>
-                <nz-select nzShowSearch formControlName="toCenterId" class="w-100 shadow-sm">
-                  <nz-option *ngFor="let center of allcenterdata" [nzValue]="center.id" [nzLabel]="center?.centerName || ''"></nz-option>
-                </nz-select>
-              </nz-form-control>
-            </div>
+          <div class="col-md-3 col-sm-6">
+            <nz-form-control nzErrorTip="Please Select To Center!">
+              <label>To Center</label>
+              <nz-select nzShowSearch formControlName="toCenterId" class="w-100 shadow-sm">
+                <nz-option *ngFor="let center of allcenterdata" [nzValue]="center.id"
+                  [nzLabel]="center?.centerName || ''"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </div>
           }
 
           @else if(params === 'Stock Verification'){
-            <div class="col-md-3 col-sm-6">
-              <nz-form-control nzErrorTip="Please Select Center!">
-                <label>Center</label>
-                <nz-select nzShowSearch formControlName="centerId" class="w-100 shadow-sm">
-                  <nz-option *ngFor="let center of centerData" [nzValue]="center.center?.id" [nzLabel]="center.center?.centerName || ''"></nz-option>
-                </nz-select>
-              </nz-form-control>
-            </div>
+          <div class="col-md-3 col-sm-6">
+            <nz-form-control nzErrorTip="Please Select Center!">
+              <label>Center</label>
+              <nz-select nzShowSearch formControlName="centerId" class="w-100 shadow-sm">
+                <nz-option *ngFor="let center of centerData" [nzValue]="center.center?.id"
+                  [nzLabel]="center.center?.centerName || ''"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </div>
           }
 
         </div>
@@ -111,14 +117,30 @@
           <nz-form-control nzErrorTip="Please input Product!">
             <label>Product</label>
             <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
-              <input placeholder="Enter product name" nz-input [(ngModel)]="inputValue" (input)="onInput($event)" [nzAutocomplete]="auto" class="w-100 shadow-sm" />
+              <input placeholder="Enter product name" nz-input [(ngModel)]="inputValue" (input)="onInput($event)"
+                [nzAutocomplete]="auto" class="w-100 shadow-sm" />
               <nz-autocomplete #auto>
-                <nz-auto-option *ngFor="let product of filteredProducts" [nzValue]="product.printName">
-                  <div class="d-flex justify-content-between">
-                    <span>{{product.itemCode}}</span>
-                    <span>{{ product.printName }}</span>
+                @if(params === 'Stock Transfer' || params ==='Purchase Return' || params === 'Stock Verification'){
+                <nz-auto-option *ngFor="let product of filteredProducts" [nzValue]="product.batchNo">
+                  <div class="d-flex justify-content-between align-items-left">
+                    <div class="cell id flex-fill text-start">{{ product.batchNo }}</div>
+                    <div class="cell date flex-fill text-start">{{ product.expDate | date: 'yyyy-MM-dd' }}</div>
+                    <div class="cell code flex-fill text-start">{{ product.itemCode }}</div>
+                    <div class="cell name flex-fill text-start">{{ product.printName }}</div>
+                    <div class="cell qty flex-fill text-end">{{ product.quantity }}</div>
                   </div>
                 </nz-auto-option>
+                }
+                @else{
+                <nz-auto-option *ngFor="let product of filteredProducts" [nzValue]="product.printName">
+                  <div class="d-flex justify-content-between align-items-left">
+                    <div class="cell code flex-fill text-start">{{ product.itemCode }}</div>
+                    <div class="cell name flex-fill text-start">{{ product.printName }}</div>
+                  </div>
+                </nz-auto-option>
+
+                }
+
               </nz-autocomplete>
             </nz-input-group>
             <ng-template #suffixIconButton>
@@ -130,72 +152,90 @@
         </div>
 
         @if(params !== 'Stock Transfer' && params !== 'Stock Verification'){
-          <div class="col-md-6 col-sm-12 text-end">
-            <h6>Total Amount</h6>
-            <p class="fs-4 fw-bold">{{totalAmount | currency:'Rs '}}</p>
-          </div>
+        <div class="col-md-6 col-sm-12 text-end">
+          <h6>Total Amount</h6>
+          <p class="fs-4 fw-bold">{{totalAmount | currency:'Rs '}}</p>
+        </div>
         }
       </div>
 
       <!-- Data Table -->
-   <nz-table 
-  #basicTable 
-  [nzShowPagination]="false" 
-  [nzPageSize]="100" 
-  [nzScroll]="{ y: '400px', x: 'max-content' }" 
-  [nzData]="dataSource" 
-  class="shadow-sm mt-4">
-  
-  <thead>
-    <tr>
-      <th style="min-width: 50px;">No</th>
-      <th style="min-width: 150px;">Product Name</th>
+      <nz-table #basicTable [nzShowPagination]="false" [nzPageSize]="100" [nzScroll]="{ y: '400px', x: 'max-content' }"
+        [nzData]="dataSource" class="shadow-sm mt-4">
 
-      @if(params !== 'Stock Transfer' && params !== 'Stock Verification'){
-         <th style="min-width: 100px;">Batch No</th>
-        <th style="min-width: 120px;" nz-tooltip="Expiry Date">Exp. Date</th>
-        <th style="min-width: 80px;">Cost</th>
-        <th style="min-width: 80px;">Qty</th>
-        <th style="min-width: 100px;">Discount</th>
-        <th style="min-width: 100px;">MRP</th>
-        <th style="min-width: 120px;">Amount</th>
-      }
+        <thead>
+          <tr>
+            <th style="min-width: 50px;">No</th>
+            <th style="min-width: 150px;">Product Name</th>
+            <th style="min-width: 100px;">Batch No</th>
+            <th style="min-width: 120px;" nz-tooltip="Expiry Date">Exp. Date</th>
+            <th style="min-width: 120px;" nz-tooltip="Expiry Date">MFG. date</th>
+            <th style="min-width: 80px;">Qty</th>
 
-      <th style="min-width: 80px;">Action</th>
-    </tr>
-  </thead>
+            @if(params !== 'Stock Transfer' && params !== 'Stock Verification'){
+            <th style="min-width: 80px;">Cost</th>
+            <th style="min-width: 100px;">Discount</th>
+            <th style="min-width: 100px;">MRP</th>
+            <th style="min-width: 120px;">Amount</th>
+            }
+            <th style="min-width: 80px;">Pack size</th>
+            <th style="min-width: 80px;">manufacture</th>
+            <th style="min-width: 80px;">Contry</th>
+            <th style="min-width: 80px;">Action</th>
+          </tr>
+        </thead>
 
-  <tbody>
-    <tr *ngFor="let row of basicTable.data; let i = index">
-      <td>{{ i + 1 }}</td>
-      <td>{{ row.printName }}</td>
+        <tbody>
+          <tr *ngFor="let row of basicTable.data; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ row.printName }}</td>
+            @if(params === 'Stock Transfer'){
+            <td>{{ row.batchNo }}</td>
+            <td>{{ row.expiryDate | date: 'yyyy-MM-dd'}}</td>
+            <td>{{ row.mfdate | date: 'yyyy-MM-dd'}}</td>
+            <td><input type="number" nz-input [(ngModel)]="row.quantity"
+                (ngModelChange)="onFieldChange(row, 'quantity', $event)" /></td>
+            }
 
-      @if(params !== 'Stock Transfer' && params !== 'Stock Verification'){
-        <td><input type="text" nz-input [(ngModel)]="row.batchNo" (ngModelChange)="onFieldChange(row, 'batchNo', $event)" /></td>
-        <td><nz-date-picker nzSize="small" [(ngModel)]="row.expiryDate" (ngModelChange)="onFieldChange(row, 'expiryDate', $event)" class="w-100" format="yyyy-MM-dd"></nz-date-picker></td>
-        <td><input type="number" nz-input [(ngModel)]="row.cost" (ngModelChange)="onFieldChange(row, 'cost', $event)" /></td>
-        <td><input type="number" nz-input [(ngModel)]="row.quantity" (ngModelChange)="onFieldChange(row, 'quantity', $event)" /></td>
-        <td><input type="text" nz-input [(ngModel)]="row.discount" (ngModelChange)="onFieldChange(row, 'discount', $event)" /></td>
-        <td><input type="number" nz-input [(ngModel)]="row.mrp" (ngModelChange)="onFieldChange(row, 'mrp', $event)" /></td>
-        <td>{{ row.amount }}</td>
-      }
 
-      <td>
-        <button class="btn btn-danger btn-sm" (click)="removeRow(i)">
-          <span nz-icon nzType="delete"></span>
-        </button>
-      </td>
-    </tr>
-  </tbody>
-</nz-table>
+            @if(params !== 'Stock Transfer' && params !== 'Stock Verification'){
+            <td><input type="text" nz-input [(ngModel)]="row.batchNo"
+                (ngModelChange)="onFieldChange(row, 'batchNo', $event)" /></td>
+            <td><nz-date-picker nzSize="small" [(ngModel)]="row.expiryDate"
+                (ngModelChange)="onFieldChange(row, 'expiryDate', $event)" class="w-100"
+                format="yyyy-MM-dd"></nz-date-picker></td>
+                <td><nz-date-picker nzSize="small" [(ngModel)]="row.mfdate"
+                (ngModelChange)="onFieldChange(row, 'mfdate', $event)" class="w-100"
+                format="yyyy-MM-dd"></nz-date-picker></td>
+            <td><input type="number" nz-input [(ngModel)]="row.quantity"
+                (ngModelChange)="onFieldChange(row, 'quantity', $event)" /></td>
+            <td><input type="number" nz-input [(ngModel)]="row.cost"
+                (ngModelChange)="onFieldChange(row, 'cost', $event)" /></td>
+            <td><input type="text" nz-input [(ngModel)]="row.discount"
+                (ngModelChange)="onFieldChange(row, 'discount', $event)" /></td>
+            <td><input type="number" nz-input [(ngModel)]="row.mrp"
+                (ngModelChange)="onFieldChange(row, 'mrp', $event)" /></td>
+            <td>{{ row.amount }}</td>
+            }
+            <td>{{ row.Packsize }}</td>
+            <td>{{ row.Manufacture }}</td>
+            <td>{{ row.country }}</td>
+            <td>
+              <button class="btn btn-danger btn-sm" (click)="removeRow(i)">
+                <span nz-icon nzType="delete"></span>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
 
-       <div class="process mt-5">
-                <button class="primary w-100 shadowform" nz-popconfirm
-                    nzPopconfirmTitle="Are you sure Save this {{params | titlecase}}?" (nzOnConfirm)="submit()"
-                    (nzOnCancel)="cancel()"><span class="me-2" nz-icon nzType="save"></span>Create
-                    {{params}}</button>
-            </div>
-        
+      <div class="process mt-5">
+        <button class="primary w-100 shadowform" nz-popconfirm
+          nzPopconfirmTitle="Are you sure Save this {{params | titlecase}}?" (nzOnConfirm)="submitForm()"
+          (nzOnCancel)="cancel()"><span class="me-2" nz-icon nzType="save"></span>Create
+          {{params}}</button>
+      </div>
+
     </div>
   </div>
 </nz-spin>

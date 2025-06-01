@@ -35,7 +35,7 @@ export class ReceiptVoucherComponent {
 
   type = this.nzModalData?.type
   ngOnInit(): void {
-    this.getChequeData();
+     this.getChequeData();
     if (this.nzModalData?.data) {
       this.getVoucherDatabyID(this.nzModalData?.data)
     }

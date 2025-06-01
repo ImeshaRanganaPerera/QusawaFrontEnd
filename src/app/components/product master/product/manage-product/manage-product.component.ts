@@ -57,9 +57,112 @@ export class ManageProductComponent implements OnInit {
     criticalLevel: new FormControl(0),
     ExpnotifDays:new FormControl(0),
     typeId: new FormControl(''),
+    Packsize:new FormControl('1'),
+    Manufacture:new FormControl(''),
+    country: new FormControl('') ,
     // brandId: new FormControl(''),
     // OEMnumber: new FormControl(''),
   })
+
+selectedCountry: any;
+
+  // country.component.ts (or a separate file like countries.ts you can import)
+ countries: { code: string; name: string }[] = [
+  { code: 'AF', name: 'Afghanistan' },
+  { code: 'AL', name: 'Albania' },
+  { code: 'DZ', name: 'Algeria' },
+  { code: 'AD', name: 'Andorra' },
+  { code: 'AO', name: 'Angola' },
+  { code: 'AR', name: 'Argentina' },
+  { code: 'AM', name: 'Armenia' },
+  { code: 'AU', name: 'Australia' },
+  { code: 'AT', name: 'Austria' },
+  { code: 'AZ', name: 'Azerbaijan' },
+  { code: 'BD', name: 'Bangladesh' },
+  { code: 'BE', name: 'Belgium' },
+  { code: 'BT', name: 'Bhutan' },
+  { code: 'BR', name: 'Brazil' },
+  { code: 'BG', name: 'Bulgaria' },
+  { code: 'CA', name: 'Canada' },
+  { code: 'CL', name: 'Chile' },
+  { code: 'CN', name: 'China' },
+  { code: 'CO', name: 'Colombia' },
+  { code: 'HR', name: 'Croatia' },
+  { code: 'CY', name: 'Cyprus' },
+  { code: 'CZ', name: 'Czech Republic' },
+  { code: 'DK', name: 'Denmark' },
+  { code: 'EG', name: 'Egypt' },
+  { code: 'EE', name: 'Estonia' },
+  { code: 'FI', name: 'Finland' },
+  { code: 'FR', name: 'France' },
+  { code: 'GE', name: 'Georgia' },
+  { code: 'DE', name: 'Germany' },
+  { code: 'GR', name: 'Greece' },
+  { code: 'HK', name: 'Hong Kong' },
+  { code: 'HU', name: 'Hungary' },
+  { code: 'IN', name: 'India' },
+  { code: 'ID', name: 'Indonesia' },
+  { code: 'IR', name: 'Iran' },
+  { code: 'IQ', name: 'Iraq' },
+  { code: 'IE', name: 'Ireland' },
+  { code: 'IL', name: 'Israel' },
+  { code: 'IT', name: 'Italy' },
+  { code: 'JP', name: 'Japan' },
+  { code: 'JO', name: 'Jordan' },
+  { code: 'KZ', name: 'Kazakhstan' },
+  { code: 'KE', name: 'Kenya' },
+  { code: 'KR', name: 'South Korea' },
+  { code: 'KW', name: 'Kuwait' },
+  { code: 'LV', name: 'Latvia' },
+  { code: 'LB', name: 'Lebanon' },
+  { code: 'LT', name: 'Lithuania' },
+  { code: 'LU', name: 'Luxembourg' },
+  { code: 'MY', name: 'Malaysia' },
+  { code: 'MV', name: 'Maldives' },
+  { code: 'MT', name: 'Malta' },
+  { code: 'MX', name: 'Mexico' },
+  { code: 'MC', name: 'Monaco' },
+  { code: 'MA', name: 'Morocco' },
+  { code: 'MM', name: 'Myanmar' },
+  { code: 'NP', name: 'Nepal' },
+  { code: 'NL', name: 'Netherlands' },
+  { code: 'NZ', name: 'New Zealand' },
+  { code: 'NG', name: 'Nigeria' },
+  { code: 'NO', name: 'Norway' },
+  { code: 'OM', name: 'Oman' },
+  { code: 'PK', name: 'Pakistan' },
+  { code: 'PS', name: 'Palestine' },
+  { code: 'PE', name: 'Peru' },
+  { code: 'PH', name: 'Philippines' },
+  { code: 'PL', name: 'Poland' },
+  { code: 'PT', name: 'Portugal' },
+  { code: 'QA', name: 'Qatar' },
+  { code: 'RO', name: 'Romania' },
+  { code: 'RU', name: 'Russia' },
+  { code: 'SA', name: 'Saudi Arabia' },
+  { code: 'RS', name: 'Serbia' },
+  { code: 'SG', name: 'Singapore' },
+  { code: 'SK', name: 'Slovakia' },
+  { code: 'SI', name: 'Slovenia' },
+  { code: 'ZA', name: 'South Africa' },
+  { code: 'ES', name: 'Spain' },
+  { code: 'LK', name: 'Sri Lanka' },
+  { code: 'SE', name: 'Sweden' },
+  { code: 'CH', name: 'Switzerland' },
+  { code: 'SY', name: 'Syria' },
+  { code: 'TW', name: 'Taiwan' },
+  { code: 'TH', name: 'Thailand' },
+  { code: 'TR', name: 'Turkey' },
+  { code: 'UA', name: 'Ukraine' },
+  { code: 'AE', name: 'United Arab Emirates' },
+  { code: 'GB', name: 'United Kingdom' },
+  { code: 'US', name: 'United States' },
+  { code: 'VN', name: 'Vietnam' },
+  { code: 'YE', name: 'Yemen' },
+  { code: 'ZM', name: 'Zambia' },
+  { code: 'ZW', name: 'Zimbabwe' }
+];
+
 
   ngOnInit(): void {
     this.getBrand();
@@ -67,6 +170,7 @@ export class ManageProductComponent implements OnInit {
     this.getDiscountLevels();
     this.getCommissionLevels();
 
+    console.log(this.countries);
     if (this.nzModalData?.data) {
       this.productForm.patchValue(this.nzModalData.data);
       console.log(this.nzModalData.data)
@@ -95,7 +199,7 @@ export class ManageProductComponent implements OnInit {
     // const brandName = this.brandlist.find(brand => brand.id === brandId)?.brandName || '';
 
     // Concatenate the brand name with the product name
-    const printName = `${itemCode} ${productName}`.trim();
+    const printName = ` ${productName}`.trim();
 
     // Set the print name in the form
     this.productForm.get('printName')?.setValue(printName, { emitEvent: false });
@@ -206,6 +310,7 @@ export class ManageProductComponent implements OnInit {
 
     const updatedFormValue = {
       ...this.productForm.value,
+    
       // OEMnumberList: oemNumberObjects, // Assign the list of objects
       discountLevels: discountLevels,
       commissionLevels: productcommissionRate

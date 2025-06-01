@@ -1,317 +1,146 @@
 <button class="download-btn" (click)="downloadInvoice()">Generate PDF</button>
-<div class="invoice-box" id="invoice">
-  <div class="header-container">
-    <div class="row">
-      <div class="col-3">
-        <img src="img/logo.png" alt="Logo" class="img-fluid" />
-      </div>
-      <div class="col-9">
-        <h1 class="fs-4 fw-bold">MODERN INNOVATION (PVT) LTD</h1>
-        <span>No 122/1, Kawdana Road, Dehiwala, Srilanka</span><br>
-        <span>Hot Line: +94 112 724 292</span><br>
-        <span>Email: {{email}}</span>
-      </div>
+<div class="invoice-box border p-4" id="invoice">
+  <!-- Header -->
+  <div class="row align-items-center mb-3">
+    <div class="col-3">
+      <img src="img/logo.png" alt="Logo" class="img-fluid" style="max-height: 90px;" />
+    </div>
+    <div class="col-9 text-end">
+      <h4 class="fw-bold text-uppercase">MODERN INNOVATION (PVT) LTD</h4>
+      <p class="mb-0">+94 112 724 292 | | www.qaswa.lk</p>
+      <p class="mb-0">122/1, Kawdana Road, Dehiwala, Sri Lanka</p>
     </div>
   </div>
-  <nz-divider class="m-0 mb-3"></nz-divider>
-
-  @if(voucherData) {
-  <div class="invoice-info">
-    <div class="row mb-3">
-      <div class="col-6 ">
-        <h3>{{type}}</h3>
-        @if(voucherData.party !== null){
-        <h3>{{voucherData.party.name}}</h3>
-        }
-      </div>
-      @if(type === 'Stock Transfer' || type === 'STOCK-TRANSFER'){
-
-      }
-      @else {
-      <div class="col-6 ms-auto invoice-info-sub ">
-        <h5>Amount</h5>
-        @if(this.mode === 'payable'){
-        <h4>{{ getTotal() | currency:'LKR ' }}</h4>
-        }
-        @else {
-        <h4>{{ getTotal() | currency:'USD ' }}</h4>
-        }
-
-        @if(voucherData.dueDays > 0) {
-        <span>Credit Period: {{ voucherData.dueDays }} Days</span>
-        }
-      </div>
-      }
-    </div>
-
-    <div class="row">
-      <div class="col-7">
-        <div class="row">
-          @if(type === 'Stock Transfer' || type === 'STOCK-TRANSFER'){
-          @if(voucherData.VoucherCenter){
-          <div class="col-5"
-            *ngIf="voucherData.VoucherCenter[0].centerStatus === 'OUT' || voucherData.VoucherCenter[1].centerStatus === 'OUT' ">
-            <span class="fw-bold">From Center</span>
-          </div>
-          <div class="col-7">
-            <span>{{voucherData.VoucherCenter[0].centerStatus === 'OUT' ? voucherData.VoucherCenter[0].center.centerName
-              : voucherData.VoucherCenter[1].center.centerName}}</span>
-          </div>
-          <div class="col-5"
-            *ngIf="voucherData.VoucherCenter[0].centerStatus === 'IN' || voucherData.VoucherCenter[1].centerStatus === 'IN' ">
-            <span class="fw-bold">To Center</span>
-          </div>
-          <div class="col-7">
-            <span>{{voucherData.VoucherCenter[0].centerStatus === 'IN' ? voucherData.VoucherCenter[0].center.centerName
-              : voucherData.VoucherCenter[1].center.centerName}}</span>
-          </div>
-          }
-          }
-          @else {
-          <div class="col-5">
-            @if(mode === 'payable'){
-            <span class="fw-bold">Supplier Address :</span>
-            }
-            @else {
-            <span class="fw-bold">Customer Address :</span>
-            }
-          </div>
-          <div class="col-7">
-            @if(voucherData.party !== null){
-            <span>{{voucherData.party.address1}}</span>
-            }
-          </div>
-          <div class="col-5">
-            @if(mode === 'payable'){
-            <span class="fw-bold">Supplier Contact No :</span>
-            }
-            @else {
-            <span class="fw-bold">Customer Contact No :</span>
-            }
-          </div>
-          <div class="col-7">
-            @if(voucherData.party !== null){
-            <span>{{voucherData.party.phoneNumber}}</span>
-            }
-          </div>
-          }
-          <div class="col-5">
-            @if(mode === 'payable'){
-            <span class="fw-bold">Created By :</span>
-            }
-            @else {
-            <span class="fw-bold">Sales Person :</span>
-            }
-          </div>
-          <div class="col-7">
-            <span>{{voucherData.user?.name}}</span>
-          </div>
-          <div class="col-5">
-            @if(mode === 'payable'){
-            <span class="fw-bold">Contact No :</span>
-            }
-            @else {
-            <span class="fw-bold">Contact No :</span>
-            }
-          </div>
-          <div class="col-7">
-            <span>0{{userPhoneNumber}}</span>
-          </div>
-        </div>
-      </div>
-      <div class="col-5">
-        <div class="row text-end">
-          <div class="col-6">
-            <span class="fw-bold">Invoice Number :</span>
-          </div>
-          <div class="col-6">
-            <span>{{voucherData.voucherNumber}}</span>
-          </div>
-          <div class="col-6">
-            <span class="fw-bold">Date :</span>
-          </div>
-          <div class="col-6">
-            <span>{{voucherData.date | date}}</span>
-          </div>
-          @if(voucherData.refNumber !== "" || null){
-          <div class="col-6">
-            <span class="fw-bold">Ref Number :</span>
-          </div>
-          <div class="col-6">
-            <span>{{voucherData.refNumber }}</span>
-          </div>
-          }
-        </div>
-      </div>
-    </div>
+  @if(type === 'Invoice' || type==='INVOICE' || type === 'Sales Order' || type === 'SALES-ORDER' || type === 'Sales Return' || type === 'SALES-RETURN'){
+  <div class="text-center fw-bold fs-5 text-uppercase border border-dark py-2 mb-3">
+    Commercial Invoice
   </div>
-
-  <nz-divider class="m-0 mb-3"></nz-divider>
-  <div class="items">
-    <table>
-      <thead>
-        <tr>
-          @if(type === 'Stock Transfer' || type === 'STOCK-TRANSFER'){
-          <th>Item</th>
-          <th>Qty</th>
-          }
-          @else {
-          <th>Item</th>
-          <th>Batch No</th>
-          <th>Exp.Date</th>
-          <th>Unit Price</th>
-          <th>Discount</th>
-          <th>Qty</th>
-          <th>Rate</th>
-          <th>Amount</th>
-          }
-
-        </tr>
-      </thead>
-      <tbody>
-        @for(data of voucherData?.voucherProduct; track data){
-        <tr>
-          @if(type === 'Stock Transfer' || type === 'STOCK-TRANSFER'){
-          <td>{{ data.product.printName }} </td>
-          <td>{{ data.quantity }} </td>
-          }
-          @else {
-          <td>{{ data.product.printName }} </td>
-          <td>{{ data.batchNo }}</td>
-          <td>{{ data.expDate | date: 'yyyy-MM-dd'}}</td>
-          @if(this.mode === 'payable'){
-          <td>{{ data.cost }}</td>
-          }@else {
-          <td>{{ data.MRP }}</td>
-          }
-          @if(data.discount === '' || data.discount === null || data.discount === undefined){
-          <td>{{ 0 }}</td>
-          }
-          @else{
-          <td>{{ data.discount }}</td>
-          }
-          <td>{{ data.quantity }} </td>
-          @if(this.mode === 'payable'){
-          <td>{{ getDiscountRate(data.discount, data.cost) }}</td>
-          }@else {
-          <td>{{ getDiscountRate(data.discount, data.MRP) }}</td>
-          }
-          <td>{{ getAmount(data) }}</td>
-          }
-
-        </tr>
-        }
-      </tbody>
-    </table>
+  }@else{
+  <div class="text-center fw-bold fs-5 text-uppercase border border-dark py-2 mb-3">
+    Transaction Note - {{type}}
   </div>
-  <nz-divider class="m-0 mb-3"></nz-divider>
-  <div class="row">
-    <div class="col-6">
-      @if(voucherData?.paymentVoucher.length > 0){
-      <p class="fs-5 fw-bold">Payments</p>
-      @for(payment of voucherData?.paymentVoucher; track payment){
-      <div class="row">
-        <div class="col-6">
-          <span>{{payment.paymentType}}</span>
-        </div>
-        <div class="col-6">
-          @if(this.mode === 'payable'){
-          <span>{{payment.amount | currency:'LKR '}}</span>
-          }
-          @else {
-          <span>{{payment.amount | currency:'USD '}}</span>
-          }
-
-        </div>
-      </div>
-      }
-      }
-    </div>
-    @if(type === 'Stock Transfer' || type === 'STOCK-TRANSFER'){
-
-    }
-    @else {
-    <div class="col-6 text-end">
-      <span class="fs-5 fw-bold">Total: </span>
-      @if(this.mode === 'payable'){
-      <span class="fs-5 fw-bold">{{ getSubtotal() | currency:'LKR ' }}</span>
-      }
-      @else {
-      <span class="fs-5 fw-bold">{{ getSubtotal() | currency:'USD ' }}</span>
-      }
-
-    </div>
-    }
-
-  </div>
-
-  <!-- <div class="totals">
-    <table>
-      <tr>
-        <th>Subtotal:</th>
-        <td>{{ getSubtotal() | currency:'LKR '}}</td>
-      </tr>
-      <tr>
-        <th>Discount:</th>
-        <td>{{ voucherData?.voucherProduct?.discount | percent }}</td>
-      </tr>
-      <tr>
-        <th><nz-divider class="m-0 mb-3"></nz-divider></th>
-        <td><nz-divider class="m-0 mb-3"></nz-divider></td>
-      </tr>
-      <tr>
-
-      </tr>
-    </table>
-  </div> -->
-  <nz-divider class="m-0 mb-3"></nz-divider>
-  <div>
-    @if(mode === 'recivable'){
-    <div class="payment-instruction">
-      <!-- <h3>Payment Instruction</h3> -->
-      <hr class="m-0 my-3">
-      <!-- <div class="row">
-        <p class="mb-3">Cheques to be drawn infavour of "Hitech Lanka Pvt Ltd" or deposit to following accounts</p>
-        <div class="col-6">
-          <p>Account Name: Hitech Lanka (Pvt) Ltd</p>
-          <p>Bank: Bank of Ceylon</p>
-          <p>Branch: Nugegoda</p>
-          <p>Account Number: 91563417</p>
-        </div>
-        <div class="col-6">
-          <p>Account Name: Hitech Lanka (Pvt) Ltd</p>
-          <p>Bank: NDB Bank PLC</p>
-          <p>Branch: Kohuwala</p>
-          <p>Account Number: 111000210494</p>
-        </div>
-      </div> -->
-    </div>
-    }
-    @else if (type === 'Stock Transfer' || type === 'STOCK-TRANSFER') {
-    <div class="row d-flex justify-content-between">
-      <div class="col-3 text-center">
-        <div class="signature-line"></div>
-        <label>Transferred By</label>
-      </div>
-      <div class="col-3 text-center">
-        <div class="signature-line"></div>
-        <label>Issued By</label>
-      </div>
-      <div class="col-3 text-center">
-        <div class="signature-line"></div>
-        <label>Received By</label>
-      </div>
-      <div class="col-3 text-center">
-        <div class="signature-line"></div>
-        <label>Authorised By</label>
-      </div>
-    </div>
-    }
+  <div class="text-left  fs-8 text-lowercase border border-dark py-2 mb-3">
+    <p class="mb-0"><strong>User:</strong> {{ voucherData?.user.name }}</p>
+    <p class="mb-0"><strong>Supplier #:</strong> {{ voucherData?.party.name }}</p>
+    <p class="mb-0"><strong>Date:</strong> {{ voucherData?.date | date }}</p>
+    <p class="mb-0"><strong>TRN #:</strong> {{ voucherData?.voucherNumber }}</p>
   </div>
   }
-  <nz-divider class="m-0 mb-3"></nz-divider>
-  <div class="footer">
-    <p><strong>Reliable Parts, Lasting Solutions - Driving Excellence Every Mile!</strong></p>
-    <p class="imp">Implemented by Cybernetic</p>
+
+
+
+  @if(type === 'Invoice' || type==='INVOICE' || type === 'Sales Order' || type === 'SALES-ORDER' || type === 'Sales Return' || type === 'SALES-RETURN'){
+  <!-- Seller / Buyer / Consignee / Invoice Info -->
+  <div class="row border border-dark mb-3">
+    <div class="col-3 p-2 border-end">
+      <strong class="text-uppercase d-block border-bottom mb-2">Seller</strong>
+      <p class="mb-0">MODERN INNOVATION (PVT) LTD</p>
+      <p class="mb-0">122/1 Kawdana Road</p>
+      <p class="mb-0">Dehiwala</p>
+      <p class="mb-0">SRI LANKA</p>
+      <p class="mb-0">Attn: Rikaz Rasheed</p>
+      <p class="mb-0">+94777747980</p>
+      <!-- <p class="mb-0">rikarsrash@gmail.com | rikaz@qaswa.lk</p> -->
+    </div>
+    <div class="col-3 p-2 border-end">
+      <strong class="text-uppercase d-block border-bottom mb-2">Buyer</strong>
+      <!-- Add buyer details here -->
+
+    </div>
+    <div class="col-3 p-2 border-end">
+      <strong class="text-uppercase d-block border-bottom mb-2">Consignee Details</strong>
+      <!-- Add consignee details here -->
+
+    </div>
+    <div class="col-3 p-2">
+      <strong class="text-uppercase d-block border-bottom mb-2">Invoice Details</strong>
+      <p class="mb-0"><strong>Date:</strong> {{ voucherData?.date | date }}</p>
+      <p class="mb-0"><strong>INV #:</strong> {{ voucherData?.voucherNumber }}</p>
+      <p class="mb-0"><strong>Delivery:</strong> [Delivery Info]</p>
+      <p class="mb-0"><strong>LC No:</strong> [LC Number]</p>
+      <p class="mb-0"><strong>Shipment:</strong> [Shipment Info]</p>
+    </div>
+  </div>
+
+  }
+
+  <!-- Product Table -->
+  <table class="table table-bordered table-sm text-center align-middle">
+    <thead class="table-secondary">
+      <tr>
+        <th>NO</th>
+        <th>PRODUCT NAME</th>
+        <th>Packs Size</th>
+        <th>Manifaure</th>
+        <th>Country</th>
+        <th>Batch</th>
+        <th>MFG</th>
+        <th>Expire</th>
+        <th>Units</th>
+        @if(type === 'Invoice' || type==='INVOICE' || type === 'Sales Order' || type === 'SALES-ORDER' || type === 'Sales Return' || type === 'SALES-RETURN'){
+        <th>Rats</th>
+        }@else{
+        <th>Cost</th>
+        }
+
+        <th>Amounts</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of voucherData?.voucherProduct; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ item.product?.printName }}</td>
+        <td>{{ item.Packsize }}</td>
+        <td>{{ item.Manufacture }}</td>
+        <td>{{ item.country }}</td>
+        <td>{{ item.batchNo }}</td>
+        <td>{{ item.mfdate | date: 'yyyy-MM-dd' }}</td>
+        <td style="width: 80px; text-align: center;">{{ item.expDate | date: 'yyyy-MM-dd' }}</td>
+        <td>{{ item.quantity }}</td>
+        @if(type === 'Invoice' || type==='INVOICE' || type === 'Sales Order' || type === 'SALES-ORDER' || type === 'Sales Return' || type === 'SALES-RETURN'){
+        <td>{{ item.MRP}}</td>
+        }@else {
+        <td>{{ item.cost || item.cost }}</td>
+        }
+
+        <td>${{ getAmount(item) }}</td>
+      </tr>
+
+      <!-- Optional: pad up to 20 rows for visual match -->
+      <!-- <tr *ngFor="let n of [].constructor(20 - voucherData?.voucherProduct?.length)">
+        <td>{{ voucherData?.voucherProduct?.length + $index + 1 }}</td>
+        <td colspan="10">&nbsp;</td>
+      </tr> -->
+      <!-- Total Row -->
+      <tr>
+        <td colspan="10" class="text-end fw-bold">Total</td>
+        <td class="fw-bold">{{ getSubtotal() | currency: mode === 'payable' ? 'LKR ' : 'USD ' }}</td>
+      </tr>
+    </tbody>
+  </table>
+ @if(type === 'Invoice' || type==='INVOICE' || type === 'Sales Order' || type === 'SALES-ORDER' || type === 'Sales Return' || type === 'SALES-RETURN'){
+  <div class="mt-4">
+    <!-- <p class="fw-bold">Amount in Words (USD):</p>
+    <p><strong>Amount in Words (USD):</strong> {{ amountInWords }}</p> -->
+
+    <p class="mt-3 mb-1"><strong>Bank Details</strong></p>
+    <p class="mb-0">NATIONS TRUST BANK PLC | No: 163, GALLE ROAD | DEHIWALA | SRI LANKA</p>
+    <p class="mb-0">Beneficiary: MODERN INNOVATION (PVT) LTD</p>
+    <p class="mb-0">Account No: 270230000846 (USD)</p>
+    <p class="mb-0">Swift Code: NTBCKLX | Branch Code: 203</p>
+
+    <p class="mt-3"><strong>Special Instructions:</strong> Any discrepancy arising from spelling mistakes or punctuation
+      marks should not be considered a discrepancy and is valid for negotiation.</p>
+  </div>
+ }
+  <!-- Optional Footer for Totals / Bank / Notes -->
+
+
+  <!-- Signature Area -->
+  <div class="row mt-5 text-center">
+    <div class="col-12">
+      <p>Signature & Stamp</p>
+      <p class="fw-bold">For MODERN INNOVATION (PVT) LTD</p>
+    </div>
   </div>
 </div>

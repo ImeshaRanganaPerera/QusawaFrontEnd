@@ -50,13 +50,13 @@
                     <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
                     <td>{{ data.date | date:'yyyy-MM-dd' }}</td>
                     <td>{{ data.voucherNumber }}</td>
-                    <td>{{ data.PaymentVoucher | getPaymentAmount:'Cash' | currency: ' ' }}</td>
-                    <td>{{ data.PaymentVoucher | getPaymentAmount:'Online Transfer'| currency: ' ' }}</td>
-                    <td>{{ data.PaymentVoucher | getPaymentAmount:'Cheque'| currency: ' ' }}</td>
-                    <td>{{ data.PaymentVoucher | getPaymentAmount:'Credit'| currency: ' ' }}</td>
+                    <td>{{ data.paymentVoucher | getPaymentAmount:'Cash' | currency: ' ' }}</td>
+                    <td>{{ data.paymentVoucher | getPaymentAmount:'Online Transfer'| currency: ' ' }}</td>
+                    <td>{{ data.paymentVoucher | getPaymentAmount:'Cheque'| currency: ' ' }}</td>
+                    <td>{{ data.paymentVoucher | getPaymentAmount:'Credit'| currency: ' ' }}</td>
                     <td>{{ data.PaymentVoucher | getPaymentAmount:'Visa'| currency: ' ' }}</td>
-                    <td>{{ data.PaymentVoucher | getPaymentAmount:'Mastercard'| currency: ' ' }}</td>
-                    <td>{{ data.PaymentVoucher | getPaymentAmount:'Amex'| currency: ' ' }}</td>
+                    <td>{{ data.paymentVoucher | getPaymentAmount:'Mastercard'| currency: ' ' }}</td>
+                    <td>{{ data.paymentVoucher | getPaymentAmount:'Amex'| currency: ' ' }}</td>
                     <td>{{ data.amount | currency: ' ' }}</td>
                     <td>
                         <button nz-button nz-tooltip="Download" nzType="primary" nzShape="circle"

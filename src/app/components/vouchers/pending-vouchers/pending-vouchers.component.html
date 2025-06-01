@@ -62,13 +62,16 @@
                                 <tr>
                                     <th nzWidth="1%">No</th>
                                     <th nzWidth="30%">Product Name</th>
+                                    <th nzWidth="30%">Batch No</th>
+                                    <th nzWidth="30%">Exp Date</th>
                                     <th nzWidth="10%">Quantity</th>
                                     <th nzWidth="10%">Cost</th>
                                     <th nzWidth="10%">MRP</th>
                                     <th nzWidth="10%">Discount</th>
-                                    <th nzWidth="10%">Cost (%)</th>
-                                    <th nzWidth="10%">MRP (%)</th>
                                     <th nzWidth="10%">Amount</th>
+                                    <th nzWidth="30%">Pack size</th>
+                                    <th nzWidth="30%">manufacture</th>
+                                    <th nzWidth="30%">Contry</th>
                                 </tr>
                             </thead>
             <tbody>
@@ -77,6 +80,8 @@
                         <td>{{ i + 1 }}</td>
                         <td>{{ vp.product.printName }}</td>
                         <!-- Editable Quantity Input -->
+                        <td>{{ vp.batchNo }}</td>
+                        <td>{{ vp.expDate | date: 'yyyy-MM-dd'}}</td>
                         <td>
                             {{vp.quantity }}
                             <!-- <input nz-input [(ngModel)]="vp.quantity" type="number" class="form-control"
@@ -103,14 +108,11 @@
                             {{vp.discount | currency: ' '}}
                             }
                         </td>
-                        <td>
-                            {{getrate(vp,'COST') + '%'}}
-                        </td>
-                        <td>
-                            {{getrate(vp,'MRP') + '%'}}
-                        </td>
                         <!-- Calculated Amount -->
                         <td>{{ vp.amount | currency: ' ' }}</td>
+                        <td>{{ vp.Packsize }}</td>
+                        <td>{{ vp.Manufacture }}</td>
+                        <td>{{ vp.country }}</td>
                     </tr>
                 </ng-container>
             </tbody>

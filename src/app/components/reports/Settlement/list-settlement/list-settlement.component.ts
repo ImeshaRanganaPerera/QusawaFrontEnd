@@ -129,53 +129,45 @@ export class ListSettlementComponent {
     this.getvoucher(this.voucherGrp, startDate, endDate)
   }
 
-  calculatePaymentAmount() {
-    this.totalCash = this.filteredData.reduce((acc, cur) => {
-      return acc + cur.PaymentVoucher.reduce((sum: any, payment: any) => {
-        return payment.paymentType === "Cash" ? sum + Number(payment.amount) : sum;
-      }, 0);
-    }, 0);
+ calculatePaymentAmount() {
+  const types = ["Cash", "Online Transfer", "Cheque", "Credit", "Visa", "Mastercard", "Amex"];
 
-    this.onlineTransfer = this.filteredData.reduce((acc, cur) => {
-      return acc + cur.PaymentVoucher.reduce((sum: any, payment: any) => {
-        return payment.paymentType === "Online Transfer" ? sum + Number(payment.amount) : sum;
-      }, 0);
-    }, 0);
+  const totals: any = {
+    Cash: 0,
+    "Online Transfer": 0,
+    Cheque: 0,
+    Credit: 0,
+    Visa: 0,
+    Mastercard: 0,
+    Amex: 0,
+  };
 
-    this.cheque = this.filteredData.reduce((acc, cur) => {
-      return acc + cur.PaymentVoucher.reduce((sum: any, payment: any) => {
-        return payment.paymentType === "Cheque" ? sum + Number(payment.amount) : sum;
-      }, 0);
-    }, 0);
+  this.totalAmount = 0;
 
-    this.credit = this.filteredData.reduce((acc, cur) => {
-      return acc + cur.PaymentVoucher.reduce((sum: any, payment: any) => {
-        return payment.paymentType === "Credit" ? sum + Number(payment.amount) : sum;
-      }, 0);
-    }, 0);
+  this.filteredData.forEach((entry: any) => {
+    const vouchers = entry?.paymentVoucher ?? [];
 
-    this.visa = this.filteredData.reduce((acc, cur) => {
-      return acc + cur.PaymentVoucher.reduce((sum: any, payment: any) => {
-        return payment.paymentType === "Visa" ? sum + Number(payment.amount) : sum;
-      }, 0);
-    }, 0);
+    vouchers.forEach((payment: any) => {
+      const type = payment?.paymentType;
+      const amount = Number(payment?.amount || 0);
+      if (types.includes(type)) {
+        totals[type] += amount;
+      }
+    });
 
-    this.mastercard = this.filteredData.reduce((acc, cur) => {
-      return acc + cur.PaymentVoucher.reduce((sum: any, payment: any) => {
-        return payment.paymentType === "Mastercard" ? sum + Number(payment.amount) : sum;
-      }, 0);
-    }, 0);
+    this.totalAmount += Number(entry?.amount || 0);
+  });
 
-    this.amex = this.filteredData.reduce((acc, cur) => {
-      return acc + cur.PaymentVoucher.reduce((sum: any, payment: any) => {
-        return payment.paymentType === "Amex" ? sum + Number(payment.amount) : sum;
-      }, 0);
-    }, 0);
+  // Assign back to component variables
+  this.totalCash = totals["Cash"];
+  this.onlineTransfer = totals["Online Transfer"];
+  this.cheque = totals["Cheque"];
+  this.credit = totals["Credit"];
+  this.visa = totals["Visa"];
+  this.mastercard = totals["Mastercard"];
+  this.amex = totals["Amex"];
+}
 
-    this.totalAmount = this.filteredData.reduce((acc, cur) => {
-      return acc + Number(cur.amount);
-    },0)
-  }
 
   reportSelection() {
     const modal = this.modal.create({

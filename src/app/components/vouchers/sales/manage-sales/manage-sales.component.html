@@ -17,14 +17,6 @@
                                     }
                                     <h3 class="invoiceNum">{{invoiceNumber}}</h3>
                                     @if(voucherType !== 'SALES-RETURN'){
-                                    <nz-form-control class="mt-3" nzErrorTip="Discount Level is required!">
-                                        <label>Discount level</label>
-                                        <nz-select nzShowSearch formControlName="discountLevelId"
-                                            class="custom-select shadowform">
-                                            <nz-option *ngFor="let level of discountLevel" [nzValue]="level.id"
-                                                [nzLabel]="level.level"></nz-option>
-                                        </nz-select>
-                                    </nz-form-control>
                                     }
                                     <div class="col-md-4 col-sm-12 mb-4">
                                         <nz-form-control nzErrorTip="Please input Date!">
@@ -87,7 +79,7 @@
 
                 <label for="lkrInput">Change rate (optional):</label>
                 <input type="number" [(ngModel)]="lkrAmount" id="lkrInput" placeholder="Enter new LKR amount"
-                    step="0.01" style="width: 120px;"/>
+                    step="0.01" style="width: 120px;" />
                 <div class="row align-items-center ">
                     <div class="col-md-5 col-sm-6 mb-4">
                         <nz-form-control nzErrorTip="Please input Customer Name!">
@@ -103,11 +95,13 @@
                                             <div class="product-item">
                                                 <div class="cell id">{{ product.batchNo }}</div>
                                                 <div class="cell date">{{ product.expDate | date: 'yyyy-MM-dd' }}</div>
-                                                <div class="cell date">{{ product.closingExpDate | date: 'yyyy-MM-dd' }}
-                                                </div>
+                                                <div class="cell date">{{ product.mfdate | date: 'yyyy-MM-dd' }}</div>
                                                 <div class="cell name" title="{{ product.printName }}">{{
                                                     product.printName }}</div>
                                                 <div class="cell qty">QTY {{ product.quantity }}</div>
+                                                 <div class="cell date">{{ product.country}}</div>
+                                                  <div class="cell date">{{ product.Manufacture}}</div>
+                                                  <div class="cell date">{{ product.Packsize}}</div>
                                             </div>
                                         </div>
 
@@ -150,11 +144,14 @@
                             <th style="width: 20%;">Product Name</th>
                             <th style="width: 20%;">Batch No</th>
                             <th style="width: 20%;">Exp.Date</th>
-                            <th style="width: 20%;">Close.Exp</th>
+                             <th style="width: 20%;">MFG. date</th>
                             <th style="width: 10%;">Qty</th>
                             <th style="width: 10%;">Unit Price(USD)</th>
                             <th style="width: 10%;">Discount</th>
                             <th style="width: 15%;">Total</th>
+                            <th style="min-width: 80px;">Pack size</th>
+                            <th style="min-width: 80px;">manufacture</th>
+                            <th style="min-width: 80px;">Contry</th>
                             <th style="width: 5%;"></th>
 
                         </tr>
@@ -164,8 +161,9 @@
                             <td>{{ i + 1 }}</td>
                             <td>{{ row.printName }}</td>
                             <td>{{ row.batchNo }}</td>
-                            <td>{{ expdate | date: 'yyyy-MM-dd'}}</td>
-                            <td>{{ closinexp | date: 'yyyy-MM-dd'}}</td>
+                            <td>{{ row.expiryDate | date: 'yyyy-MM-dd'}}</td>
+                            <td>{{ row.mfdate | date: 'yyyy-MM-dd'}}</td>
+                           
                             <td>
                                 <input type="number" nz-input [(ngModel)]="row.quantity"
                                     (ngModelChange)="onFieldChange(row, 'quantity', $event)"
@@ -182,6 +180,9 @@
                                     (ngModelChange)="onFieldChange(row, 'discount', $event)" [disabled]="ischecked" />
                             </td>
                             <td>{{ row.amount | currency:'Rs ' }}</td>
+                            <td>{{ row.Packsize }}</td>
+                            <td>{{ row.Manufacture }}</td>
+                            <td>{{ row.country }}</td>
                             <td>
                                 <button nz-button nzType="primary" nzShape="circle" nz-tooltip="Delete" nzDanger
                                     class="me-3" (click)="ondelete(row)"><span nz-icon nzType="delete"></span></button>

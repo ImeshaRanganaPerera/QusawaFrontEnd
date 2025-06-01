@@ -148,9 +148,10 @@ export class PendingVouchersComponent {
 
     const updatedVoucher = {
       ...data,
-      stockStatus: data.voucherNumber.startsWith('INV'),
-      isconform: data.voucherNumber.startsWith('INV'),
+      stockStatus: data.voucherNumber.startsWith('INV') || data.voucherNumber.startsWith('GRN') || data.voucherNumber.startsWith('SRET'),
+      isconform: data.voucherNumber.startsWith('INV') || data.voucherNumber.startsWith('GRN'),
       status: data.voucherNumber.startsWith('SC') ? 'PAYMENT PENDING' : 'COMPLETED',
+      
       voucherProduct: this.voucherProduct,
       journalEntries: data.voucherNumber.startsWith('INV') ? null : [
         {

@@ -171,21 +171,21 @@
             }
             }
             @if( type === 'Invoice'){
-              <button nz-button nz-tooltip="Old PDF" nzType="primary" nzShape="circle" nzTooltipPlacement="bottom"
-                 class="me-3" style="background-color: var(--use-secondary-color);">
-                 <span nz-icon nzType="download" (click)="pdfDownload(data)"></span>
-              </button>
-              <button nz-button nz-tooltip="New PDF" nzType="primary" nzShape="circle" nzTooltipPlacement="bottom"
+            <button nz-button nz-tooltip="Old PDF" nzType="primary" nzShape="circle" nzTooltipPlacement="bottom"
+              class="me-3" style="background-color: var(--use-secondary-color);">
+              <span nz-icon nzType="download" (click)="pdfDownload(data)"></span>
+            </button>
+            <button nz-button nz-tooltip="New PDF" nzType="primary" nzShape="circle" nzTooltipPlacement="bottom"
               class="me-3">
               <span nz-icon nzType="download" (click)="pdfDownload2(data)"></span>
-           </button>
-           }@else{
-             <button nz-button nz-tooltip="Download" nzType="primary" nzShape="circle" nzTooltipPlacement="bottom"
-               class="me-3" style="background-color: var(--use-secondary-color);" >
-               <span nz-icon nzType="download" (click)="pdfDownload(data)"></span>
-             </button>
- 
-           }
+            </button>
+            }@else{
+            <button nz-button nz-tooltip="Download" nzType="primary" nzShape="circle" nzTooltipPlacement="bottom"
+              class="me-3" style="background-color: var(--use-secondary-color);">
+              <span nz-icon nzType="download" (click)="pdfDownload(data)"></span>
+            </button>
+
+            }
           </td>
           }
           }
@@ -237,6 +237,9 @@
           <th>MRP</th>
           <th>Discount</th>
           <th>Amount</th>
+          <th>Pack size</th>
+          <th>manufacture</th>
+          <th>Contry</th>
         </tr>
       </thead>
       <tbody>
@@ -253,6 +256,9 @@
           <td>{{ data.MRP | currency: ' ' }}</td>
           <td>{{ data.discount }}</td>
           <td>{{ getAmount(data) | currency:' ' }}</td>
+          <td>{{ data.Packsize }}</td>
+          <td>{{ data.Manufacture }}</td>
+          <td>{{ data.country }}</td>
         </tr>
         }
       </tbody>

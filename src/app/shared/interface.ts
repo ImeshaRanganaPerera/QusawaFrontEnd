@@ -169,6 +169,11 @@ export interface ITableRow {
     batchNo: any;
     ExpnotifDays:number;
     expiryDate:any,
+    Packsize:any,
+    Manufacture:any,
+    country:any,
+    usdRate:any,
+    mfdate:any,
 }
 
 export interface ItemData {
