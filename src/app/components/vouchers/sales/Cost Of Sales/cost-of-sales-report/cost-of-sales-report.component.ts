@@ -110,7 +110,7 @@ export class CostOfSalesReportComponent {
       this.totalqty += Number(item.totalqty);
       this.totalCost += Number(item.totalCost);
       this.totalMRP += Number(item.totalMRP);
-      this.totalsellingprice += Number(item.discountprice);
+      this.totalsellingprice += Number(item.totalMRP);
     });
     this.totalprofit += Number(this.totalsellingprice - this.totalCost);
   }

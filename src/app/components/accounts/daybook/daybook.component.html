@@ -1,0 +1,53 @@
+<div class="day-book">
+  <h2>Day Book</h2>
+
+  <!-- Add Transaction Form -->
+  <form (ngSubmit)="addTransaction()">
+    <label>
+      Date:
+      <input type="date" [(ngModel)]="newTransaction.date" name="date" required>
+    </label>
+    <label>
+      Description:
+      <input type="text" [(ngModel)]="newTransaction.description" name="description" required>
+    </label>
+    <label>
+      Type:
+      <select [(ngModel)]="newTransaction.type" name="type" required>
+        <option value="Debit">Debit</option>
+        <option value="Credit">Credit</option>
+      </select>
+    </label>
+    <label>
+      Amount:
+      <input type="number" [(ngModel)]="newTransaction.amount" name="amount" required>
+    </label>
+    <button type="submit">Add Transaction</button>
+  </form>
+
+  <!-- Transactions Table -->
+  <table border="1" cellpadding="8" cellspacing="0">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let t of transactions">
+        <td>{{ t.date }}</td>
+        <td>{{ t.description }}</td>
+        <td>{{ t.type }}</td>
+        <td>{{ t.amount | currency }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Summary -->
+  <div class="summary">
+    <p>Total Debit: {{ totalDebit | currency }}</p>
+    <p>Total Credit: {{ totalCredit | currency }}</p>
+  </div>
+</div>

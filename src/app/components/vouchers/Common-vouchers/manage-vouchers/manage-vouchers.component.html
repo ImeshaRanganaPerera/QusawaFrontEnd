@@ -121,14 +121,23 @@
                 [nzAutocomplete]="auto" class="w-100 shadow-sm" />
               <nz-autocomplete #auto>
                 @if(params === 'Stock Transfer' || params ==='Purchase Return' || params === 'Stock Verification'){
-                <nz-auto-option *ngFor="let product of filteredProducts" [nzValue]="product.batchNo">
-                  <div class="d-flex justify-content-between align-items-left">
-                    <div class="cell id flex-fill text-start">{{ product.batchNo }}</div>
-                    <div class="cell date flex-fill text-start">{{ product.expDate | date: 'yyyy-MM-dd' }}</div>
-                    <div class="cell code flex-fill text-start">{{ product.itemCode }}</div>
-                    <div class="cell name flex-fill text-start">{{ product.printName }}</div>
-                    <div class="cell qty flex-fill text-end">{{ product.quantity }}</div>
+                <nz-auto-option *ngFor="let product of filteredProducts" [nzValue]="product.printName"
+                  (click)="selectProduct(product)">
+
+                  <div class="product-item-wrapper">
+                    <div class="product-item">
+                      <div class="cell id">{{ product.batchNo }}</div>
+                      <div class="cell date">{{ product.expDate | date: 'yyyy-MM-dd' }}</div>
+                      <div class="cell date">{{ product.mfdate | date: 'yyyy-MM-dd' }}</div>
+                      <div class="cell name" title="{{ product.printName }}">{{
+                        product.printName }}</div>
+                      <div class="cell qty">QTY {{ product.quantity }}</div>
+                      <div class="cell date">{{ product.country}}</div>
+                      <div class="cell date">{{ product.Manufacture}}</div>
+                      <div class="cell date">{{ product.Packsize}}</div>
+                    </div>
                   </div>
+
                 </nz-auto-option>
                 }
                 @else{
@@ -161,27 +170,28 @@
 
       <!-- Data Table -->
       <nz-table #basicTable [nzShowPagination]="false" [nzPageSize]="100" [nzScroll]="{ y: '400px', x: 'max-content' }"
-        [nzData]="dataSource" class="shadow-sm mt-4">
+        [nzData]="dataSource" class="scrollable-table mt-4">
 
         <thead>
           <tr>
-            <th style="min-width: 50px;">No</th>
-            <th style="min-width: 150px;">Product Name</th>
-            <th style="min-width: 100px;">Batch No</th>
-            <th style="min-width: 120px;" nz-tooltip="Expiry Date">Exp. Date</th>
-            <th style="min-width: 120px;" nz-tooltip="Expiry Date">MFG. date</th>
-            <th style="min-width: 80px;">Qty</th>
+            <th style="min-width: 5px; text-align: left;">No</th>
+            <th style="min-width: 80px; text-align: left;">Product Name</th>
+            <th style="min-width: 90px; text-align: left;">Batch No</th>
+            <th style="min-width: 90px; text-align: left;" nz-tooltip="Manufacture Date">MFG. date</th>
+            <th style="min-width: 90px; text-align: left;" nz-tooltip="Expiry Date">Exp. Date</th>
+            <th style="min-width: 80px; text-align: left;">Qty</th>
 
             @if(params !== 'Stock Transfer' && params !== 'Stock Verification'){
-            <th style="min-width: 80px;">Cost</th>
-            <th style="min-width: 100px;">Discount</th>
-            <th style="min-width: 100px;">MRP</th>
-            <th style="min-width: 120px;">Amount</th>
+            <th style="min-width: 80px; text-align: left;">Cost</th>
+            <th style="min-width: 90px; text-align: left;">Discount</th>
+            <th style="min-width: 90px; text-align: left;">MRP</th>
+            <th style="min-width: 90px; text-align: left;">Amount</th>
             }
-            <th style="min-width: 80px;">Pack size</th>
-            <th style="min-width: 80px;">manufacture</th>
-            <th style="min-width: 80px;">Contry</th>
-            <th style="min-width: 80px;">Action</th>
+
+            <th style="min-width: 80px; text-align: left;">Pack Size</th>
+            <th style="min-width: 80px; text-align: left;">Manufacture</th>
+            <th style="min-width: 80px; text-align: left;">Country</th>
+            <th style="min-width: 80px; text-align: left;">Action</th>
           </tr>
         </thead>
 
@@ -189,34 +199,50 @@
           <tr *ngFor="let row of basicTable.data; let i = index">
             <td>{{ i + 1 }}</td>
             <td>{{ row.printName }}</td>
-            @if(params === 'Stock Transfer'){
-            <td>{{ row.batchNo }}</td>
-            <td>{{ row.expiryDate | date: 'yyyy-MM-dd'}}</td>
-            <td>{{ row.mfdate | date: 'yyyy-MM-dd'}}</td>
-            <td><input type="number" nz-input [(ngModel)]="row.quantity"
-                (ngModelChange)="onFieldChange(row, 'quantity', $event)" /></td>
-            }
 
+            @if(params === 'Stock Transfer'){
+              <td>{{ row.batchNo }}</td>
+            <td style="min-width: 100px; text-align: left;">{{ row.mfdate | date: 'yyyy-MM-dd' }}</td>
+            <td style="min-width: 100px; text-align: left;">{{ row.expiryDate | date: 'yyyy-MM-dd' }}</td>
+            <td>
+              <input type="number" nz-input [(ngModel)]="row.quantity"
+                (ngModelChange)="onFieldChange(row, 'quantity', $event)" />
+            </td>
+            }
 
             @if(params !== 'Stock Transfer' && params !== 'Stock Verification'){
-            <td><input type="text" nz-input [(ngModel)]="row.batchNo"
-                (ngModelChange)="onFieldChange(row, 'batchNo', $event)" /></td>
-            <td><nz-date-picker nzSize="small" [(ngModel)]="row.expiryDate"
-                (ngModelChange)="onFieldChange(row, 'expiryDate', $event)" class="w-100"
-                format="yyyy-MM-dd"></nz-date-picker></td>
-                <td><nz-date-picker nzSize="small" [(ngModel)]="row.mfdate"
-                (ngModelChange)="onFieldChange(row, 'mfdate', $event)" class="w-100"
-                format="yyyy-MM-dd"></nz-date-picker></td>
-            <td><input type="number" nz-input [(ngModel)]="row.quantity"
-                (ngModelChange)="onFieldChange(row, 'quantity', $event)" /></td>
-            <td><input type="number" nz-input [(ngModel)]="row.cost"
-                (ngModelChange)="onFieldChange(row, 'cost', $event)" /></td>
-            <td><input type="text" nz-input [(ngModel)]="row.discount"
-                (ngModelChange)="onFieldChange(row, 'discount', $event)" /></td>
-            <td><input type="number" nz-input [(ngModel)]="row.mrp"
-                (ngModelChange)="onFieldChange(row, 'mrp', $event)" /></td>
+            <td>
+              <input type="text" nz-input [(ngModel)]="row.batchNo"
+                (ngModelChange)="onFieldChange(row, 'batchNo', $event)" />
+            </td>
+            <td>
+              <nz-date-picker nzSize="small" [(ngModel)]="row.expiryDate"
+                (ngModelChange)="onFieldChange(row, 'expiryDate', $event)" class="w-200" format="yyyy-MM-dd">
+              </nz-date-picker>
+            </td>
+            <td>
+              <nz-date-picker nzSize="small" [(ngModel)]="row.mfdate"
+                (ngModelChange)="onFieldChange(row, 'mfdate', $event)" class="w-200" format="yyyy-MM-dd">
+              </nz-date-picker>
+            </td>
+            <td>
+              <input type="number" nz-input [(ngModel)]="row.quantity"
+                (ngModelChange)="onFieldChange(row, 'quantity', $event)" />
+            </td>
+            <td>
+              <input type="number" nz-input [(ngModel)]="row.cost"
+                (ngModelChange)="onFieldChange(row, 'cost', $event)" />
+            </td>
+            <td>
+              <input type="text" nz-input [(ngModel)]="row.discount"
+                (ngModelChange)="onFieldChange(row, 'discount', $event)" />
+            </td>
+            <td>
+              <input type="number" nz-input [(ngModel)]="row.mrp" (ngModelChange)="onFieldChange(row, 'mrp', $event)" />
+            </td>
             <td>{{ row.amount }}</td>
             }
+
             <td>{{ row.Packsize }}</td>
             <td>{{ row.Manufacture }}</td>
             <td>{{ row.country }}</td>
@@ -228,6 +254,8 @@
           </tr>
         </tbody>
       </nz-table>
+
+
 
       <div class="process mt-5">
         <button class="primary w-100 shadowform" nz-popconfirm

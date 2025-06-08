@@ -37,6 +37,11 @@ export class BalanceSheetComponent {
   currentPage = 1;
   pageSize = 1000;
 
+  totalassets: any = { sumDebitTotal: 0, sumCreditTotal: 0 };
+  totalEquity: any = { sumDebitTotal: 0, sumCreditTotal: 0 };
+  totalLiabilities: any = { sumDebitTotal: 0, sumCreditTotal: 0 };
+  netProfit: any = 0;
+
   onPageChange(page: number): void {
     this.currentPage = page;
   }
@@ -47,13 +52,13 @@ export class BalanceSheetComponent {
   }
 
   getRole() {
-    this.role = localStorage.getItem('role')
+    this.role = localStorage.getItem('role');
   }
 
   setupSearch() {
     this.searchControl.valueChanges.subscribe((searchTerm) => {
       this.filteredData = this.dataSource.filter((product: any) =>
-        product.productName.toLowerCase().includes(searchTerm.toLowerCase())
+        product.productName?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     });
   }
@@ -63,20 +68,20 @@ export class BalanceSheetComponent {
       this.dataSource = res.data;
       this.filteredData = res.data;
       this.isSpinning = false;
-      console.log(this.dataSource)
-      this.calculateTotals()
+      console.log(this.dataSource);
+      this.calculateTotals();
     }, (error) => {
       console.error(error);
       this.isSpinning = false;
     });
   }
 
-  totalassets: any
-  totalEquity: any
-  totalLiabilities: any
-  netProfit: any
   calculateTotals() {
-    this.totalassets = this.filteredData[0].assets.reduce(
+    const assetsData = this.filteredData.find(item => item.assets);
+    const equityData = this.filteredData.find(item => item.equity);
+    const liabilitiesData = this.filteredData.find(item => item.liabilities);
+
+    this.totalassets = assetsData?.assets.reduce(
       (acc: any, group: any) => {
         acc.sumDebitTotal += group.sumDebitTotal || 0;
         acc.sumCreditTotal += group.sumCreditTotal || 0;
@@ -85,7 +90,7 @@ export class BalanceSheetComponent {
       { sumDebitTotal: 0, sumCreditTotal: 0 }
     );
 
-    this.totalEquity = this.filteredData[1].equity.reduce(
+    this.totalEquity = equityData?.equity.reduce(
       (acc: any, group: any) => {
         acc.sumDebitTotal += group.sumDebitTotal || 0;
         acc.sumCreditTotal += group.sumCreditTotal || 0;
@@ -94,7 +99,7 @@ export class BalanceSheetComponent {
       { sumDebitTotal: 0, sumCreditTotal: 0 }
     );
 
-    this.totalLiabilities = this.filteredData[2].liabilities.reduce(
+    this.totalLiabilities = liabilitiesData?.liabilities.reduce(
       (acc: any, group: any) => {
         acc.sumDebitTotal += group.sumDebitTotal || 0;
         acc.sumCreditTotal += group.sumCreditTotal || 0;
@@ -103,6 +108,8 @@ export class BalanceSheetComponent {
       { sumDebitTotal: 0, sumCreditTotal: 0 }
     );
 
+    // Net Profit (if available)
+    this.netProfit = this.filteredData.find(item => item.netProfit !== undefined)?.netProfit || 0;
   }
 
   applyDateFilter() {
@@ -127,16 +134,15 @@ export class BalanceSheetComponent {
     const csvRows = [];
     csvRows.push(['Date', '', 'Account Name', 'Amount'].join(',')); // Header
 
-    // Add date range to the first row
     csvRows.push([
       this.datePipe.transform(this.date, 'yyyy/MM/dd') || '',
       '',
       ''
     ].join(','));
 
-    this.filteredData.forEach((data: any, index: number) => {
+    this.filteredData.forEach((data: any) => {
       if (data.assets && Array.isArray(data.assets)) {
-        csvRows.push(['Assets', '', '', ''].join(',')); // Section header
+        csvRows.push(['Assets', '', '', ''].join(','));
 
         data.assets.forEach((asset: any) => {
           csvRows.push(['', asset.accountGroupName || '', '', ''].join(','));
@@ -161,11 +167,12 @@ export class BalanceSheetComponent {
             ((asset.sumDebitTotal || 0) - (asset.sumCreditTotal || 0)).toFixed(2)
           ].join(','));
         });
+
         csvRows.push(['Total Assets:', '', '', (this.totalassets.sumDebitTotal - this.totalassets.sumCreditTotal).toFixed(2)].join(','));
       }
 
       if (data.equity && Array.isArray(data.equity)) {
-        csvRows.push(['Equity', '', '', ''].join(',')); // Section header
+        csvRows.push(['Equity', '', '', ''].join(','));
 
         data.equity.forEach((equ: any) => {
           csvRows.push(['', equ.accountGroupName || '', '', ''].join(','));
@@ -188,11 +195,12 @@ export class BalanceSheetComponent {
             ((equ.sumCreditTotal || 0) - (equ.sumDebitTotal || 0)).toFixed(2)
           ].join(','));
         });
+
         csvRows.push(['Total Equity:', '', '', (this.totalEquity.sumCreditTotal - this.totalEquity.sumDebitTotal).toFixed(2)].join(','));
       }
 
       if (data.liabilities && Array.isArray(data.liabilities)) {
-        csvRows.push(['Liabilities', '', '', ''].join(',')); // Section header
+        csvRows.push(['Liabilities', '', '', ''].join(','));
 
         data.liabilities.forEach((lia: any) => {
           csvRows.push(['', lia.accountGroupName || '', '', ''].join(','));
@@ -217,13 +225,27 @@ export class BalanceSheetComponent {
             ((lia.sumCreditTotal || 0) - (lia.sumDebitTotal || 0)).toFixed(2)
           ].join(','));
         });
+
         csvRows.push(['Total Liabilities:', '', '', (this.totalLiabilities.sumCreditTotal - this.totalLiabilities.sumDebitTotal).toFixed(2)].join(','));
       }
-
     });
 
+    // Net Profit
+    csvRows.push(['Net Profit:', '', '', this.netProfit.toFixed(2)].join(','));
 
-    // Convert to CSV string and create a downloadable file
+    // Total Balance Row
+    csvRows.push([
+      'Total Liabilities + Equity + Net Profit:',
+      '',
+      '',
+      (
+        (this.totalLiabilities.sumCreditTotal - this.totalLiabilities.sumDebitTotal)
+        + (this.totalEquity.sumCreditTotal - this.totalEquity.sumDebitTotal)
+        + this.netProfit
+      ).toFixed(2)
+    ].join(','));
+
+    // Convert to CSV string and download
     const csvString = csvRows.join('\n');
     const blob = new Blob([csvString], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
@@ -236,5 +258,4 @@ export class BalanceSheetComponent {
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
   }
-
 }

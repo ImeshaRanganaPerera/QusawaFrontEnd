@@ -56,6 +56,7 @@ import { CommissionReportComponent } from '../../components/reports/commission-r
 import { BankRecReportComponent } from '../../components/reports/bank-rec-report/bank-rec-report.component';
 import { ProfitAndLostComponent } from '../../components/reports/profit-and-lost/profit-and-lost.component';
 import { BalanceSheetComponent } from '../../components/reports/balance-sheet/balance-sheet.component';
+import { DaybookComponent } from '../../components/accounts/daybook/daybook.component';
 
 const routes: Routes = [
   {
@@ -130,7 +131,9 @@ const routes: Routes = [
       { path: 'bankRec-Report', component: BankRecReportComponent },
       { path: 'profit-lost', component: ProfitAndLostComponent },
       { path: 'balance-sheet', component: BalanceSheetComponent },
+       { path: 'DayBook', component: DaybookComponent },
       { path: '', redirectTo: 'dash', pathMatch: 'full' },
+
     ]
   },
 ];

@@ -1,36 +1,62 @@
 <button class="download-btn" (click)="downloadInvoice()">Generate PDF</button>
-<div class="invoice-box border p-4" id="invoice">
-  <!-- Header -->
-  <div class="row align-items-center mb-3">
-    <div class="col-3">
+
+<div class="invoice-box border p-8" id="invoice">
+
+  <!-- HEADER SECTION -->
+  <div class="row align-items-center mb-3 border-bottom pb-2" style="border-bottom: 3px solid #000;">
+    <!-- Logo -->
+    <div class="col-2 d-flex align-items-center">
       <img src="img/logo.png" alt="Logo" class="img-fluid" style="max-height: 90px;" />
     </div>
-    <div class="col-9 text-end">
-      <h4 class="fw-bold text-uppercase">MODERN INNOVATION (PVT) LTD</h4>
-      <p class="mb-0">+94 112 724 292 | | www.qaswa.lk</p>
+
+    <!-- Company details -->
+    <div class="col-7">
+      <h4 class="fw-bold text-uppercase mb-1" style="color: black;">
+        MODERN <span style="color: #ff6a6a;">INNOVATION</span> (PVT) LTD
+      </h4>
+      <p class="mb-0">+94 112 724 292 | {{email}}| www.qaswa.lk</p>
       <p class="mb-0">122/1, Kawdana Road, Dehiwala, Sri Lanka</p>
     </div>
+
+    <!-- COMMERCIAL INVOICE box -->
+    <div class="col-3 d-flex align-items-center justify-content-end fw-bold text-uppercase fs-5"
+      style="white-space: nowrap; padding-right: 10px;">
+       @if(type === 'Invoice' || type==='INVOICE' || type === 'Sales Order' || type === 'SALES-ORDER' || type ===
+        'Sales Return' || type === 'SALES-RETURN'){
+           Commercial Invoice
+        }
+        @else{
+           Transaction Note - {{type}}
+        }
+  
+    </div>
+
   </div>
-  @if(type === 'Invoice' || type==='INVOICE' || type === 'Sales Order' || type === 'SALES-ORDER' || type === 'Sales Return' || type === 'SALES-RETURN'){
-  <div class="text-center fw-bold fs-5 text-uppercase border border-dark py-2 mb-3">
-    Commercial Invoice
-  </div>
-  }@else{
+
+  <!-- Conditional Header (Transaction type)
+
   <div class="text-center fw-bold fs-5 text-uppercase border border-dark py-2 mb-3">
     Transaction Note - {{type}}
-  </div>
-  <div class="text-left  fs-8 text-lowercase border border-dark py-2 mb-3">
-    <p class="mb-0"><strong>User:</strong> {{ voucherData?.user.name }}</p>
-    <p class="mb-0"><strong>Supplier #:</strong> {{ voucherData?.party.name }}</p>
-    <p class="mb-0"><strong>Date:</strong> {{ voucherData?.date | date }}</p>
-    <p class="mb-0"><strong>TRN #:</strong> {{ voucherData?.voucherNumber }}</p>
+  </div> -->
+   @if(type !== 'Invoice' && type !== 'INVOICE' && type !== 'Sales Order' && type !== 'SALES-ORDER' && type !== 'Sales' && type !== 'SALES-RETURN'){
+  <div class="d-flex justify-content-between border border-dark py-2 mb-3 fs-8 text-lowercase">
+    <!-- Left side (3 lines) -->
+    <div class="text-left">
+      <p class="mb-0"><strong>User:</strong> {{ voucherData?.user.name }}</p>
+      <p class="mb-0"><strong>Supplier #:</strong> {{ voucherData?.party.name }}</p>
+      <p class="mb-0"><strong>Date:</strong> {{ voucherData?.date | date }}</p>
+    </div>
+
+    <!-- Right side (2 lines) -->
+    <div class="text-right">
+      <p class="mb-0"><strong>TRN #:</strong> {{ voucherData?.voucherNumber }}</p>
+      <p class="mb-0"><strong>Ref No. #:</strong> {{ voucherData?.refNumber }}</p>
+    </div>
   </div>
   }
 
-
-
-  @if(type === 'Invoice' || type==='INVOICE' || type === 'Sales Order' || type === 'SALES-ORDER' || type === 'Sales Return' || type === 'SALES-RETURN'){
   <!-- Seller / Buyer / Consignee / Invoice Info -->
+  @if(type === 'Invoice' || type==='INVOICE' || type === 'Sales Order' || type === 'SALES-ORDER' || type === 'Sales' || type === 'SALES-RETURN'){
   <div class="row border border-dark mb-3">
     <div class="col-3 p-2 border-end">
       <strong class="text-uppercase d-block border-bottom mb-2">Seller</strong>
@@ -40,17 +66,14 @@
       <p class="mb-0">SRI LANKA</p>
       <p class="mb-0">Attn: Rikaz Rasheed</p>
       <p class="mb-0">+94777747980</p>
-      <!-- <p class="mb-0">rikarsrash@gmail.com | rikaz@qaswa.lk</p> -->
     </div>
     <div class="col-3 p-2 border-end">
       <strong class="text-uppercase d-block border-bottom mb-2">Buyer</strong>
       <!-- Add buyer details here -->
-
     </div>
     <div class="col-3 p-2 border-end">
       <strong class="text-uppercase d-block border-bottom mb-2">Consignee Details</strong>
       <!-- Add consignee details here -->
-
     </div>
     <div class="col-3 p-2">
       <strong class="text-uppercase d-block border-bottom mb-2">Invoice Details</strong>
@@ -61,29 +84,28 @@
       <p class="mb-0"><strong>Shipment:</strong> [Shipment Info]</p>
     </div>
   </div>
-
   }
 
   <!-- Product Table -->
   <table class="table table-bordered table-sm text-center align-middle">
     <thead class="table-secondary">
       <tr>
-        <th>NO</th>
-        <th>PRODUCT NAME</th>
-        <th>Packs Size</th>
-        <th>Manifaure</th>
+        <th>No</th>
+        <th>Product Name</th>
+        <th>Pack Size</th>
+        <th>Manufacture</th>
         <th>Country</th>
         <th>Batch</th>
         <th>MFG</th>
         <th>Expire</th>
         <th>Units</th>
-        @if(type === 'Invoice' || type==='INVOICE' || type === 'Sales Order' || type === 'SALES-ORDER' || type === 'Sales Return' || type === 'SALES-RETURN'){
-        <th>Rats</th>
+        @if(type === 'Invoice' || type==='INVOICE' || type === 'Sales Order' || type === 'SALES-ORDER' || type ===
+        'Sales Return' || type === 'SALES-RETURN'){
+        <th>Rate</th>
         }@else{
         <th>Cost</th>
         }
-
-        <th>Amounts</th>
+        <th>Amount</th>
       </tr>
     </thead>
     <tbody>
@@ -97,32 +119,27 @@
         <td>{{ item.mfdate | date: 'yyyy-MM-dd' }}</td>
         <td style="width: 80px; text-align: center;">{{ item.expDate | date: 'yyyy-MM-dd' }}</td>
         <td>{{ item.quantity }}</td>
-        @if(type === 'Invoice' || type==='INVOICE' || type === 'Sales Order' || type === 'SALES-ORDER' || type === 'Sales Return' || type === 'SALES-RETURN'){
+        @if(type === 'Invoice' || type==='INVOICE' || type === 'Sales Order' || type === 'SALES-ORDER' || type ===
+        'Sales Return' || type === 'SALES-RETURN'){
         <td>{{ item.MRP}}</td>
-        }@else {
-        <td>{{ item.cost || item.cost }}</td>
+        }@else{
+        <td>{{ item.cost  }}</td>
         }
-
-        <td>${{ getAmount(item) }}</td>
+        <td>{{ getAmount(item) }}</td>
       </tr>
-
-      <!-- Optional: pad up to 20 rows for visual match -->
-      <!-- <tr *ngFor="let n of [].constructor(20 - voucherData?.voucherProduct?.length)">
-        <td>{{ voucherData?.voucherProduct?.length + $index + 1 }}</td>
-        <td colspan="10">&nbsp;</td>
-      </tr> -->
-      <!-- Total Row -->
       <tr>
         <td colspan="10" class="text-end fw-bold">Total</td>
         <td class="fw-bold">{{ getSubtotal() | currency: mode === 'payable' ? 'LKR ' : 'USD ' }}</td>
       </tr>
     </tbody>
   </table>
- @if(type === 'Invoice' || type==='INVOICE' || type === 'Sales Order' || type === 'SALES-ORDER' || type === 'Sales Return' || type === 'SALES-RETURN'){
-  <div class="mt-4">
-    <!-- <p class="fw-bold">Amount in Words (USD):</p>
-    <p><strong>Amount in Words (USD):</strong> {{ amountInWords }}</p> -->
 
+  <p class="fw-bold mb-1">Amount in Words:</p>
+  <p class="mb-0">{{ amountToWords(getSubtotal()) }}</p>
+
+  <!-- Bank Details -->
+  @if(type === 'Invoice' || type==='INVOICE' || type === 'Sales Order' || type === 'SALES-ORDER' || type === 'Sales' || type === 'SALES-RETURN'){
+  <div class="mt-4">
     <p class="mt-3 mb-1"><strong>Bank Details</strong></p>
     <p class="mb-0">NATIONS TRUST BANK PLC | No: 163, GALLE ROAD | DEHIWALA | SRI LANKA</p>
     <p class="mb-0">Beneficiary: MODERN INNOVATION (PVT) LTD</p>
@@ -132,9 +149,7 @@
     <p class="mt-3"><strong>Special Instructions:</strong> Any discrepancy arising from spelling mistakes or punctuation
       marks should not be considered a discrepancy and is valid for negotiation.</p>
   </div>
- }
-  <!-- Optional Footer for Totals / Bank / Notes -->
-
+  }
 
   <!-- Signature Area -->
   <div class="row mt-5 text-center">
@@ -143,4 +158,5 @@
       <p class="fw-bold">For MODERN INNOVATION (PVT) LTD</p>
     </div>
   </div>
+
 </div>

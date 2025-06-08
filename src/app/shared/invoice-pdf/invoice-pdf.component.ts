@@ -23,6 +23,7 @@ export class InvoicePdfComponent {
   userPhoneNumber: any
   type = this.nzModalData.type;
   mode: any
+  
 $index: any;
 amountInWords:any;
   ngOnInit(): void {

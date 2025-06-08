@@ -61,6 +61,10 @@ export class ManageVouchersComponent {
   currencyservice = inject(CurrencyService)
   route = inject(ActivatedRoute)
 
+  closdays: number = 0;
+  selectedBatchNo: string = '';
+  expdate!: Date;
+  closinexp!: Date;
   disabledDate = (current: Date): boolean =>
     // Can not select days before today and today
     differenceInCalendarDays(current, this.today) > 0;
@@ -378,7 +382,9 @@ export class ManageVouchersComponent {
     if (this.params === 'Stock Transfer' || this.params === 'Purchase Return' || this.params === 'Stock Verification') {
       const selectedProduct = this.productData.find(
         product =>
-          product.batchNo === this.inputValue
+          product.printName === this.inputValue &&
+          product.batchNo === this.selectedBatchNo
+
       )
       console.log(selectedProduct.quantity)
 
@@ -401,8 +407,8 @@ export class ManageVouchersComponent {
           Packsize: selectedProduct.Packsize,
           Manufacture: selectedProduct.Manufacture,
           country: selectedProduct.country,
-          usdRate:"0",
-          mfdate:selectedProduct.mfdate,
+          usdRate: "0",
+          mfdate: selectedProduct.mfdate,
         };
         this.dataSource = [...this.dataSource, newRow];
         this.inputValue = ''; // Clear the input after adding
@@ -437,8 +443,8 @@ export class ManageVouchersComponent {
           Packsize: selectedProduct.Packsize,
           Manufacture: selectedProduct.Manufacture,
           country: selectedProduct.country,
-          usdRate:"0",
-          mfdate:selectedProduct.mfdate,
+          usdRate: "0",
+          mfdate: selectedProduct.mfdate,
         };
         this.dataSource = [...this.dataSource, newRow];
         this.inputValue = ''; // Clear the input after adding
@@ -528,44 +534,65 @@ export class ManageVouchersComponent {
     this.playSoundEffect();
     this.message.create('error', msg, { nzDuration: 4000 });
   }
+  selectProduct(product: any): void {
+    this.inputValue = product.printName;
+    this.selectedBatchNo = product.batchNo;
+    this.expdate = product.expDate;
+    this.closinexp = product.closingExpDate;
+    this.closdays = product.ExpnotifDays;
+    // Calculate the difference in days
 
- async submitForm() {
-  if (this.params !== 'Stock Verification' && this.params !== 'Purchase Return' && this.params !== 'Stock Transfer') {
-    for (const row of this.dataSource) {
-      const product = this.productData.find(p => p.id === row.productId && p.batchNo === row.batchNo);
-      const cleanDate = this.getDateOnlyFromString(row.expiryDate);
-      const isValid = this.checkIfDateHasEnoughDaysLeft(cleanDate, row.ExpnotifDays);
+    // Optionally, you can also store the whole object:
+    // this.selectedProduct = product;
+  }
 
-      if (!isValid) {
-        const dialogRef = this.dialog.open(DialogboxComponent, {
-          data: {
-            message: 'The expiry date has been reached. Send approvals or cancel?'
+  async submitForm() {
+    if (this.params !== 'Stock Verification' && this.params !== 'Purchase Return' && this.params !== 'Stock Transfer') {
+      for (const row of this.dataSource) {
+        const product = this.productData.find(p => p.id === row.productId && p.batchNo === row.batchNo);
+        const cleanDate = this.getDateOnlyFromString(row.expiryDate);
+        const isValid = this.checkIfDateHasEnoughDaysLeft(cleanDate, row.ExpnotifDays);
+        const today = new Date();
+        const expiryDate = new Date(row.expDate); // this is the user-entered expiry date
+        const notifyDays = row.ExpnotifDays;         // e.g. 30
+
+        // Create a date "notifyDays" ahead of today
+        const minValidDate = new Date(today);
+        minValidDate.setDate(minValidDate.getDate() + notifyDays);
+
+        // Compare expiryDate and minValidDate
+        const timeDiff = expiryDate.getTime() - today.getTime();
+        const actualDays = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+        if (!isValid) {
+          const dialogRef = this.dialog.open(DialogboxComponent, {
+            data: {
+              message: `Expiry date must be at least ${notifyDays} days ahead. Only ${actualDays} days remaining. Send for approval or cancel?`
+            }
+          });
+
+          const result = await lastValueFrom(dialogRef.afterClosed());
+
+          if (result) {
+            //User approved — run proceedWithSubmit() and EXIT completely
+            this.proceedWithSubmit();
+            return;
+          } else {
+            //  User cancelled — just exit
+            console.log('User cancelled.');
+            return;
           }
-        });
-
-        const result = await lastValueFrom(dialogRef.afterClosed());
-
-        if (result) {
-          //User approved — run proceedWithSubmit() and EXIT completely
-          this.proceedWithSubmit();
-          return;
-        } else {
-          //  User cancelled — just exit
-          console.log('User cancelled.');
-          return;
         }
       }
-    }
 
-    // If all rows passed the expiry check
-    this.isconform = true;
-    this.submit();
-  } else {
-    //  If the form type doesn't require expiry checking
-    this.isconform = true;
-    this.submit();
+      // If all rows passed the expiry check
+      this.isconform = true;
+      this.submit();
+    } else {
+      //  If the form type doesn't require expiry checking
+      this.isconform = true;
+      this.submit();
+    }
   }
-}
   async proceedWithSubmit() {
     try {
       this.isconform = false

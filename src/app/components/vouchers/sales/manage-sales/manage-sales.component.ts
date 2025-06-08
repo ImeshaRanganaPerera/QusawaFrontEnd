@@ -20,7 +20,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { CurrencyService } from '../../../../services/currency/currency.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogboxComponent } from '../../../../dialogbox/dialogbox.component';
- import { lastValueFrom } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-manage-sales',
@@ -60,6 +60,7 @@ export class ManageSalesComponent implements OnInit {
   inputValue?: string;
   selectedBatchNo: string = '';
   expdate!: Date;
+  mfg!: Date;
   closinexp!: Date;
   closdays: number = 0;
   fixedtotalAmount: number = 0;
@@ -119,7 +120,7 @@ export class ManageSalesComponent implements OnInit {
     date: new FormControl('', [(Validators.required)]),
     amount: new FormControl(''),
     location: new FormControl(''),
-   discountLevelId: new FormControl(''),
+    discountLevelId: new FormControl(''),
   })
 
   ngOnInit(): void {
@@ -230,6 +231,7 @@ export class ManageSalesComponent implements OnInit {
     this.expdate = product.expDate;
     this.closinexp = product.closingExpDate;
     this.closdays = product.ExpnotifDays;
+    this.mfg = product.mfdate;
     // Calculate the difference in days
 
     // Optionally, you can also store the whole object:
@@ -339,7 +341,7 @@ export class ManageSalesComponent implements OnInit {
             ...product,
             printName: product.product?.printName,
             expiryDate: product.expDate,
-            mfdate:product.mfdate
+            mfdate: product.mfdate
           }))
         // this.saleForm.get('discountLevelId')?.reset
         this.authUser = result.data.authUser;
@@ -373,7 +375,7 @@ export class ManageSalesComponent implements OnInit {
         ...product.product,
         ...product,
         expdate: product.expDate,
-        mfdate:product.mfdate
+        mfdate: product.mfdate
       }));
       this.filteredProducts = [...this.productData];
       console.log(this.filteredProducts)
@@ -400,7 +402,8 @@ export class ManageSalesComponent implements OnInit {
 
     // Find the selected product based on the input value
     const selectedProduct = this.productData.find(
-      product => product.printName === this.inputValue
+      product => product.printName === this.inputValue &&
+        product.batchNo === this.selectedBatchNo
     );
 
     if (selectedProduct) {
@@ -450,12 +453,13 @@ export class ManageSalesComponent implements OnInit {
         amount: amount > 0 ? amount : 0, // Ensure amount is not negative
         batchNo: this.selectedBatchNo,
         expiryDate: this.expdate,
+        mfdate:this.mfg,
         ExpnotifDays: selectedProduct.ExpnotifDays,
         Packsize: selectedProduct.Packsize,
         Manufacture: selectedProduct.Manufacture,
         country: selectedProduct.country,
-        usdRate:this.lkrAmount,
-        mfdate:selectedProduct.mfdate,
+        usdRate: this.lkrAmount,
+        
       };
 
       // Update the data source with the new row
@@ -554,92 +558,102 @@ export class ManageSalesComponent implements OnInit {
 
 
 
-async submitForm() {
-  for (const row of this.dataSource) {
-    const product = this.productData.find(p => p.id === row.productId && p.batchNo === row.batchNo);
-    const cleanDate = this.getDateOnlyFromString(product.expDate);
-    const isValid = this.checkIfDateHasEnoughDaysLeft(cleanDate, product.ExpnotifDays);
-
-    if (!isValid) {
-      const dialogRef = this.dialog.open(DialogboxComponent, {
-        data: {
-          message: 'The expiry date has been reached. Send approvals or cancel?'
-        }
-      });
-
-      const result = await lastValueFrom(dialogRef.afterClosed());
-
-      if (result) {
-        this.proceedWithSubmit();
-      } else {
-        console.log('User cancelled.');
-      }
-      return; // Exit either way
-    }
-  }
-
-  // If we reach here, all expiry dates were valid
-
-  if (this.voucherType === 'INVOICE') {
-    if (this.saleForm.invalid) {
-      Object.values(this.saleForm.controls).forEach(control => {
-        if (control.invalid) {
-          control.markAsDirty();
-          control.updateValueAndValidity({ onlySelf: true });
-        }
-      });
-      return;
-    }
-
+  async submitForm() {
     for (const row of this.dataSource) {
       const product = this.productData.find(p => p.id === row.productId && p.batchNo === row.batchNo);
+      const cleanDate = this.getDateOnlyFromString(product.expDate);
+      const isValid = this.checkIfDateHasEnoughDaysLeft(cleanDate, product.ExpnotifDays);
+      const today = new Date();
+      const expiryDate = new Date(product.expDate); // this is the user-entered expiry date
+      const notifyDays = product.ExpnotifDays;         // e.g. 30
 
-      if (this.voucherType !== 'SALES-ORDER') {
-        if (product && Number(row.quantity) > Number(product.quantity)) {
-          this.notification.create('error', 'Quantity Error', `The quantity for ${row.printName} exceeds available stock. Maximum available: ${product.quantity}.`);
+      // Create a date "notifyDays" ahead of today
+      const minValidDate = new Date(today);
+      minValidDate.setDate(minValidDate.getDate() + notifyDays);
+
+      // Compare expiryDate and minValidDate
+      const timeDiff = expiryDate.getTime() - today.getTime();
+      const actualDays = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+      if (!isValid) {
+        const dialogRef = this.dialog.open(DialogboxComponent, {
+          data: {
+            message: `Expiry date must be at least ${notifyDays} days ahead. Only ${actualDays} days remaining. Send for approval or cancel?`
+          }
+        });
+
+        const result = await lastValueFrom(dialogRef.afterClosed());
+
+        if (result) {
+          this.proceedWithSubmit();
+        } else {
+          console.log('User cancelled.');
+        }
+        return; // Exit either way
+      }
+    }
+
+    // If we reach here, all expiry dates were valid
+
+    if (this.voucherType === 'INVOICE') {
+      if (this.saleForm.invalid) {
+        Object.values(this.saleForm.controls).forEach(control => {
+          if (control.invalid) {
+            control.markAsDirty();
+            control.updateValueAndValidity({ onlySelf: true });
+          }
+        });
+        return;
+      }
+
+      for (const row of this.dataSource) {
+        const product = this.productData.find(p => p.id === row.productId && p.batchNo === row.batchNo);
+
+        if (this.voucherType !== 'SALES-ORDER') {
+          if (product && Number(row.quantity) > Number(product.quantity)) {
+            this.notification.create('error', 'Quantity Error', `The quantity for ${row.printName} exceeds available stock. Maximum available: ${product.quantity}.`);
+            return;
+          }
+        }
+
+        if (product && Number(row.quantity) === 0) {
+          this.notification.create('error', 'Quantity Error', `The quantity for ${row.printName} has to be above 0`);
+          return;
+        }
+
+        if (product && Number(row.MRP) < Number(product.minPrice)) {
+          this.notification.create('error', 'Min Price Error', `The Min Price for ${row.printName} has to be above ${product.minPrice}`);
           return;
         }
       }
 
-      if (product && Number(row.quantity) === 0) {
-        this.notification.create('error', 'Quantity Error', `The quantity for ${row.printName} has to be above 0`);
+      if (this.totalAmount <= 0) {
+        this.notification.create('error', 'Error', 'Paid amount should not be 0');
         return;
       }
 
-      if (product && Number(row.MRP) < Number(product.minPrice)) {
-        this.notification.create('error', 'Min Price Error', `The Min Price for ${row.printName} has to be above ${product.minPrice}`);
+      // Submit for INVOICE
+      this.paymentMode('ALL', this.totalAmount, 'DEBIT');
+
+    } else {
+      // All other voucher types (e.g., SALES-RETURN)
+      if (this.saleForm.invalid) {
+        Object.values(this.saleForm.controls).forEach(control => {
+          if (control.invalid) {
+            control.markAsDirty();
+            control.updateValueAndValidity({ onlySelf: true });
+          }
+        });
         return;
       }
+
+      if (this.totalAmount <= 0) {
+        this.notification.create('error', 'Error', 'Paid amount should not be 0');
+        return;
+      }
+
+      this.paymentMode('ALL', this.totalAmount, 'CREDIT');
     }
-
-    if (this.totalAmount <= 0) {
-      this.notification.create('error', 'Error', 'Paid amount should not be 0');
-      return;
-    }
-
-    // Submit for INVOICE
-    this.paymentMode('ALL', this.totalAmount, 'DEBIT');
-
-  } else {
-    // All other voucher types (e.g., SALES-RETURN)
-    if (this.saleForm.invalid) {
-      Object.values(this.saleForm.controls).forEach(control => {
-        if (control.invalid) {
-          control.markAsDirty();
-          control.updateValueAndValidity({ onlySelf: true });
-        }
-      });
-      return;
-    }
-
-    if (this.totalAmount <= 0) {
-      this.notification.create('error', 'Error', 'Paid amount should not be 0');
-      return;
-    }
-
-    this.paymentMode('ALL', this.totalAmount, 'CREDIT');
   }
-}
 
 
   async proceedWithSubmit() {

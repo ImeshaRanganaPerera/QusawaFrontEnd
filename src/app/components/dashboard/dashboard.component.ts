@@ -45,7 +45,7 @@ export class DashboardComponent implements OnInit {
         routerLink: './approved-transactions',
         icon: 'loading',
         label: 'Approved Transactions',
-        roles: ['SALESMEN'],
+        roles: ['SUPERVISOR'],
       },
     ]
   },
@@ -151,21 +151,21 @@ export class DashboardComponent implements OnInit {
         routerLink: '/sales',
         icon: 'shopping',
         label: 'Invoice',
-        roles: ['ADMIN','MANAGER'],
+        roles: ['ADMIN', 'MANAGER', 'SALESMEN'],
         queryParams: { type: 'Sales' }
       },
       {
         routerLink: '/salesOrder',
         icon: 'form',
         label: 'Sales Order',
-        roles: ['ADMIN', 'SALESMEN', 'MANAGER'],
+        roles: ['ADMIN', 'SALESMEN', 'MANAGER', 'SALESMEN'],
         queryParams: { type: 'Sales Order' }
       },
       {
         routerLink: '/salesReturn',
         icon: 'fall',
         label: 'Sales Return',
-        roles: ['ADMIN', 'SALESMEN', 'MANAGER'],
+        roles: ['ADMIN', 'SALESMEN', 'MANAGER', 'SALESMEN'],
         queryParams: { type: 'Sales Return' }
       },
       {
@@ -196,13 +196,13 @@ export class DashboardComponent implements OnInit {
         roles: ['ADMIN', 'SALESMEN', 'MANAGER'],
         queryParams: { type: 'Stock Transfer' }
       },
-      {
-        routerLink: './stock-verification',
-        icon: 'sync',
-        label: 'Stock Verification',
-        roles: ['ADMIN', 'MANAGER'],
-        queryParams: { type: 'Stock Verification' }
-      },
+      // {
+      //   routerLink: './stock-verification',
+      //   icon: 'sync',
+      //   label: 'Stock Verification',
+      //   roles: ['ADMIN', 'MANAGER'],
+      //   queryParams: { type: 'Stock Verification' }
+      // },
     ]
   },
   {
@@ -239,6 +239,12 @@ export class DashboardComponent implements OnInit {
         label: 'Supplier Enter Bill',
         roles: ['ADMIN', 'MANAGER'],
       },
+      // {
+      //   routerLink: './DayBook',
+      //   icon: 'red-envelope',
+      //   label: 'Day Book',
+      //   roles: ['ADMIN', 'MANAGER'],
+      // },
       {
         routerLink: './payment',
         icon: 'ungroup',
@@ -249,7 +255,7 @@ export class DashboardComponent implements OnInit {
       {
         routerLink: './advancePayment',
         icon: 'account-book',
-        label: 'Advance Payment',
+        label: 'Advance Payment To Supplier',
         roles: ['ADMIN', 'MANAGER'],
       },
       {
@@ -276,13 +282,13 @@ export class DashboardComponent implements OnInit {
       {
         routerLink: './create-utility',
         icon: 'reconciliation',
-        label: 'Create Utility Bill',
+        label: 'Record Expenses',
         roles: ['ADMIN', 'MANAGER'],
       },
       {
         routerLink: './pay-utility',
         icon: 'delivered-procedure',
-        label: 'Utility Bill Payment',
+        label: 'Expense Settlement',
         roles: ['ADMIN', 'MANAGER'],
         queryParams: { type: 'UtilityBillPayment' }
       },
@@ -295,13 +301,13 @@ export class DashboardComponent implements OnInit {
       {
         routerLink: './petty-cash',
         icon: 'book',
-        label: 'Petty Cash',
+        label: 'Petty Cash & IOU Manager',
         roles: ['ADMIN', 'MANAGER'],
       },
       {
         routerLink: './cheque',
         icon: 'idcard',
-        label: 'Cheque',
+        label: 'Cheque Book',
         roles: ['ADMIN', 'MANAGER'],
       },
       {
@@ -323,40 +329,40 @@ export class DashboardComponent implements OnInit {
           {
             routerLink: './customer-outstanding',
             icon: 'dollar-circle',
-            label: 'Customer Outstanding',
+            label: 'Customer Receivables',
             roles: ['ADMIN', 'SALESMEN', 'MANAGER'],
             queryParams: { type: 'Customer Outstanding' }
           },
           {
             routerLink: './supplier-outstanding',
             icon: 'signature',
-            label: 'Supplier Outstanding',
+            label: 'Supplier Payables',
             roles: ['ADMIN', 'MANAGER'],
             queryParams: { type: 'Supplier Outstanding' }
           },
           {
             routerLink: './customer-settlement',
             icon: 'issues-close',
-            label: 'Customer Settlement',
+            label: 'Customer Payment Settlement',
             roles: ['ADMIN', 'MANAGER'],
             queryParams: { type: 'Customer Settlement' }
           },
           {
             routerLink: './chequeinhand',
             icon: 'schedule',
-            label: 'Cheque In Hand',
+            label: 'Undeposited Cheques Ledger',
             roles: ['ADMIN', 'MANAGER'],
           },
           {
             routerLink: './trial-balance',
             icon: 'file-text',
-            label: 'Trail Balance',
+            label: 'Trial Balance Review',
             roles: ['ADMIN', 'MANAGER'],
           },
           {
             routerLink: './ledger-listing',
             icon: 'folder-open',
-            label: 'Ledger Listing',
+            label: 'Ledger Transactions',
             roles: ['ADMIN', 'MANAGER'],
           },
           // {

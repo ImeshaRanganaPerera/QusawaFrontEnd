@@ -56,7 +56,7 @@
                                 </div>
                                 <div class="col-md-4 text-start customer-details">
                                     <nz-form-control nzErrorTip="Customer is required!">
-                                        <label>Customer Details</label>
+                                        <label>Customer Information</label>
                                         <nz-select nzShowSearch formControlName="partyId"
                                             class="custom-select shadowform">
                                             <nz-option *ngFor="let party of partyData" [nzValue]="party.id"
@@ -99,9 +99,9 @@
                                                 <div class="cell name" title="{{ product.printName }}">{{
                                                     product.printName }}</div>
                                                 <div class="cell qty">QTY {{ product.quantity }}</div>
-                                                 <div class="cell date">{{ product.country}}</div>
-                                                  <div class="cell date">{{ product.Manufacture}}</div>
-                                                  <div class="cell date">{{ product.Packsize}}</div>
+                                                <div class="cell date">{{ product.country}}</div>
+                                                <div class="cell date">{{ product.Manufacture}}</div>
+                                                <div class="cell date">{{ product.Packsize}}</div>
                                             </div>
                                         </div>
 
@@ -125,10 +125,10 @@
                         </button>
                     </div>
                     @if(voucherType === 'INVOICE' || voucherType === 'SALES-ORDER'){
-                    <div class="col-md-1 col-sm-2 mb-4 row">
+                    <!-- <div class="col-md-1 col-sm-2 mb-4 row">
                         <label for="">Special Request</label>
                         <nz-switch (click)="clickSwitch()"></nz-switch>
-                    </div>
+                    </div> -->
                     }
                     <div class="col-md-2 col-sm-2 mb-4 row  ">
                         <h3 class="text-end fs-6">Total Amount</h3>
@@ -143,15 +143,15 @@
                             <th style="width: 1%;">No</th>
                             <th style="width: 20%;">Product Name</th>
                             <th style="width: 20%;">Batch No</th>
+                            <th style="width: 20%;">MFG. date</th>
                             <th style="width: 20%;">Exp.Date</th>
-                             <th style="width: 20%;">MFG. date</th>
                             <th style="width: 10%;">Qty</th>
                             <th style="width: 10%;">Unit Price(USD)</th>
                             <th style="width: 10%;">Discount</th>
                             <th style="width: 15%;">Total</th>
-                            <th style="min-width: 80px;">Pack size</th>
-                            <th style="min-width: 80px;">manufacture</th>
-                            <th style="min-width: 80px;">Contry</th>
+                            <th style="min-width: 80px;">Pack Size</th>
+                            <th style="min-width: 80px;">Manufacture</th>
+                            <th style="min-width: 80px;">Country</th>
                             <th style="width: 5%;"></th>
 
                         </tr>
@@ -161,9 +161,10 @@
                             <td>{{ i + 1 }}</td>
                             <td>{{ row.printName }}</td>
                             <td>{{ row.batchNo }}</td>
-                            <td>{{ row.expiryDate | date: 'yyyy-MM-dd'}}</td>
                             <td>{{ row.mfdate | date: 'yyyy-MM-dd'}}</td>
-                           
+                            <td>{{ row.expiryDate | date: 'yyyy-MM-dd'}}</td>
+
+
                             <td>
                                 <input type="number" nz-input [(ngModel)]="row.quantity"
                                     (ngModelChange)="onFieldChange(row, 'quantity', $event)"
@@ -177,7 +178,7 @@
                             </td>
                             <td>
                                 <input type="text" nz-input [(ngModel)]="row.discount"
-                                    (ngModelChange)="onFieldChange(row, 'discount', $event)" [disabled]="ischecked" />
+                                    (ngModelChange)="onFieldChange(row, 'discount', $event)" />
                             </td>
                             <td>{{ row.amount | currency:'Rs ' }}</td>
                             <td>{{ row.Packsize }}</td>

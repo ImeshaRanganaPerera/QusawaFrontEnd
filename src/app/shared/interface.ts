@@ -174,6 +174,7 @@ export interface ITableRow {
     country:any,
     usdRate:any,
     mfdate:any,
+    
 }
 
 export interface ItemData {

@@ -1,0 +1,22 @@
+.day-book {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+}
+
+form {
+  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.summary {
+  margin-top: 20px;
+  font-weight: bold;
+}

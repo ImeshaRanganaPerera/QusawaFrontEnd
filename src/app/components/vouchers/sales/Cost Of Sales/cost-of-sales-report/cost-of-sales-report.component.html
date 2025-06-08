@@ -34,7 +34,6 @@
           <th>Sell Item Qty</th>
           <th>Cost Amount</th>
           <th>MRP Amount</th>
-          <th>Selling Price</th>
           <th>Sales Profit</th>
           <!-- <th>Actions</th> -->
         </tr>
@@ -48,8 +47,7 @@
           <td>{{ data.totalqty }}</td>
           <td>{{ data.totalCost | currency:' ' }}</td>
           <td>{{ data.totalMRP | currency:' ' }}</td>
-          <td>{{ data.discountprice | currency:' '}}</td>
-          <td>{{ data.discountprice - data.totalCost | currency:' ' }}</td>
+          <td>{{ data.totalMRP - data.totalCost | currency:' ' }}</td>
           <!-- <td>
             <button nz-button nz-tooltip="Download" nzType="primary" nzShape="circle"
                             nzTooltipPlacement="bottom" class="me-3" (click)="pdfDownload(data)">
@@ -73,9 +71,7 @@
           <td>
             <strong nz-typography>{{totalMRP| currency: ' '}}</strong>
           </td>
-          <td>
-            <strong nz-typography>{{totalsellingprice| currency: ' '}}</strong>
-          </td>
+      
           <td>
             <strong nz-typography>{{totalprofit| currency: ' '}}</strong>
           </td>
