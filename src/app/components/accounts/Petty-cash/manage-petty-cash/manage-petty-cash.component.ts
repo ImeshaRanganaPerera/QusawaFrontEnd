@@ -43,12 +43,16 @@ export class ManagePettyCashComponent implements OnInit {
   userList: any[] = [];
   voucherNumber: any;
   userName: any;
+  
 
   pettyCashForm: FormGroup = new FormGroup({
+
     chartofaccId: new FormControl(''),
     userId: new FormControl(''),
     amount: new FormControl('', [Validators.required]),
-    location: new FormControl('')
+    location: new FormControl(''),
+    date: new FormControl('', [Validators.required]),
+    note: new FormControl(''),
   })
 
   ngOnInit(): void {
@@ -85,7 +89,7 @@ export class ManagePettyCashComponent implements OnInit {
   }
 
   getExpencess() {
-    this.chartofaccservice.getChartofaccbyGrp('Expencess').subscribe((res: APIResponse) => {
+    this.chartofaccservice.getChartofaccbyGrp('Expenses').subscribe((res: APIResponse) => {
       this.expencessList = res.data;
       this.isSpinning = false;
     })
@@ -146,7 +150,7 @@ export class ManagePettyCashComponent implements OnInit {
 
     if (this.mode === 'Petty Cash') {
       data = {
-        date: this.nowdate,
+        date: formData.date,
         voucherNumber: this.voucherNumber,
         chartofAccountId: this.mode === 'Petty Cash' ? formData.chartofaccId : null,
         paidValue: 0,
@@ -158,13 +162,13 @@ export class ManagePettyCashComponent implements OnInit {
             accountId: this.mode === 'Petty Cash' ? formData.chartofaccId : 'UserExp',
             debit: formData.amount,
             credit: 0,
-            ref: this.ref
+            ref: formData.note
           },
           {
             accountId: 'PettyCash',
             debit: 0,
             credit: formData.amount,
-            ref: "Petty Cash"
+            ref: formData.note
           }
         ],
       }

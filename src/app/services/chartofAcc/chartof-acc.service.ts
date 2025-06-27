@@ -23,6 +23,10 @@ export class ChartofAccService {
     return this.httpClient.get<APIResponse>(this.url + '/chartofAcc');
   }
 
+    getChartofacpayable(): Observable<APIResponse> {
+    return this.httpClient.get<APIResponse>(this.url + '/chartofAcc/payable');
+  }
+
   getbyChartofaccId(id: any): Observable<APIResponse> {
     return this.httpClient.get<APIResponse>(this.url + '/chartofAcc/' + id);
   }

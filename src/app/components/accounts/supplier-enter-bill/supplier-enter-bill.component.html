@@ -42,7 +42,6 @@
                             <!-- <th>Location</th> -->
                             <th nzWidth="10%">Paid Value</th>
                             <th nzWidth="10%">Amount</th>
-                            <th nzWidth="10%">GRN Value</th>
                             <th nzWidth="10%" class="text-center">Confirmation</th>
                         </tr>
                     </thead>
@@ -55,13 +54,10 @@
                             <!-- <td>{{ data.location }}</td> -->
                             <td>{{ data.paidValue | currency: ' ' }}</td>
                             <td>{{ data.amount | currency: ' ' }}</td>
-                            <td>
-                                <!-- This input is now within a parent formGroup -->
-                                <input type="number" nz-input [formControlName]="'grnValue' + data.id" />
-                            </td>
+                         
                             <td class="d-flex justify-content-center">
                                 <button nz-button nz-tooltip="Confirm" nzType="primary" nzShape="circle"
-                                    (click)="updateConform(data)">
+                                    (click)="handleEdit(data)">
                                     <span nz-icon nzType="check"></span>
                                 </button>
                             </td>

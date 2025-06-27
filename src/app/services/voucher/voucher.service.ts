@@ -178,6 +178,11 @@ export class VoucherService {
       headers: new HttpHeaders().set('Content-Type', 'application/json')
     });
   }
+    getbypartyconditionsupplierenterbill(id: any, condition: any): Observable<APIResponse> {
+    return this.httpClient.post<APIResponse>(this.url + '/voucher/party/conditionSupplierEnterbill/' + id, condition, {
+      headers: new HttpHeaders().set('Content-Type', 'application/json')
+    });
+  }
 
   getbyChartofaccCondition(id: any, condition: any): Observable<APIResponse> {
     return this.httpClient.post<APIResponse>(this.url + '/voucher/chartofAcc/condition/' + id, condition, {

@@ -1,4 +1,5 @@
 export interface APIResponse {
+    chartofAccountId: string;
     amount: string;
     message: any;
     data: any[];

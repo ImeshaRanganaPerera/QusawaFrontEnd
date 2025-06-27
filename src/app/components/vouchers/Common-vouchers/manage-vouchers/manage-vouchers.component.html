@@ -201,7 +201,7 @@
             <td>{{ row.printName }}</td>
 
             @if(params === 'Stock Transfer'){
-              <td>{{ row.batchNo }}</td>
+            <td>{{ row.batchNo }}</td>
             <td style="min-width: 100px; text-align: left;">{{ row.mfdate | date: 'yyyy-MM-dd' }}</td>
             <td style="min-width: 100px; text-align: left;">{{ row.expiryDate | date: 'yyyy-MM-dd' }}</td>
             <td>
@@ -216,13 +216,14 @@
                 (ngModelChange)="onFieldChange(row, 'batchNo', $event)" />
             </td>
             <td>
-              <nz-date-picker nzSize="small" [(ngModel)]="row.expiryDate"
-                (ngModelChange)="onFieldChange(row, 'expiryDate', $event)" class="w-200" format="yyyy-MM-dd">
-              </nz-date-picker>
-            </td>
-            <td>
               <nz-date-picker nzSize="small" [(ngModel)]="row.mfdate"
                 (ngModelChange)="onFieldChange(row, 'mfdate', $event)" class="w-200" format="yyyy-MM-dd">
+              </nz-date-picker>
+
+            </td>
+            <td>
+              <nz-date-picker nzSize="small" [(ngModel)]="row.expiryDate"
+                (ngModelChange)="onFieldChange(row, 'expiryDate', $event)" class="w-200" format="yyyy-MM-dd">
               </nz-date-picker>
             </td>
             <td>

@@ -11,10 +11,10 @@ export class CurrencyService {
   constructor(private httpClient: HttpClient) { }
 
     get(amount: number, from: string): Observable<{
-      amountLkr: string; amountInUSD: string 
+      amountLkr: number; amountInUSD: number 
 }> {
     const params = new HttpParams().set('amount', amount).set('from', from);
-   return this.httpClient.get<{ amountInUSD: string, amountLkr:string }>(`${this.url}/Currency`, { params });
+   return this.httpClient.get<{ amountInUSD: number, amountLkr:number }>(`${this.url}/Currency`, { params });
 
   }
 }

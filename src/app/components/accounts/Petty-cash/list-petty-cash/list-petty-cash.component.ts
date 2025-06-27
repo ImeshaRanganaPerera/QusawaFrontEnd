@@ -118,7 +118,7 @@ export class ListPettyCashComponent implements OnInit {
   }
 
   getBalance() {
-    this.chartofaccService.getChartofaccBalance('PETTY CASH').subscribe((res: APIResponse) => {
+    this.chartofaccService.getChartofaccBalance('PETTY CASH BOOK').subscribe((res: APIResponse) => {
       this.balance = Number(res.data); // Directly assigning the number value
       console.log(this.balance);
     });

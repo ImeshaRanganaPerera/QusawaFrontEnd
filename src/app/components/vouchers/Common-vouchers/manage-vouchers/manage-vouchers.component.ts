@@ -29,7 +29,7 @@ import { lastValueFrom } from 'rxjs';
 })
 export class ManageVouchersComponent {
   localAmount: number = 0;
-  usdAmount: string | null = null;
+  usdAmount: number = 0;
   isSpinning = false;
   searchControl: FormControl = new FormControl('');
   filteredData: any[] = [];
@@ -667,7 +667,7 @@ export class ManageVouchersComponent {
             this.usdAmount = res.amountInUSD;
           },
           error: () => {
-            this.usdAmount = 'Error fetching conversion';
+            this.usdAmount = 0;
           },
         });
       }
@@ -900,7 +900,7 @@ export class ManageVouchersComponent {
             this.usdAmount = res.amountInUSD;
           },
           error: () => {
-            this.usdAmount = 'Error fetching conversion';
+            this.usdAmount = 0;
           },
         });
       }
@@ -921,6 +921,7 @@ export class ManageVouchersComponent {
           refNumber: formData.refNumber,
           isRef: this.refVoucherNumber ? true : false,
           isconform: this.isconform,
+          status: 'PENDING',
           stockStatus: true,
           voucherGroupname: this.voucherType,
           fromCenterId: formData.fromCenterId,

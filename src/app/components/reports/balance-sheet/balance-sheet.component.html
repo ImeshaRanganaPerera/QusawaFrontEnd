@@ -6,6 +6,7 @@
                 <span class="me-2" nz-icon nzType="export"></span>Export
             </button>
         </div>
+
         <div class="row mb-2 align-items-center">
             <div class="col-6">
                 <nz-input-group nzPrefixIcon="search" nzSize="large" class="rounded-3 shadowform">
@@ -22,183 +23,136 @@
                 </button>
             </div>
         </div>
+
         <div class="balance-sheet-container" *ngIf="filteredData.length > 0">
             <table class="balance-sheet-table" border="1" cellspacing="0" cellpadding="5"
                 style="width: 100%; border-collapse: collapse;">
                 <thead>
                     <tr style="background-color: #f5f5f5;">
                         <th style="text-align: left;">Section</th>
+                        <th style="text-align: left;">Sub Category</th>
                         <th style="text-align: left;">Group</th>
                         <th style="text-align: left;">Account Name</th>
                         <th style="text-align: right;">Amount</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Assets Section -->
-                    <ng-container *ngIf="filteredData[0]?.assets">
-                        <tr>
-                            <td colspan="4" style="font-weight: bold; background-color: #dff0d8;">Assets</td>
-                        </tr>
-                        <ng-container *ngFor="let asset of filteredData[0].assets">
-                            <tr>
-                                <td></td>
-                                <td style="font-weight: bold;">{{ asset.accountGroupName }}</td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <ng-container *ngFor="let val of asset.values">
-                                <tr *ngIf="asset.accountGroupName !== 'Receivable'">
-                                    <td></td>
-                                    <td></td>
-                                    <td>{{ val.accountName }}</td>
-                                    <td style="text-align: right;">
-                                        {{
-                                        (val.totalDebitAmount || 0) - (val.totalCreditAmount || 0)
-                                        | number: '1.2-2'
-                                        }}
-                                    </td>
-                                </tr>
-                            </ng-container>
-                            <tr>
-                                <td></td>
-                                <td style="font-style: italic;">Total {{ asset.accountGroupName }}</td>
-                                <td></td>
-                                <td style="text-align: right;">
-                                    {{
-                                    (asset.sumDebitTotal || 0) - (asset.sumCreditTotal || 0)
-                                    | number: '1.2-2'
-                                    }}
-                                </td>
-                            </tr>
-                        </ng-container>
-                        <tr style="background-color: #f9f9f9;">
-                            <td colspan="3" style="font-weight: bold;">Total Assets</td>
-                            <td style="text-align: right; font-weight: bold;">
-                                {{
-                                totalassets.sumDebitTotal - totalassets.sumCreditTotal
-                                | number: '1.2-2'
-                                }}
-                            </td>
-                        </tr>
-                    </ng-container>
+                    <!-- Loop over all sections -->
+                    <ng-container *ngFor="let section of filteredData">
 
-                    <!-- Equity Section -->
-                    <ng-container *ngIf="filteredData[1]?.equity">
+                        <!-- Section Header -->
                         <tr>
-                            <td colspan="4" style="font-weight: bold; background-color: #d9edf7;">Equity</td>
+                            <td colspan="5" style="font-weight: bold; background-color: #dff0d8;" *ngIf="section.category === 'assets'">Assets</td>
+                            <td colspan="5" style="font-weight: bold; background-color: #d9edf7;" *ngIf="section.category === 'equity'">Equity</td>
+                            <td colspan="5" style="font-weight: bold; background-color: #fcf8e3;" *ngIf="section.category === 'liabilities'">Liabilities</td>
                         </tr>
-                        <ng-container *ngFor="let equ of filteredData[1].equity">
+
+                        <!-- Loop over subCategories -->
+                        <ng-container *ngFor="let sub of section.subCategories">
                             <tr>
                                 <td></td>
-                                <td style="font-weight: bold;">{{ equ.accountGroupName }}</td>
+                                <td style="font-weight: bold; background-color: #f0f0f0;">{{ sub.subCategoryName }}</td>
+                                <td></td>
                                 <td></td>
                                 <td></td>
                             </tr>
-                            <ng-container *ngFor="let val of equ.values">
+
+                            <!-- Loop over groups -->
+                            <ng-container *ngFor="let group of sub.groups">
                                 <tr>
                                     <td></td>
                                     <td></td>
-                                    <td>{{ val.accountName }}</td>
-                                    <td style="text-align: right;">
-                                        {{
-                                        (val.totalCreditAmount || 0) - (val.totalDebitAmount || 0)
-                                        | number: '1.2-2'
-                                        }}
-                                    </td>
+                                    <td style="font-weight: bold;">{{ group.accountGroupName }}</td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
-                            </ng-container>
-                            <tr>
-                                <td></td>
-                                <td style="font-style: italic;">Total {{ equ.accountGroupName }}</td>
-                                <td></td>
-                                <td style="text-align: right;">
-                                    {{
-                                    (equ.sumCreditTotal || 0) - (equ.sumDebitTotal || 0)
-                                    | number: '1.2-2'
-                                    }}
-                                </td>
-                            </tr>
-                        </ng-container>
-                        <tr style="background-color: #f9f9f9;">
-                            <td colspan="3" style="font-weight: bold;">Total Equity</td>
-                            <td style="text-align: right; font-weight: bold;">
-                                {{
-                                totalEquity.sumCreditTotal - totalEquity.sumDebitTotal
-                                | number: '1.2-2'
-                                }}
-                            </td>
-                        </tr>
-                    </ng-container>
 
-                    <!-- Liabilities Section -->
-                    <ng-container *ngIf="filteredData[2]?.liabilities">
-                        <tr>
-                            <td colspan="4" style="font-weight: bold; background-color: #fcf8e3;">Liabilities</td>
-                        </tr>
-                        <ng-container *ngFor="let lia of filteredData[2].liabilities">
-                            <tr>
-                                <td></td>
-                                <td style="font-weight: bold;">{{ lia.accountGroupName }}</td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <ng-container *ngFor="let val of lia.values">
-                                <tr *ngIf="lia.accountGroupName !== 'Payable'">
+                                <!-- Loop over values -->
+                                <ng-container *ngFor="let val of group.values">
+                                    <tr *ngIf="group.accountGroupName !== 'Receivable' && group.accountGroupName !== 'Payable'">
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>{{ val.accountName }}</td>
+                                        <td style="text-align: right;">
+                                            {{
+                                            (val.totalDebitAmount || 0) - (val.totalCreditAmount || 0)
+                                            | number: '1.2-2'
+                                            }}
+                                        </td>
+                                    </tr>
+                                </ng-container>
+
+                                <!-- Total per group -->
+                                <tr>
                                     <td></td>
                                     <td></td>
-                                    <td>{{ val.accountName }}</td>
+                                    <td style="font-style: italic;">Total {{ group.accountGroupName }}</td>
+                                    <td></td>
                                     <td style="text-align: right;">
                                         {{
-                                        (val.totalCreditAmount || 0) - (val.totalDebitAmount || 0)
+                                        (group.sumDebitTotal || 0) - (group.sumCreditTotal || 0)
                                         | number: '1.2-2'
                                         }}
                                     </td>
                                 </tr>
                             </ng-container>
-                            <tr>
-                                <td></td>
-                                <td style="font-style: italic;">Total {{ lia.accountGroupName }}</td>
-                                <td></td>
-                                <td style="text-align: right;">
-                                    {{
-                                    (lia.sumCreditTotal || 0) - (lia.sumDebitTotal || 0)
-                                    | number: '1.2-2'
-                                    }}
-                                </td>
-                            </tr>
                         </ng-container>
-                        <tr style="background-color: #f9f9f9;">
-                            <td colspan="3" style="font-weight: bold;">Total Liabilities</td>
+
+                        <!-- Total per section -->
+                        <tr *ngIf="section.category === 'assets'" style="background-color: #f9f9f9;">
+                            <td colspan="4" style="font-weight: bold;">Total Assets</td>
                             <td style="text-align: right; font-weight: bold;">
                                 {{
-                                totalLiabilities.sumCreditTotal - totalLiabilities.sumDebitTotal
+                                (totalassets.sumDebitTotal || 0) - (totalassets.sumCreditTotal || 0)
                                 | number: '1.2-2'
                                 }}
                             </td>
                         </tr>
+
+                        <tr *ngIf="section.category === 'equity'" style="background-color: #f9f9f9;">
+                            <td colspan="4" style="font-weight: bold;">Total Equity</td>
+                            <td style="text-align: right; font-weight: bold;">
+                                {{
+                                (totalEquity.sumDebitTotal || 0) - (totalEquity.sumCreditTotal || 0)
+                                | number: '1.2-2'
+                                }}
+                            </td>
+                        </tr>
+
+                        <tr *ngIf="section.category === 'liabilities'" style="background-color: #f9f9f9;">
+                            <td colspan="4" style="font-weight: bold;">Total Liabilities</td>
+                            <td style="text-align: right; font-weight: bold;">
+                                {{
+                                (totalLiabilities.sumDebitTotal || 0) - (totalLiabilities.sumCreditTotal || 0)
+                                | number: '1.2-2'
+                                }}
+                            </td>
+                        </tr>
+
                     </ng-container>
 
                     <!-- Net Profit Row -->
                     <tr *ngIf="netProfit !== undefined" style="background-color: #f5f5f5;">
-                        <td colspan="3" style="font-weight: bold;">Net Profit</td>
+                        <td colspan="4" style="font-weight: bold;">Net Profit</td>
                         <td style="text-align: right; font-weight: bold;">{{ netProfit | number: '1.2-2' }}</td>
                     </tr>
 
                     <!-- Total Liabilities + Equity + Net Profit -->
                     <tr style="background-color: #e6e6e6;">
-                        <td colspan="3" style="font-weight: bold;">Total Liabilities + Equity + Net Profit</td>
+                        <td colspan="4" style="font-weight: bold;">Total Liabilities + Equity + Net Profit</td>
                         <td style="text-align: right; font-weight: bold;">
                             {{
-                            (totalLiabilities.sumCreditTotal - totalLiabilities.sumDebitTotal)
-                            + (totalEquity.sumCreditTotal - totalEquity.sumDebitTotal)
-                            + netProfit
+                            ((totalLiabilities.sumCreditTotal || 0) - (totalLiabilities.sumDebitTotal || 0))
+                            + ((totalEquity.sumCreditTotal || 0) - (totalEquity.sumDebitTotal || 0))
+                            + (netProfit || 0)
                             | number: '1.2-2'
                             }}
                         </td>
                     </tr>
+
                 </tbody>
             </table>
         </div>
-
     </div>
 </nz-spin>

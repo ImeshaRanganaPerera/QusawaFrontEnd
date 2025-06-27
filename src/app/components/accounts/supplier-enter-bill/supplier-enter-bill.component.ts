@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ViewContainerRef } from '@angular/core';
 import { MaterialModule } from '../../../modules/material/material.module';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { VoucherService } from '../../../services/voucher/voucher.service';
@@ -7,6 +7,8 @@ import { PartyService } from '../../../services/party/party.service';
 import { differenceInCalendarDays } from 'date-fns';
 import { VoucherProductService } from '../../../services/voucherProduct/voucher-product.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { ImportclearingComponent } from '../../../shared/importclearing/importclearing.component';
 
 @Component({
   selector: 'app-supplier-enter-bill',
@@ -42,7 +44,8 @@ export class SupplierEnterBillComponent {
     grnValue: new FormControl(''),
     location: new FormControl('')
   })
-
+  model = inject(NzModalService)
+  viewContainerRef = inject(ViewContainerRef)
 
   ngOnInit(): void {
     this.getVoucherNumber();
@@ -67,7 +70,7 @@ export class SupplierEnterBillComponent {
   }
 
   getVouchers(partyId: any) {
-    this.voucherservice.getbypartycondition(partyId, { condition: false }).subscribe((res: APIResponse) => {
+    this.voucherservice.getbypartyconditionsupplierenterbill(partyId, { condition: true }).subscribe((res: APIResponse) => {
       this.voucherData = res.data;
 
       // Initialize dynamic form controls for each voucher
@@ -103,22 +106,37 @@ export class SupplierEnterBillComponent {
       return; // Stop submission
     }
 
+    // const journalEntries = this.listOfData.map(row => ({
+    //   accountId: row.accountId,
+    //   debit: 0,
+    //   credit: row.amount,
+    // }));
+    // journalEntries.push({
+    //    accountId: 'IMPORT',
+    //     debit: grnValue ? grnValue : 0,
+    //     credit: 0,
+    // })
+
     const datas = {
       ...data,
       isconform: true,
       value: grnValue,
-      journalEntries: [
-        {
-          accountId: 'IMPORT',
-          debit: grnValue ? grnValue : 0,
-          credit: 0,
-        },
-        {
-          accountId: formData.partyId,
-          debit: 0,
-          credit: grnValue ? grnValue : 0,
-        }
-      ],
+
+      // journalEntries: [
+      //   {
+      //     accountId: 'IMPORT',
+      //     debit: grnValue ? grnValue : 0,
+      //     credit: 0,
+      //   },
+      //   {
+      //     accountId: formData.partyId,
+      //     debit: 0,
+      //     credit: grnValue ? grnValue : 0,
+      //   }
+      // ],
+      // Prepare journal entries from listOfData
+      // journalEntries: journalEntries,
+
     }
 
     console.log(datas);
@@ -143,5 +161,33 @@ export class SupplierEnterBillComponent {
       this.supplerEnterForm.get('voucherNumber')?.setValue(res.data)
       this.isSpinning = false;
     })
+  }
+
+
+  importclearnce(action: string, data?: any) {
+    const modal = this.model.create({
+      nzContent: ImportclearingComponent,
+      nzViewContainerRef: this.viewContainerRef,
+      nzWidth: "700px",
+      nzFooter: [],
+      nzData: { data: data.id, action: action, partyId: data.partyId },
+    })
+    modal.afterClose.subscribe((result: any) => {
+      if (result && result.message) {
+
+        this.notification.create('success', 'Success', result.message)
+        const selectedPartyId = this.supplerEnterForm.get('partyId')?.value;
+        if (selectedPartyId) {
+          this.getVouchers(selectedPartyId);
+        }
+      }
+      else {
+        this.notification.create('info', 'Info', 'No changes were made.')
+      }
+    });
+  }
+
+  handleEdit(data: any) {
+    this.importclearnce('Update', data);
   }
 }

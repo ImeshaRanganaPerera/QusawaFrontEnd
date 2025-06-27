@@ -2,8 +2,20 @@
     <h3>{{action}} Petty Cash</h3>
     <small>{{voucherNumber}}</small>
     <form class="pt-4" [formGroup]="pettyCashForm">
+        <div class="col-md-3 col-sm-6">
+            <nz-form-control nzErrorTip="Please input Date!">
+                <label>Date</label>
+                <nz-date-picker formControlName="date" nzSize="large" class="w-100 shadow-sm"></nz-date-picker>
+            </nz-form-control>
+        </div>
         <div class="row mb-3">
             @if(mode === 'Petty Cash'){
+            <div class=" text-start col-md-7 col-sm-4 mb-4  ">
+                <nz-form-control>
+                    <label>Memo</label>
+                    <input type="text" nz-input formControlName="note" nzSize="default" />
+                </nz-form-control>
+            </div>
             <div class="col-12 mb-3">
                 <nz-form-control nzErrorTip="Please Select Expencess Account!">
                     <label>Expencess Account</label>
@@ -32,9 +44,8 @@
             </div>
         </div>
         <div class="footer d-flex justify-content-end">
-            <button class="primary px-5" nz-popconfirm
-                nzPopconfirmTitle="Are you sure Save this Petty Cash?" (nzOnConfirm)="submit()"
-                (nzOnCancel)="cancel()">{{action}}</button>
+            <button class="primary px-5" nz-popconfirm nzPopconfirmTitle="Are you sure Save this Petty Cash?"
+                (nzOnConfirm)="submit()" (nzOnCancel)="cancel()">{{action}}</button>
         </div>
     </form>
 </nz-spin>

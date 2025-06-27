@@ -7,6 +7,11 @@
                         <h3>{{name}}</h3>
                         <small>#{{invoiceNumber}}</small>
                     </div>
+                    @if(params === "Receipt"){
+                    <label for="lkrInput">Change rate (optional):</label>
+                    <input type="number" [(ngModel)]="lkrAmount" id="lkrInput" placeholder="Enter new LKR amount"
+                        step="0.01" style="width: 120px;" />
+                    }
                     <div class="row align-items-center">
                         <div class="col-md-3 col-sm-12 mb-4">
                             <nz-form-control nzErrorTip="Please input Date!">
@@ -37,6 +42,7 @@
                             </nz-form-control>
                         </div>
                         }
+
                         <div class=" text-start col-md-7 col-sm-4 mb-4  ">
                             <nz-form-control>
                                 <label>Memo</label>

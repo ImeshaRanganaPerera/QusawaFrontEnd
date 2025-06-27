@@ -13,6 +13,7 @@ import { ChartofAccService } from '../../../services/chartofAcc/chartof-acc.serv
 import { PdfSelectionComponent } from '../../../shared/pdf-selection/pdf-selection.component';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { RefVouchersComponent } from '../../../shared/ref-vouchers/ref-vouchers.component';
+import { CurrencyService } from '../../../services/currency/currency.service';
 
 @Component({
   selector: 'app-manage-payment-receipt',
@@ -41,7 +42,8 @@ export class ManagePaymentReceiptComponent {
   payingAmount: number = 0;
   responseMessage: any
   refVoucherNumber: any
-
+  lkrAmount: number = 0;
+  usdAmount:number = 0;
   checked = false;
   indeterminate = false;
   isRef = false;
@@ -49,6 +51,8 @@ export class ManagePaymentReceiptComponent {
   setOfCheckedId = new Set<any>();
   selectedTotalAmount = 0;
   advanceAmount = 0;
+
+  currencyservice = inject(CurrencyService)
 
   route = inject(ActivatedRoute)
   voucherservice = inject(VoucherService)
@@ -75,6 +79,15 @@ export class ManagePaymentReceiptComponent {
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.params = params['type'];
+    })
+    this.currencyservice.get(1, 'LKR').subscribe({
+      next: (res) => {
+        this.usdAmount = res.amountInUSD;
+        this.lkrAmount = res.amountLkr;
+      },
+      error: () => {
+        this.usdAmount = 0;
+      },
     })
 
     if (this.params === "Payment") {
@@ -365,8 +378,8 @@ export class ManagePaymentReceiptComponent {
     if (payments.cash > 0) {
       journalEntries.push({
         accountId: "CASH", // Cash account
-        debit: isCredit ? 0 : payments.cash, // Debit for Receipt
-        credit: isCredit ? payments.cash : 0 // Credit for Payment or UtilityBillPayment
+        debit: isCredit ? 0 : payments.cash * this.lkrAmount, // Debit for Receipt
+        credit: isCredit ? payments.cash * this.lkrAmount: 0 // Credit for Payment or UtilityBillPayment
       });
     }
 
@@ -374,8 +387,8 @@ export class ManagePaymentReceiptComponent {
     if (payments.onlineTransfer > 0 && payments.bankAccId) {
       journalEntries.push({
         accountId: payments.bankAccId, // Bank account for online transfer
-        debit: isCredit ? 0 : payments.onlineTransfer,
-        credit: isCredit ? payments.onlineTransfer : 0
+        debit: isCredit ? 0 : payments.onlineTransfer * this.lkrAmount,
+        credit: isCredit ? payments.onlineTransfer * this.lkrAmount: 0
       });
     }
 
@@ -383,16 +396,16 @@ export class ManagePaymentReceiptComponent {
     if (payments.cheque > 0) {
       journalEntries.push({
         accountId: "Check", // Bank account for cheque
-        debit: isCredit ? 0 : payments.cheque,
-        credit: isCredit ? payments.cheque : 0
+        debit: isCredit ? 0 : payments.cheque ,
+        credit: isCredit ? payments.cheque  * this.lkrAmount: 0
       });
     }
 
     // Add the opposite entry for the chartofaccId (e.g., party account)
     journalEntries.push({
       accountId: chartofaccId,
-      debit: isCredit ? (this.isRef ? Number(data.amount) - Number(this.advanceAmount) : data.amount) : 0, // Debit for Payment or UtilityBillPayment
-      credit: isCredit ? 0 : (this.isRef ? Number(data.amount) - Number(this.advanceAmount) : data.amount)
+      debit: isCredit ? (this.isRef ? Number(data.amount) - Number(this.advanceAmount) : data.amount * this.lkrAmount) : 0, // Debit for Payment or UtilityBillPayment
+      credit: isCredit ? 0 : (this.isRef ? Number(data.amount) - Number(this.advanceAmount) : data.amount * this.lkrAmount)
     });
 
     return journalEntries;

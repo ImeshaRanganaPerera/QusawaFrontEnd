@@ -96,8 +96,8 @@ export class ManageSalesComponent implements OnInit {
   stopEdit(): void {
     this.qty = null;
   }
-  usdAmount: string | null = null;
-  lkrAmount: string | null = null;
+  usdAmount: number = 0;
+  lkrAmount: number = 0;
   selectedCustomer: IParty | null = null;
   selectedCenter: ICenter | null = null;
   formdata: {
@@ -137,7 +137,7 @@ export class ManageSalesComponent implements OnInit {
         this.lkrAmount = res.amountLkr;
       },
       error: () => {
-        this.usdAmount = 'Error fetching conversion';
+        this.usdAmount = 0;
       },
     })
     if (this.params === 'Sales') {
@@ -453,13 +453,13 @@ export class ManageSalesComponent implements OnInit {
         amount: amount > 0 ? amount : 0, // Ensure amount is not negative
         batchNo: this.selectedBatchNo,
         expiryDate: this.expdate,
-        mfdate:this.mfg,
+        mfdate: this.mfg,
         ExpnotifDays: selectedProduct.ExpnotifDays,
         Packsize: selectedProduct.Packsize,
         Manufacture: selectedProduct.Manufacture,
         country: selectedProduct.country,
         usdRate: this.lkrAmount,
-        
+
       };
 
       // Update the data source with the new row
@@ -630,7 +630,10 @@ export class ManageSalesComponent implements OnInit {
         this.notification.create('error', 'Error', 'Paid amount should not be 0');
         return;
       }
-
+      if ((this.totalAmount * this.lkrAmount) <= this.totalCost) {
+        this.notification.create('error', 'Error', 'Warning: Cost is greater than sale amount.');
+        return;
+      }
       // Submit for INVOICE
       this.paymentMode('ALL', this.totalAmount, 'DEBIT');
 
@@ -1095,8 +1098,9 @@ export class ManageSalesComponent implements OnInit {
         }
       }
       else if (this.voucherType === 'SALES-RETURN') {
+        const journalEntries = this.generateJournalEntries(data, payments);
         data = {
-          ...data,
+          ...data, journalEntries
         }
       }
       console.log(data)
@@ -1170,15 +1174,15 @@ export class ManageSalesComponent implements OnInit {
     if (payments.credit > 0) {
       journalEntries.push({
         accountId: chartofaccId,
-        debit: isCredit ? 0 : payments.credit,
-        credit: isCredit ? payments.credit : 0
+        debit: isCredit ? 0 : payments.credit * this.lkrAmount,
+        credit: isCredit ? payments.credit * this.lkrAmount : 0
       });
     }
 
     journalEntries.push({
       accountId: 'Sales',
-      debit: isCredit ? data.amount : 0,
-      credit: isCredit ? 0 : data.amount
+      debit: isCredit ? data.amount * this.lkrAmount : 0,
+      credit: isCredit ? 0 : data.amount * this.lkrAmount
     });
 
     journalEntries.push({
