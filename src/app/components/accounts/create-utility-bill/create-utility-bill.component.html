@@ -40,7 +40,6 @@
                                 <nz-form-control nzErrorTip="Please Select Account!">
                                     <label>Expencess Account</label>
                                     <nz-select nzShowSearch formControlName="expencessAccid" class="custom-select">
-                                        <nz-option [nzValue]="'IMPORT'" [nzLabel]="'IMPORT CONTROL ACCOUNT'"></nz-option>
                                         <nz-option *ngFor="let expencess of expencessList" [nzValue]="expencess.id"
                                             [nzLabel]="expencess.accountName"></nz-option>
                                     </nz-select>

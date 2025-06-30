@@ -39,7 +39,7 @@
                     <label class="fw-bold">Sum Of Rupee:</label>
                 </div>
                 <div class="col-6 mb-4">
-                    <div>{{ voucherData.amount | currency:' USD' }}</div>
+                    <div>{{ voucherData.amount }}</div>
                 </div>
             </div>
         </div>
@@ -125,9 +125,9 @@
                     <td>{{ data.invoiceDate | date: 'YYYY/MM/dd' }}</td>
                     <td>{{ data.invoiceAmount | currency:' ' }}</td>
                     @if(type === 'Payment'){
-                    <td>{{ data.value? data.value : 0 | currency:'USD' }}</td>
+                    <td>{{ data.value? data.value : 0 }}</td>
                     }
-                    <td>{{ data.settledAmount | currency:'USD' }}</td>
+                    <td>{{ data.settledAmount }}</td>
                     <td>{{ type === 'Payment'? data.value - data.settledAmount : data.invoiceAmount - data.settledAmount
                         | currency:' '}}</td>
                 </tr>
