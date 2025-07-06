@@ -438,7 +438,7 @@ export class DashboardComponent implements OnInit {
             roles: ['ADMIN', 'MANAGER'],
           },
           {
-            routerLink: './profit-lost',
+            routerLink: './profit-and-lost',
             icon: 'schedule',
             label: 'Profit and Lost',
             roles: ['ADMIN', 'MANAGER'],

@@ -1,205 +1,172 @@
-import { Component, inject, ViewContainerRef } from '@angular/core';
-import { MaterialModule } from '../../../modules/material/material.module';
-import { FormControl } from '@angular/forms';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { ProductService } from '../../../services/product/product.service';
+import { Component, inject } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
+import { FormGroup, ReactiveFormsModule, FormBuilder } from '@angular/forms';
+import { MatTableModule } from '@angular/material/table';
 import { JournallineService } from '../../../services/journalLine/journalline.service';
-import { DatePipe } from '@angular/common';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-profit-and-lost',
   standalone: true,
-  imports: [MaterialModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatTableModule,
+    MatProgressSpinnerModule
+  ],
   providers: [DatePipe],
   templateUrl: './profit-and-lost.component.html',
   styleUrl: './profit-and-lost.component.scss'
 })
 export class ProfitAndLostComponent {
+  form: FormGroup;
+  dataSource: any = null;
+  cogsAccount: { groupName: string; account: any } | null = null;
+  otherExpensesGroups: any[] = [];
+  incomeGroups: any[] = [];
+  grossProfit: number = 0;
+  netProfit: number = 0;
   isSpinning = false;
-  loading = false;
-  date: any = null;
 
-  searchControl: FormControl = new FormControl('');
-  dataSource: any[] = [];
-  filteredData: any[] = [];
-  discountLevels: string[] = [];
-  role: any;
-
-  //services
-  model = inject(NzModalService)
-  viewContainerRef = inject(ViewContainerRef)
-  notification = inject(NzNotificationService)
-  productservice = inject(ProductService)
-  journallineService = inject(JournallineService)
+  journallineService = inject(JournallineService);
+  fb = inject(FormBuilder);
   datePipe = inject(DatePipe);
 
-  currentPage = 1;
-  pageSize = 1000;
-
-  onPageChange(page: number): void {
-    this.currentPage = page;
-  }
-
-  ngOnInit(): void {
-    this.setupSearch();
-    this.getRole();
-  }
-
-  getRole() {
-    this.role = localStorage.getItem('role')
-  }
-
-  setupSearch() {
-    this.searchControl.valueChanges.subscribe((searchTerm) => {
-      this.filteredData = this.dataSource.filter((product: any) =>
-        product.productName.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+  constructor() {
+    this.form = this.fb.group({
+      dateRange: this.fb.group({
+        start: new Date(new Date().setDate(new Date().getDate() - 30)),
+        end: new Date()
+      })
     });
+
+    this.onGenerateReport(); // Load initial
   }
 
-  getprofitlostReport(startDate: any, endDate: any) {
-    this.journallineService.getProfitLoss(startDate, endDate).subscribe((res: any) => {
-      this.dataSource = res.data;
-      this.filteredData = res.data;
-      this.isSpinning = false;
-      console.log(this.dataSource)
-      this.calculateTotals()
-    }, (error) => {
-      console.error(error);
-      this.isSpinning = false;
-    });
-  }
+  onGenerateReport() {
+    const { start, end } = this.form.value.dateRange;
+    if (!start || !end) return;
 
-  totalexpencess: any
-  totalincome: any
-  netProfit: any
-  calculateTotals() {
-    this.totalexpencess = this.filteredData[0].expencess.reduce(
-      (acc: any, group: any) => {
-        acc.sumDebitTotal += group.sumDebitTotal || 0;
-        acc.sumCreditTotal += group.sumCreditTotal || 0;
-        return acc;
-      },
-      { sumDebitTotal: 0, sumCreditTotal: 0 }
-    );
-
-    this.totalincome = this.filteredData[1].income.reduce(
-      (acc: any, group: any) => {
-        acc.sumDebitTotal += group.sumDebitTotal || 0;
-        acc.sumCreditTotal += group.sumCreditTotal || 0;
-        return acc;
-      },
-      { sumDebitTotal: 0, sumCreditTotal: 0 }
-    );
-
-    this.netProfit = (this.totalincome.sumCreditTotal - this.totalincome.sumDebitTotal) - (this.totalexpencess.sumDebitTotal - this.totalexpencess.sumCreditTotal)
-  }
-
-  applyDateFilter() {
-    if (!this.date || !this.date[0] || !this.date[1]) {
-      this.notification.create('warning', 'Date Range Required', 'Please select both start and end dates.');
-      return;
-    }
-
-    const startDate = this.date[0];
-    const endDate = this.date[1];
-
-    this.dataSource = [];
-    this.filteredData = [];
     this.isSpinning = true;
-
-    this.getprofitlostReport(startDate, endDate);
-
-  }
-
-  exportToCSV() {
-    if (!this.filteredData || this.filteredData.length === 0) {
-      this.notification.create('warning', 'No Data Available', 'There is no data to export.');
-      return;
-    }
-  
-    const csvRows = [];
-    csvRows.push(['Date From', 'Date To', 'Account Name', 'Amount'].join(',')); // Header
-  
-    // Add date range to the first row
-    csvRows.push([
-      this.datePipe.transform(this.date?.[0], 'yyyy/MM/dd') || '',
-      this.datePipe.transform(this.date?.[1], 'yyyy/MM/dd') || '',
-      '',
-      ''
-    ].join(','));
-  
-    this.filteredData.forEach((data: any, index: number) => {
-      if (data.expencess && Array.isArray(data.expencess)) {
-        csvRows.push(['Expenses:', '', '', ''].join(',')); // Section header
-  
-        data.expencess.forEach((exp: any) => {
-          csvRows.push([ '', exp.accountGroupName || '', '', '' ].join(','));
-  
-          if (exp.values && Array.isArray(exp.values)) {
-            exp.values.forEach((val: any) => {
-              csvRows.push([
-                '',
-                '',
-                val.accountName || '',
-                ((val.totalDebitAmount || 0) - (val.totalCreditAmount || 0)).toFixed(2)
-              ].join(','));
-            });
-          }
-  
-          csvRows.push([
-            '',
-            `Total ${exp.accountGroupName || ''}`,
-            '',
-            ((exp.sumDebitTotal || 0) - (exp.sumCreditTotal || 0)).toFixed(2)
-          ].join(','));
-        });
-        csvRows.push(['Total Expenses:', '', '', (this.totalexpencess.sumDebitTotal - this.totalexpencess.sumCreditTotal).toFixed(2)].join(','));
-      }
-  
-      if (data.income && Array.isArray(data.income)) {
-        csvRows.push(['Income:', '', '', ''].join(',')); // Section header
-  
-        data.income.forEach((inc: any) => {
-          csvRows.push([ '', inc.accountGroupName || '', '', '' ].join(','));
-  
-          if (inc.values && Array.isArray(inc.values)) {
-            inc.values.forEach((val: any) => {
-              csvRows.push([
-                '',
-                '',
-                val.accountName || '',
-                ((val.totalCreditAmount || 0) - (val.totalDebitAmount || 0)).toFixed(2)
-              ].join(','));
-            });
-          }
-  
-          csvRows.push([
-            '',
-            `Total ${inc.accountGroupName || ''}`,
-            '',
-            ((inc.sumCreditTotal || 0) - (inc.sumDebitTotal || 0)).toFixed(2)
-          ].join(','));
-        });
-        csvRows.push(['Total Income:', '', '', (this.totalincome.sumCreditTotal - this.totalincome.sumDebitTotal).toFixed(2)].join(','));
+    this.journallineService.getProfitLoss(start, end).subscribe({
+      next: (res: any) => {
+        this.dataSource = res.data;
+        this.processData();
+        this.isSpinning = false;
+      },
+      error: err => {
+        console.error(err);
+        this.isSpinning = false;
       }
     });
-
-    csvRows.push(['Net Profit:', '', '', (this.netProfit).toFixed(2)].join(','));
-  
-    // Convert to CSV string and create a downloadable file
-    const csvString = csvRows.join('\n');
-    const blob = new Blob([csvString], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-  
-    const a = document.createElement('a');
-    a.setAttribute('href', url);
-    a.setAttribute('download', `ProfitAndLoss_Report.csv`);
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
   }
 
+  processData() {
+    this.cogsAccount = null;
+    this.incomeGroups = this.dataSource.income || [];
+    const expenses = this.dataSource.expenses || [];
+
+    this.otherExpensesGroups = [];
+
+    for (const group of expenses) {
+      const cogs = group.accounts?.find(
+        (a: any) => a.accountName?.toLowerCase().trim() === 'cost of goods sold'
+      );
+
+      if (cogs) {
+        this.cogsAccount = { groupName: group.accountGroupName, account: cogs };
+      }
+
+      // Exclude COGS from other expenses
+      const filteredAccounts = group.accounts?.filter(
+        (a: any) => a.accountName?.toLowerCase().trim() !== 'cost of goods sold'
+      );
+
+      if (filteredAccounts?.length > 0) {
+        this.otherExpensesGroups.push({
+          ...group,
+          accounts: filteredAccounts,
+          groupTotal: filteredAccounts.reduce((sum: number, a: any) => sum + (a.balance || 0), 0)
+        });
+      }
+    }
+
+    // Calculate gross and net profit
+    const totalIncome = this.incomeGroups.reduce((sum: number, g: any) => sum + (g.groupTotal || 0), 0);
+    const cogsTotal = this.cogsAccount?.account?.balance || 0;
+    const totalOtherExpenses = this.otherExpensesGroups.reduce((sum: number, g: any) => sum + g.groupTotal, 0);
+
+    this.grossProfit = totalIncome - cogsTotal;
+    this.netProfit = this.grossProfit - totalOtherExpenses;
+  }
 }
+
+//   exportToCSV() {
+//     if (!this.dataSource) {
+//       this.notification.create('warning', 'No Data Available', 'There is no data to export.');
+//       return;
+//     }
+
+//     const csvRows = [];
+//     csvRows.push(['Date From', 'Date To', 'Account Group', 'Account Name', 'Balance'].join(','));
+//     csvRows.push([
+//       this.datePipe.transform(this.date[0], 'yyyy-MM-dd'),
+//       this.datePipe.transform(this.date[1], 'yyyy-MM-dd'),
+//       '',
+//       '',
+//       ''
+//     ].join(','));
+
+//     const addGroupToCSV = (section: string, groups: any[]) => {
+//       csvRows.push([section, '', '', '', ''].join(','));
+
+//       for (const group of groups) {
+//         csvRows.push(['', group.accountGroupName, '', '', ''].join(','));
+
+//         for (const acc of group.accounts) {
+//           csvRows.push([
+//             '',
+//             '',
+//             acc.accountName,
+//             '',
+//             acc.balance.toFixed(2)
+//           ].join(','));
+//         }
+
+//         csvRows.push([
+//           '',
+//           `Total ${group.accountGroupName}`,
+//           '',
+//           '',
+//           group.groupTotal.toFixed(2)
+//         ].join(','));
+//       }
+//     };
+
+//     if (this.dataSource.income?.length) {
+//       addGroupToCSV('Income', this.dataSource.income);
+//     }
+
+//     if (this.dataSource.expenses?.length) {
+//       addGroupToCSV('Expenses', this.dataSource.expenses);
+//     }
+
+//     csvRows.push(['Net Profit', '', '', '', this.netProfit.toFixed(2)].join(','));
+
+//     const csvString = csvRows.join('\n');
+//     const blob = new Blob([csvString], { type: 'text/csv' });
+//     const url = window.URL.createObjectURL(blob);
+
+//     const a = document.createElement('a');
+//     a.href = url;
+//     a.download = `ProfitAndLoss_Report.csv`;
+//     document.body.appendChild(a);
+//     a.click();
+//     document.body.removeChild(a);
+//     window.URL.revokeObjectURL(url);
+//   }
+// }
+function exportToCSV() {
+  throw new Error('Function not implemented.');
+}
+

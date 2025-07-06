@@ -129,7 +129,7 @@ const routes: Routes = [
       { path: 'ledger-listing', component: LedgerListingComponent },
       { path: 'commission-report', component: CommissionReportComponent },
       { path: 'bankRec-Report', component: BankRecReportComponent },
-      { path: 'profit-lost', component: ProfitAndLostComponent },
+      { path: 'profit-and-lost', component: ProfitAndLostComponent },
       { path: 'balance-sheet', component: BalanceSheetComponent },
        { path: 'DayBook', component: DaybookComponent },
       { path: '', redirectTo: 'dash', pathMatch: 'full' },

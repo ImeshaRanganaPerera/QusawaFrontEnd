@@ -1,96 +1,78 @@
-<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
-    <div class="container-fluid px-4 pt-2 m-0">
-        <div class="header mb-3 d-flex justify-content-between">
-            <h2>Profit and Lost Report</h2>
-            <button class="primary me-3" (click)="exportToCSV()">
-                <span class="me-2" nz-icon nzType="export"></span>Export
-            </button>
-        </div>
-        <div class="row mb-2 align-items-center">
-            <div class="col-6">
-                <nz-input-group nzPrefixIcon="search" nzSize="large" class="rounded-3 shadowform">
-                    <input nz-input placeholder="Search" nz-tooltip="Search" [formControl]="searchControl"
-                        nzTooltipTrigger="focus" nzTooltipPlacement="topLeft" />
-                </nz-input-group>
-            </div>
-            <div class="col-4">
-                <nz-range-picker nzSize="large" class="w-100" [(ngModel)]="date"></nz-range-picker>
-            </div>
-            <div class="col-2">
-                <button nz-button nzType="primary" class="w-100" nzSize="large" (click)="applyDateFilter()">
-                    <span nz-icon nzType="filter"></span>Filter
-                </button>
-            </div>
-        </div>
-        <nz-table #basicTable [nzData]="filteredData" [nzPageSize]="pageSize"
-            (nzPageIndexChange)="onPageChange($event)">
-            <thead>
-                <tr>
-                    <th nzWidth="5%"></th>
-                    <th nzWidth="5%"></th>
-                    <th>Account Name</th>
-                    <th>Amount</th>
-                </tr>
-            </thead>
-            <tbody>
+<div class="report-container">
+  <h2 class="title">Profit and Loss Report</h2>
 
-                <ng-container *ngFor="let type of filteredData;">
-                    <tr>
-                        <td [colSpan]="4" *ngIf="type.expencess">Expencess</td>
-                        <td [colSpan]="4" *ngIf="type.income">Income</td>
-                    </tr>
-                    <ng-container *ngFor="let exp of type.expencess;">
-                        <tr>
-                            <td></td>
-                            <td [colSpan]="3">{{ exp.accountGroupName }}</td>
-                        </tr>
-                        <tr *ngFor="let data of exp.values;">
-                            <td></td>
-                            <td></td>
-                            <td>{{ data.accountName }}</td>
-                            <td>{{ (data.totalDebitAmount - data.totalCreditAmount) | number: '1.2-2' }}</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td [colSpan]="2"><strong>Total {{ exp.accountGroupName }}</strong></td>
-                            <td><strong>{{ (exp.sumDebitTotal - exp.sumCreditTotal) | number: '1.2-2' }}</strong></td>
-                        </tr>
-                    </ng-container>
-                    <tr>
-                        <td [colSpan]="3" *ngIf="type.expencess"><strong>Total Expencess</strong></td>
-                        <td *ngIf="type.expencess"><strong>{{(totalexpencess.sumDebitTotal -
-                                totalexpencess.sumCreditTotal) | number:'1.2-2'}}</strong></td>
-                    </tr>
-
-                    <ng-container *ngFor="let inc of type.income;">
-                        <tr>
-                            <td></td>
-                            <td [colSpan]="3">{{ inc.accountGroupName }}</td>
-                        </tr>
-                        <tr *ngFor="let data of inc.values;">
-                            <td></td>
-                            <td></td>
-                            <td>{{ data.accountName }}</td>
-                            <td>{{ (data.totalCreditAmount - data.totalDebitAmount) | number: '1.2-2' }}</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td [colSpan]="2"><strong>Total {{ inc.accountGroupName }}</strong></td>
-                            <td><strong>{{ (inc.sumCreditTotal - inc.sumDebitTotal) | number: '1.2-2' }}</strong></td>
-                        </tr>
-                    </ng-container>
-
-                    <tr>
-                        <td [colSpan]="3" *ngIf="type.income"><strong>Total Income</strong></td>
-                        <td *ngIf="type.income"><strong>{{(totalincome.sumCreditTotal - totalincome.sumDebitTotal) |
-                                number:'1.2-2'}}</strong></td>
-                    </tr>
-                </ng-container>
-                <tr *ngIf="netProfit > 0">
-                    <td [colSpan]="3"><strong>Net Profit</strong></td>
-                    <td><strong>{{netProfit | number: '1.2-2'}}</strong></td>
-                </tr>
-            </tbody>
-        </nz-table>
+  <form [formGroup]="form" (ngSubmit)="onGenerateReport()" class="date-form">
+    <div formGroupName="dateRange" class="date-range">
+      <label>
+        From:
+        <input type="date" formControlName="start" />
+      </label>
+      <label>
+        To:
+        <input type="date" formControlName="end" />
+      </label>
     </div>
-</nz-spin>
+    <button type="submit">Generate Report</button>
+  </form>
+
+  <mat-progress-spinner *ngIf="isSpinning" diameter="40" mode="indeterminate" class="spinner"></mat-progress-spinner>
+
+  <div *ngIf="dataSource && !isSpinning" class="report-body">
+    <!-- INCOME SECTION -->
+    <section>
+      <h3>Income</h3>
+      <table mat-table [dataSource]="incomeGroups" class="report-table">
+        <ng-container matColumnDef="accountGroupName">
+          <th mat-header-cell *matHeaderCellDef>Group</th>
+          <td mat-cell *matCellDef="let group">{{ group.accountGroupName }}</td>
+        </ng-container>
+        <ng-container matColumnDef="groupTotal">
+          <th mat-header-cell *matHeaderCellDef class="text-right">Total</th>
+          <td mat-cell *matCellDef="let group" class="text-right">
+            {{ group.groupTotal | number: '1.2-2' }}
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="['accountGroupName', 'groupTotal']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['accountGroupName', 'groupTotal']"></tr>
+      </table>
+    </section>
+
+    <!-- COGS SECTION -->
+    <section *ngIf="cogsAccount">
+      <h3>Cost of Goods Sold</h3>
+      <div class="text-right mb-2">
+        {{ cogsAccount.account.accountName }}:
+        {{ cogsAccount.account.balance | number: '1.2-2' }}
+      </div>
+    </section>
+
+    <!-- GROSS PROFIT -->
+    <div class="summary-section text-right">
+      <h4>Gross Profit: {{ grossProfit | number: '1.2-2' }}</h4>
+    </div>
+
+    <!-- OTHER EXPENSES SECTION -->
+    <section>
+      <h3>Other Expenses</h3>
+      <table mat-table [dataSource]="otherExpensesGroups" class="report-table">
+        <ng-container matColumnDef="accountGroupName">
+          <th mat-header-cell *matHeaderCellDef>Group</th>
+          <td mat-cell *matCellDef="let group">{{ group.accountGroupName }}</td>
+        </ng-container>
+        <ng-container matColumnDef="groupTotal">
+          <th mat-header-cell *matHeaderCellDef class="text-right">Total</th>
+          <td mat-cell *matCellDef="let group" class="text-right">
+            {{ group.groupTotal | number: '1.2-2' }}
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="['accountGroupName', 'groupTotal']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['accountGroupName', 'groupTotal']"></tr>
+      </table>
+    </section>
+
+    <!-- NET PROFIT -->
+    <div class="summary-section text-right">
+      <h4>Net Profit: {{ netProfit | number: '1.2-2' }}</h4>
+    </div>
+  </div>
+</div>

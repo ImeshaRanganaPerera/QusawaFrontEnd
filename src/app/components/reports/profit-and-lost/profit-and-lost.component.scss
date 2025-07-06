@@ -1,56 +1,47 @@
-.anticon.anticon-search{
-    color: var(--lightFontColor);
+.report-container {
+  padding: 24px;
+  max-width: 900px;
+  margin: auto;
 }
 
-button.anticon {
-    color: var(--input-DG-color);
+.title {
+  margin-bottom: 16px;
+  text-align: center;
 }
 
-button.anticon:hover {
-    color: var(--use-secondary-color);
+.date-form {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
 }
 
-.ant-input-affix-wrapper,
-.ant-input {
-    border: none;
-    // background: #f4f4f5;
+.date-range {
+  display: flex;
+  gap: 12px;
 }
 
-.ant-btn-primary{
-    background-color:var(--primary-color) ;
-    border-color:var(--light-Db-FontColor) ;
+.report-body {
+  margin-top: 24px;
 }
 
-.ant-btn-primary:hover{
-    background-color:var( --use-secondary-color) ;
-    border-color:var(--secondary-color) ;
+.report-table {
+  width: 100%;
+  margin-bottom: 24px;
+  border: 1px solid #ccc;
 }
 
+.text-right {
+  text-align: right;
+}
 
-.container-fluid {
-    padding: 20px;
-  }
-  
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  nz-range-picker {
-    margin-right: 15px;
-  }
-  
-  .primary {
-    background-color: #1890ff;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-  
-    &:hover {
-      background-color: #40a9ff;
-    }
-  }
+.summary-section {
+  margin-top: 16px;
+  font-weight: bold;
+}
+
+.spinner {
+  display: block;
+  margin: 32px auto;
+}

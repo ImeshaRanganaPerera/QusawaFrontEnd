@@ -51,7 +51,7 @@ export class CreateUtilityBillComponent implements OnInit {
   }
 
   getExpencess() {
-    this.chartofaccservice.getChartofaccbyCategory('EXPENSES').subscribe((res: APIResponse) => {
+    this.chartofaccservice.getChartofaccbyCategory('Expenses').subscribe((res: APIResponse) => {
       this.expencessList = res.data;
     })
   }

@@ -76,7 +76,7 @@ export class ImportclearingComponent implements OnInit {
     this.voucherService.getbyId(id).subscribe((res: APIResponse) => {
       this.voucherData = res.data;
       const responseDate = (res.data as any)?.date;
-      this.amount = (res.data as any)?.amount;
+      this.amount = Math.round(((res.data as any)?.amount + Number.EPSILON) * 100) / 100;
       this.id = (res.data as any)?.id;
       this.vouchernumber = (res.data as any)?.voucherNumber;
       this.makeDepositForm.patchValue({
@@ -266,7 +266,7 @@ export class ImportclearingComponent implements OnInit {
       .filter(row => {
         if (row.accountId === this.partyAccountId) {
           tempAmount = row.amount; // just store amount
-          return false; // skip this row in journalEntries
+         // return false; // skip this row in journalEntries
         }
         return row.accountId !== ''; // only include valid rows
       })
