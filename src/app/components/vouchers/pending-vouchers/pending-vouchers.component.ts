@@ -70,7 +70,7 @@ export class PendingVouchersComponent {
 
   onValueChange(voucherProduct: any) {
     this.applyDiscount(voucherProduct);
-    this.updateParentAmount();
+    // this.updateParentAmount();
   }
 
   applyDiscount(vp: any) {
@@ -93,7 +93,7 @@ export class PendingVouchersComponent {
       this.voucherProductService.getbyGrp(data.id).subscribe((res: APIResponse) => {
         this.voucherProduct = res.data;
         this.voucherProduct.forEach((vp) => this.applyDiscount(vp)); // Initialize amounts
-        this.updateParentAmount(); // Update the parent amount on expand
+        // this.updateParentAmount(); // Update the parent amount on expand
       });
     }
   }
@@ -125,20 +125,20 @@ export class PendingVouchersComponent {
   totalCost: number = 0; // Initialize totalCost
   totalAmount: number = 0; // Initialize totalCost
 
-  updateParentAmount() {
-    this.totalCost = 0
-    this.totalAmount = 0
-    this.dataSource.forEach((data) => {
-      if (data.expand) {
-        // Calculate the total amount of all products for the expanded row
-        data.amount = this.voucherProduct.reduce((total, vp) => total + Number(vp.amount), 0);
-        this.totalAmount = data.amount
-      }
-    });
+  // updateParentAmount() {
+  //   this.totalCost = 0
+  //   this.totalAmount = 0
+  //   this.dataSource.forEach((data) => {
+  //     if (data.expand) {
+  //       // Calculate the total amount of all products for the expanded row
+  //       data.amount = this.voucherProduct.reduce((total, vp) => total + Number(vp.amount), 0);
+  //       this.totalAmount = data.amount
+  //     }
+  //   });
 
-    // Calculate total cost across all expanded rows (or globally if needed)
-    this.totalCost = this.voucherProduct.reduce((total, vp) => total + (Number(vp.cost)) * (Number(vp.quantity)), 0);
-  }
+  //   // Calculate total cost across all expanded rows (or globally if needed)
+  //   this.totalCost = this.voucherProduct.reduce((total, vp) => total + (Number(vp.cost)) * (Number(vp.quantity)), 0);
+  // }
 
   updateConform(data: any): void {
     if (this.voucherProduct.length === 0) {
