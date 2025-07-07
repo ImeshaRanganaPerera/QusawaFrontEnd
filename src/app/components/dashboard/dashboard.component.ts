@@ -169,7 +169,7 @@ export class DashboardComponent implements OnInit {
         queryParams: { type: 'Sales Return' }
       },
       {
-        routerLink: './manage-GRN',
+        routerLink: '/manage-GRN',
         icon: 'ungroup',
         label: 'GRN',
         roles: ['ADMIN', 'MANAGER'],

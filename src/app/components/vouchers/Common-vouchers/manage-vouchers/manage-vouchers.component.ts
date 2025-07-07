@@ -7,7 +7,7 @@ import { InventoryService } from '../../../../services/inventory/inventory.servi
 import { PartyService } from '../../../../services/party/party.service';
 import { VoucherService } from '../../../../services/voucher/voucher.service';
 import { IUserCenter, IParty, APIResponse, ITableRow, ICenter } from '../../../../shared/interface';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute,Router } from '@angular/router';
 import { differenceInCalendarDays } from 'date-fns';
 import { RefVouchersComponent } from '../../../../shared/ref-vouchers/ref-vouchers.component';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -30,7 +30,7 @@ import { lastValueFrom } from 'rxjs';
 export class ManageVouchersComponent {
   localAmount: number = 0;
   usdAmount: number = 0;
-  isSpinning = false;
+  isSpinning = true;
   searchControl: FormControl = new FormControl('');
   filteredData: any[] = [];
   dataSource: any[] = [];
@@ -43,6 +43,7 @@ export class ManageVouchersComponent {
   today = new Date();
   role: any;
   dialog = inject(MatDialog)
+  router = inject(Router)
   inputValue?: string;
   totalAmount: number = 0;
   responseMessage: any;
@@ -85,6 +86,7 @@ export class ManageVouchersComponent {
 
 
   ngOnInit(): void {
+     document.body.classList.add('hide-sidebar');
     this.getRole()
     this.voucherForm.get('date')?.setValue(this.today);
     this.route.queryParams.subscribe(params => {
@@ -224,7 +226,9 @@ export class ManageVouchersComponent {
   getRole() {
     this.role = localStorage.getItem('role')
   }
-
+ onBack() {
+    this.router.navigateByUrl('/dashboard');
+  }
   directPayment: any[] = []
 
   getRefVouchers(vouchergrp: any, partyId: any) {

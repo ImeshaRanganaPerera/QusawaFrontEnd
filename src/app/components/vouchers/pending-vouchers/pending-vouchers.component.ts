@@ -150,31 +150,34 @@ export class PendingVouchersComponent {
       ...data,
       stockStatus: data.voucherNumber.startsWith('INV') || data.voucherNumber.startsWith('GRN') || data.voucherNumber.startsWith('SRET'),
       isconform: data.voucherNumber.startsWith('INV') || data.voucherNumber.startsWith('GRN'),
-      status: data.voucherNumber.startsWith('SC') ? 'PAYMENT PENDING' : 'COMPLETED',
+      status : data.voucherNumber.startsWith('GRN') ? 'PENDING' :
+               data.voucherNumber.startsWith('INV') ? 'COMPLETED' :
+               data.voucherNumber.startsWith('SC') ? 'PAYMENT PENDING' :
+               'COMPLETED',
       
       voucherProduct: this.voucherProduct,
-      journalEntries: data.voucherNumber.startsWith('INV') ? null : [
-        {
-          accountId: data.party.chartofAccountId,
-          debit: 0,
-          credit: data.amount,
-        },
-        {
-          accountId: 'Sales',
-          debit: data.amount,
-          credit: 0
-        },
-        {
-          accountId: 'INVENTORY',
-          debit: this.totalCost,
-          credit: 0
-        },
-        {
-          accountId: 'COST',
-          debit: 0,
-          credit: this.totalCost
-        }
-      ],
+      // journalEntries: data.voucherNumber.startsWith('INV') ? null : [
+      //   {
+      //     accountId: data.party.chartofAccountId,
+      //     debit: 0,
+      //     credit: data.amount,
+      //   },
+      //   {
+      //     accountId: 'Sales',
+      //     debit: data.amount,
+      //     credit: 0
+      //   },
+      //   {
+      //     accountId: 'INVENTORY',
+      //     debit: this.totalCost,
+      //     credit: 0
+      //   },
+      //   {
+      //     accountId: 'COST',
+      //     debit: 0,
+      //     credit: this.totalCost
+      //   }
+      // ],
     };
 
     console.log(updatedVoucher)
@@ -192,10 +195,14 @@ export class PendingVouchersComponent {
   }
 
   voucherCancel(id: any) {
-    const data = {
-      voucherGrpName: id.voucherNumber.startsWith('INV') ? 'Invoice' : 'Sales Return',
-      status: 'CANCELLED'
-    };
+   const data = {
+    voucherGrpName: id.voucherNumber.startsWith('INV') 
+      ? 'Invoice' 
+      : id.voucherNumber.startsWith('GRN') 
+      ? 'Goods Received Note' 
+      : 'Sales Return',
+    status: 'CANCELLED'
+  };
 
     this.voucherService.updateCancel(id.id, data).subscribe((res: APIResponse) => {
       this.notification.create('success', 'Success', res.message)

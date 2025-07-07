@@ -84,19 +84,40 @@ export class ListChartofaccComponent {
       }
     });
   }
-
   getList(observable$: Observable<APIResponse>) {
-    observable$.subscribe((res: APIResponse) => {
-      this.dataSource = res.data
-      this.filteredData = res.data
-      this.responseMessage = res.message;
-      this.isSpinning = false;
-    }, (error) => {
-      this.responseMessage = error.error?.message || 'Something went Wrong!'
-      this.isSpinning = false;
-      this.notification.create('error', 'Error', this.responseMessage)
-    })
+    observable$.subscribe(
+      (res: APIResponse) => {
+        const sortedData = res.data.sort((a: any, b: any) => {
+          const nameA = a.accGroup?.accountGroupName?.toLowerCase() || '';
+          const nameB = b.accGroup?.accountGroupName?.toLowerCase() || '';
+          return nameA.localeCompare(nameB);
+        });
+
+        this.dataSource = sortedData;
+        this.filteredData = sortedData;
+        this.responseMessage = res.message;
+        this.isSpinning = false;
+      },
+      (error) => {
+        this.responseMessage = error.error?.message || 'Something went Wrong!';
+        this.isSpinning = false;
+        this.notification.create('error', 'Error', this.responseMessage);
+      }
+    );
   }
+
+  // getList(observable$: Observable<APIResponse>) {
+  //   observable$.subscribe((res: APIResponse) => {
+  //     this.dataSource = res.data
+  //     this.filteredData = res.data
+  //     this.responseMessage = res.message;
+  //     this.isSpinning = false;
+  //   }, (error) => {
+  //     this.responseMessage = error.error?.message || 'Something went Wrong!'
+  //     this.isSpinning = false;
+  //     this.notification.create('error', 'Error', this.responseMessage)
+  //   })
+  // }
 
   manageProduct(action: string, data?: any) {
     const modal = this.model.create({

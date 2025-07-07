@@ -1,5 +1,10 @@
 <nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
-  <div class="container-fluid px-4 pt-3">
+  <div class="container-fluid m-0 p-0">
+    <div class="content">
+
+    
+    <nz-page-header class="site-page-header bg-white" (nzBack)="onBack()" nzBackIcon
+            nzTitle="Dashboard"></nz-page-header>
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h2 class="fw-bold">{{params}}</h2>
     </div>
@@ -265,6 +270,7 @@
           {{params}}</button>
       </div>
 
+    </div>
     </div>
   </div>
 </nz-spin>

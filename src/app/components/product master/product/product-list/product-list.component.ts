@@ -33,7 +33,7 @@ export class ProductListComponent implements OnInit {
     this.getProduct();
     this.setupSearch();
   }
- 
+
   currentPage = 1;
   pageSize = 100;
 
@@ -51,18 +51,35 @@ export class ProductListComponent implements OnInit {
       );
     });
   }
-
   getProduct() {
     this.isSpinning = true;
-    this.productservice.get().subscribe((res: APIResponse) => {
-      this.dataSource = res.data;
-      this.filteredData = res.data;
-      this.isSpinning = false;
-    }, (error) => {
-      this.isSpinning = false;
-      this.notification.create('error', 'error', error.error?.message || 'Something went wrong!')
-    })
+    this.productservice.get().subscribe(
+      (res: APIResponse) => {
+        const sortedData = res.data.sort((a: any, b: any) =>
+          a.printName.localeCompare(b.printName)
+        );
+        this.dataSource = sortedData;
+        this.filteredData = sortedData;
+        this.isSpinning = false;
+      },
+      (error) => {
+        this.isSpinning = false;
+        this.notification.create('error', 'error', error.error?.message || 'Something went wrong!');
+      }
+    );
   }
+
+  // getProduct() {
+  //   this.isSpinning = true;
+  //   this.productservice.get().subscribe((res: APIResponse) => {
+  //     this.dataSource = res.data;
+  //     this.filteredData = res.data;
+  //     this.isSpinning = false;
+  //   }, (error) => {
+  //     this.isSpinning = false;
+  //     this.notification.create('error', 'error', error.error?.message || 'Something went wrong!')
+  //   })
+  // }
 
   manageProduct(action: string, data?: any) {
     const modal = this.model.create({
