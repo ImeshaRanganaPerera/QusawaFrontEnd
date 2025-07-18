@@ -222,13 +222,13 @@
             </td>
             <td>
               <nz-date-picker nzSize="small" [(ngModel)]="row.mfdate"
-                (ngModelChange)="onFieldChange(row, 'mfdate', $event)" class="w-200" format="yyyy-MM-dd">
+                (ngModelChange)="onFieldChange(row, 'mfdate', $event)"  [style.width.%]="100" format="yyyy-MM-dd">
               </nz-date-picker>
 
             </td>
             <td>
               <nz-date-picker nzSize="small" [(ngModel)]="row.expiryDate"
-                (ngModelChange)="onFieldChange(row, 'expiryDate', $event)" class="w-200" format="yyyy-MM-dd">
+                (ngModelChange)="onFieldChange(row, 'expiryDate', $event)"  [style.width.%]="100" format="yyyy-MM-dd">
               </nz-date-picker>
             </td>
             <td>

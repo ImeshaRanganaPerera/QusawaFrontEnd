@@ -89,7 +89,7 @@ export class ManagePettyCashComponent implements OnInit {
   }
 
   getExpencess() {
-    this.chartofaccservice.getChartofaccbyGrp('Expenses').subscribe((res: APIResponse) => {
+    this.chartofaccservice.getChartofaccbyGrpforpettycash('Expenses,Payable').subscribe((res: APIResponse) => {
       this.expencessList = res.data;
       this.isSpinning = false;
     })

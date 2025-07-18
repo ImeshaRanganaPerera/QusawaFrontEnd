@@ -36,6 +36,16 @@ export class ChartofAccService {
     return this.httpClient.get<APIResponse>(this.url + '/chartofAcc/getbyGroup/' + name);
   }
 
+  
+   getChartofaccbyGrpforpettycash(name: any): Observable<APIResponse> {
+    return this.httpClient.get<APIResponse>(this.url + '/chartofAcc/getbyGroupforpettycash/' + name);
+  }
+  
+getChartofaccbyGrps(names: string[]): Observable<APIResponse> {
+  const params = names.map(name => encodeURIComponent(name)).join(',');
+  return this.httpClient.get<APIResponse>(`${this.url}/chartofAcc/getbyGroups?names=${params}`);
+}
+
   getChartofaccbyCategory(name: any): Observable<APIResponse> {
     return this.httpClient.get<APIResponse>(this.url + '/chartofAcc/getbycategory/' + name);
   }
